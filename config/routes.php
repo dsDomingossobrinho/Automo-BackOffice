@@ -1,0 +1,83 @@
+<?php
+/**
+ * Application Routes Configuration
+ */
+
+// Authentication routes
+$router->get('/', 'AuthController@login');
+$router->get('/login', 'AuthController@login');
+$router->post('/login', 'AuthController@authenticate');
+$router->get('/otp', 'AuthController@otp');
+$router->post('/verify-otp', 'AuthController@verifyOtp');
+$router->post('/resend-otp', 'ResendOtpController@resend');
+$router->get('/api/resend-otp', 'ResendOtpController@simpleResend');
+$router->get('/logout', 'AuthController@logout');
+
+// Dashboard routes (protected)
+$router->get('/dashboard', 'DashboardController@index');
+
+// Accounts & Permissions
+$router->get('/accounts', 'AccountController@index');
+$router->get('/accounts/create', 'AccountController@create');
+$router->post('/accounts', 'AccountController@store');
+$router->get('/accounts/{id}', 'AccountController@show');
+$router->get('/accounts/{id}/edit', 'AccountController@edit');
+$router->put('/accounts/{id}', 'AccountController@update');
+$router->delete('/accounts/{id}', 'AccountController@delete');
+
+$router->get('/accounts/permission', 'PermissionController@index');
+$router->get('/accounts/permission/create', 'PermissionController@create');
+$router->post('/accounts/permission', 'PermissionController@store');
+$router->get('/accounts/permission/{id}/edit', 'PermissionController@edit');
+$router->put('/accounts/permission/{id}', 'PermissionController@update');
+$router->delete('/accounts/permission/{id}', 'PermissionController@delete');
+
+// Clients routes
+$router->get('/clients', 'ClientController@index');
+$router->get('/clients/create', 'ClientController@create');
+$router->post('/clients', 'ClientController@store');
+$router->get('/clients/{id}', 'ClientController@show');
+$router->get('/clients/{id}/edit', 'ClientController@edit');
+$router->put('/clients/{id}', 'ClientController@update');
+$router->delete('/clients/{id}', 'ClientController@delete');
+
+$router->get('/clients/active', 'ClientController@active');
+$router->get('/clients/capted', 'ClientController@capted');
+
+// Messages routes
+$router->get('/messages', 'MessageController@index');
+$router->get('/messages/create', 'MessageController@create');
+$router->post('/messages', 'MessageController@store');
+$router->get('/messages/{id}', 'MessageController@show');
+$router->delete('/messages/{id}', 'MessageController@delete');
+
+$router->get('/messages/by-client', 'MessageController@byClient');
+$router->get('/messages/conversion', 'MessageController@conversion');
+$router->get('/messages/by-client/all', 'MessageController@byClientAll');
+
+// Financial routes
+$router->get('/finances', 'FinanceController@index');
+$router->get('/finances/monthly', 'FinanceController@monthly');
+$router->get('/finances/daily', 'FinanceController@daily');
+$router->get('/finances/weekly', 'FinanceController@weekly');
+
+// Invoice/Document routes
+$router->get('/invoices', 'InvoiceController@index');
+$router->get('/invoices/create', 'InvoiceController@create');
+$router->post('/invoices', 'InvoiceController@store');
+$router->get('/invoices/{id}', 'InvoiceController@show');
+$router->get('/invoices/{id}/edit', 'InvoiceController@edit');
+$router->put('/invoices/{id}', 'InvoiceController@update');
+$router->delete('/invoices/{id}', 'InvoiceController@delete');
+
+$router->get('/invoices/receipts', 'InvoiceController@receipts');
+$router->get('/invoices/planos', 'InvoiceController@plans');
+
+// API routes for AJAX requests
+$router->post('/api/auth/login', 'Api\\AuthController@login');
+$router->post('/api/auth/verify-otp', 'Api\\AuthController@verifyOtp');
+$router->get('/api/auth/resend-otp', 'Api\\AuthController@resendOtp');
+$router->post('/api/auth/forgot-password', 'Api\\AuthController@forgotPassword');
+$router->get('/api/clients/search', 'Api\\ClientController@search');
+$router->get('/api/messages/stats', 'Api\\MessageController@stats');
+$router->get('/api/finances/chart', 'Api\\FinanceController@chartData');

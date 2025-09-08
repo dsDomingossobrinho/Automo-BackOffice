@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  backoffice-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: automo-backoffice
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    environment:
+      # Application Configuration
+      DEBUG_MODE: ${DEBUG_MODE:-true}
+      BASE_URL: ${BASE_URL:-http://localhost:3000}
+      
+      # Backend API Configuration
+      # Uses Docker Gateway IP for reliable connection
+      API_BASE_URL: ${API_BASE_URL:-http://172.17.0.1:8080}
+      
+      # PHP Configuration
+      PHP_DISPLAY_ERRORS: ${PHP_DISPLAY_ERRORS:-On}
+      PHP_ERROR_REPORTING: ${PHP_ERROR_REPORTING:-E_ALL}
+      PHP_LOG_ERRORS: ${PHP_LOG_ERRORS:-On}
+      
+    volumes:
+      - ./storage/logs:/var/www/html/storage/logs
+      - ./public/uploads:/var/www/html/public/uploads
+      - ./storage/sessions:/var/www/html/storage/sessions
+    networks:
+      - automo-network
+      - automo-backend_automo-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/login"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+networks:
+  automo-network:
+    external: true
+    name: automo-network
+  automo-backend_automo-network:
+    external: true
+    name: automo-backend_automo-network
