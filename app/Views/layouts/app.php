@@ -149,23 +149,21 @@
                             </div>
                             <div class="user-dropdown">
                                 <div class="dropdown-section">
-                                    <a href="#" class="dropdown-item">
+                                    <a href="<?= url('/profile') ?>" class="dropdown-item">
                                         <i class="fas fa-user"></i>
                                         <span>Meu Perfil</span>
                                     </a>
-                                    <a href="#" class="dropdown-item">
+                                    <a href="<?= url('/settings') ?>" class="dropdown-item">
                                         <i class="fas fa-cog"></i>
                                         <span>Configurações</span>
                                     </a>
                                 </div>
                                 <div class="dropdown-divider"></div>
                                 <div class="dropdown-section">
-                                    <form method="GET" action="<?= url('/logout') ?>">
-                                        <button type="submit" class="dropdown-item">
-                                            <i class="fas fa-sign-out-alt"></i>
-                                            <span>Logout</span>
-                                        </button>
-                                    </form>
+                                    <a href="<?= url('/logout') ?>" class="dropdown-item" onclick="handleLogout(event)">
+                                        <i class="fas fa-sign-out-alt"></i>
+                                        <span>Logout</span>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -214,18 +212,23 @@
     <script src="<?= asset('js/app.js') ?>"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
+        console.log('Layout script loaded');
+        
         // Sidebar toggle functionality
         const sidebarToggle = document.querySelector('.sidebar-toggle');
         const sidebar = document.querySelector('.sidebar');
-        const mainContent = document.querySelector('.main-content');
         
         if (sidebarToggle && sidebar) {
-            sidebarToggle.addEventListener('click', function() {
+            sidebarToggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
                 sidebar.classList.toggle('show');
                 
-                // Add overlay for mobile
+                // Handle mobile overlay
                 if (window.innerWidth <= 768) {
                     if (sidebar.classList.contains('show')) {
+                        // Create overlay
                         let overlay = document.querySelector('.sidebar-overlay');
                         if (!overlay) {
                             overlay = document.createElement('div');
@@ -233,36 +236,42 @@
                             document.body.appendChild(overlay);
                             document.body.classList.add('sidebar-open');
                             
+                            // Close sidebar when clicking overlay
                             overlay.addEventListener('click', function() {
-                                sidebar.classList.remove('show');
-                                document.body.classList.remove('sidebar-open');
-                                if (overlay.parentNode) {
-                                    document.body.removeChild(overlay);
-                                }
+                                closeSidebar();
                             });
                         }
                     } else {
-                        const overlay = document.querySelector('.sidebar-overlay');
-                        document.body.classList.remove('sidebar-open');
-                        if (overlay && overlay.parentNode) {
-                            document.body.removeChild(overlay);
-                        }
+                        closeSidebar();
                     }
                 }
             });
         }
         
-        // Submenu toggle functionality
+        function closeSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.sidebar-overlay');
+            
+            if (sidebar) sidebar.classList.remove('show');
+            document.body.classList.remove('sidebar-open');
+            if (overlay && overlay.parentNode) {
+                document.body.removeChild(overlay);
+            }
+        }
+        
+        // Submenu toggle functionality - ONLY for submenu toggles, NOT regular links
         const submenuToggles = document.querySelectorAll('[data-toggle="submenu"]');
-        submenuToggles.forEach(toggle => {
+        submenuToggles.forEach(function(toggle) {
             toggle.addEventListener('click', function(e) {
                 e.preventDefault();
+                e.stopPropagation();
+                
                 const submenu = this.nextElementSibling;
                 const isExpanded = this.getAttribute('aria-expanded') === 'true';
                 
                 // Close all other submenus
-                submenuToggles.forEach(otherToggle => {
-                    if (otherToggle !== this) {
+                submenuToggles.forEach(function(otherToggle) {
+                    if (otherToggle !== toggle) {
                         otherToggle.setAttribute('aria-expanded', 'false');
                         const otherSubmenu = otherToggle.nextElementSibling;
                         if (otherSubmenu) {
@@ -272,133 +281,107 @@
                 });
                 
                 // Toggle current submenu
-                this.setAttribute('aria-expanded', !isExpanded);
+                toggle.setAttribute('aria-expanded', !isExpanded);
                 if (submenu) {
-                    submenu.classList.toggle('show', !isExpanded);
+                    if (!isExpanded) {
+                        submenu.classList.add('show');
+                    } else {
+                        submenu.classList.remove('show');
+                    }
                 }
             });
         });
         
         // Auto-close flash messages
-        const flashAlerts = document.querySelectorAll('.modern-flash-alert');
-        flashAlerts.forEach(alert => {
-            setTimeout(() => {
-                alert.style.animation = 'slideOutRight 0.5s ease-in';
-                setTimeout(() => {
+        const flashAlerts = document.querySelectorAll('.alert, [class*="alert-"], [class*="flash-"]');
+        flashAlerts.forEach(function(alert) {
+            if (alert.classList.contains('alert-success') || 
+                alert.classList.contains('alert-info') || 
+                alert.classList.contains('alert-warning')) {
+                setTimeout(function() {
                     if (alert.parentNode) {
-                        alert.parentNode.removeChild(alert);
+                        alert.style.transition = 'opacity 0.5s ease';
+                        alert.style.opacity = '0';
+                        setTimeout(function() {
+                            if (alert.parentNode) {
+                                alert.parentNode.removeChild(alert);
+                            }
+                        }, 500);
                     }
-                }, 500);
-            }, 5000);
-        });
-        
-        // Add slideOutRight animation
-        if (!document.getElementById('layout-animations')) {
-            const style = document.createElement('style');
-            style.id = 'layout-animations';
-            style.textContent = `
-                @keyframes slideOutRight {
-                    from { transform: translateX(0); opacity: 1; }
-                    to { transform: translateX(100%); opacity: 0; }
-                }
-                
-                .sidebar-overlay {
-                    animation: fadeIn 0.3s ease;
-                }
-                
-                @keyframes fadeIn {
-                    from { opacity: 0; }
-                    to { opacity: 1; }
-                }
-            `;
-            document.head.appendChild(style);
-        }
-        
-        // Notification system enhancement
-        window.showNotification = function(message, type = 'info', duration = 4000) {
-            const container = document.querySelector('.flash-messages-container') || (() => {
-                const newContainer = document.createElement('div');
-                newContainer.className = 'flash-messages-container';
-                document.body.appendChild(newContainer);
-                return newContainer;
-            })();
-            
-            const notification = document.createElement('div');
-            notification.className = `alert-modern alert-${type}-modern modern-flash-alert`;
-            
-            const icons = {
-                success: 'fas fa-check-circle',
-                error: 'fas fa-exclamation-triangle',
-                warning: 'fas fa-exclamation-circle',
-                info: 'fas fa-info-circle'
-            };
-            
-            notification.innerHTML = `
-                <i class="${icons[type]}"></i>
-                <span>${message}</span>
-                <button class="alert-close" onclick="this.parentElement.remove()">
-                    <i class="fas fa-times"></i>
-                </button>
-            `;
-            
-            container.appendChild(notification);
-            
-            setTimeout(() => {
-                if (notification.parentNode) {
-                    notification.style.animation = 'slideOutRight 0.5s ease-in';
-                    setTimeout(() => {
-                        if (notification.parentNode) {
-                            notification.parentNode.removeChild(notification);
-                        }
-                    }, 500);
-                }
-            }, duration);
-        };
-        
-        // Enhanced user menu functionality
-        const userMenu = document.querySelector('.modern-user-menu');
-        const userDropdown = document.querySelector('.user-dropdown');
-        
-        if (userMenu && userDropdown) {
-            let timeoutId;
-            
-            userMenu.addEventListener('mouseenter', function() {
-                clearTimeout(timeoutId);
-                userDropdown.style.opacity = '1';
-                userDropdown.style.visibility = 'visible';
-                userDropdown.style.transform = 'translateY(0)';
-            });
-            
-            userMenu.addEventListener('mouseleave', function() {
-                timeoutId = setTimeout(() => {
-                    userDropdown.style.opacity = '0';
-                    userDropdown.style.visibility = 'hidden';
-                    userDropdown.style.transform = 'translateY(-10px)';
-                }, 300);
-            });
-        }
-        
-        // Performance monitoring
-        const perfStart = performance.now();
-        window.addEventListener('load', () => {
-            const loadTime = Math.round(performance.now() - perfStart);
-            console.log(`⚡ Layout moderno carregado em ${loadTime}ms`);
+                }, 5000);
+            }
         });
         
         // Responsive handling
         let resizeTimeout;
         window.addEventListener('resize', function() {
             clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(() => {
-                const sidebar = document.querySelector('.modern-sidebar');
-                const overlay = document.querySelector('.sidebar-overlay');
-                
+            resizeTimeout = setTimeout(function() {
                 if (window.innerWidth > 768) {
-                    if (sidebar) sidebar.classList.remove('show');
-                    if (overlay) document.body.removeChild(overlay);
+                    closeSidebar();
                 }
             }, 150);
         });
+        
+        // Handle logout functionality
+        window.handleLogout = function(event) {
+            event.preventDefault();
+            
+            // Show confirmation
+            if (!confirm('Tem certeza que deseja sair do sistema?')) {
+                return false;
+            }
+            
+            // Clear any local storage/session storage if used
+            if (typeof(Storage) !== "undefined") {
+                localStorage.clear();
+                sessionStorage.clear();
+            }
+            
+            // Navigate to logout
+            window.location.href = event.target.closest('a').href;
+        };
+        
+        // Fix navigation links that might be causing about:blank issues
+        const fixNavigationLinks = function() {
+            // Remove any event listeners that might be interfering
+            const allLinks = document.querySelectorAll('a[href]');
+            allLinks.forEach(function(link) {
+                const href = link.getAttribute('href');
+                
+                // Skip external links, anchors, and javascript links
+                if (href && !href.startsWith('http') && !href.startsWith('#') && !href.startsWith('javascript:')) {
+                    // Only add listeners for elements that need special handling
+                    if (link.hasAttribute('data-toggle') || link.onclick) {
+                        return; // Skip these, they have their own handlers
+                    }
+                    
+                    // Clean any existing event listeners
+                    const newLink = link.cloneNode(true);
+                    if (link.parentNode) {
+                        link.parentNode.replaceChild(newLink, link);
+                    }
+                }
+            });
+        };
+        
+        // Initialize navigation fixes
+        fixNavigationLinks();
+        
+        // Fix user menu links
+        const userMenuLinks = document.querySelectorAll('.user-dropdown .dropdown-item:not([onclick])');
+        userMenuLinks.forEach(function(link) {
+            link.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                if (href && href !== '#' && href !== 'javascript:void(0)') {
+                    // Let normal navigation work
+                    return true;
+                }
+                e.preventDefault();
+            });
+        });
+        
+        console.log('Layout script initialization complete');
     });
     </script>
 </body>

@@ -63,10 +63,18 @@ class Router
         
         $uri = $this->getCurrentUri();
         
+        // Debug logging (reduced verbosity)
+        if (defined('DEBUG_MODE') && DEBUG_MODE && !$this->findRoute($method, $uri)) {
+            error_log("Router Debug - 404 for: $method $uri");
+        }
+        
         // Find matching route
         $route = $this->findRoute($method, $uri);
         
         if (!$route) {
+            if (defined('DEBUG_MODE') && DEBUG_MODE) {
+                error_log("Router Debug - No route found for $method $uri");
+            }
             $this->handleNotFound();
             return;
         }
@@ -157,7 +165,58 @@ class Router
     private function handleNotFound()
     {
         http_response_code(404);
-        include APP_PATH . '/Views/errors/404.php';
+        
+        // Set error-specific data
+        $error_type = '404';
+        $error_message = 'Página Não Encontrada';
+        $error_description = 'A página que você está procurando não existe ou foi movida.';
+        
+        // Log the 404 error
+        if (defined('DEBUG_MODE') && DEBUG_MODE) {
+            error_log("404 Error - URI: " . ($_SERVER['REQUEST_URI'] ?? 'unknown') . 
+                     " - Method: " . ($_SERVER['REQUEST_METHOD'] ?? 'unknown') . 
+                     " - User Agent: " . ($_SERVER['HTTP_USER_AGENT'] ?? 'unknown'));
+        }
+        
+        // Include the error page with proper error handling
+        $error_file = APP_PATH . '/Views/errors/404.php';
+        if (file_exists($error_file)) {
+            include $error_file;
+        } else {
+            // Fallback error page if 404.php doesn't exist
+            echo $this->getGenericErrorPage('404', $error_message, $error_description);
+        }
+    }
+    
+    /**
+     * Generic fallback error page
+     */
+    private function getGenericErrorPage($code, $title, $description)
+    {
+        return '<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>' . $code . ' - ' . $title . '</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        .error-container { max-width: 500px; margin: 0 auto; }
+        .error-code { font-size: 4rem; color: #dc2626; margin-bottom: 1rem; }
+        .error-title { font-size: 2rem; color: #374151; margin-bottom: 1rem; }
+        .error-desc { color: #6b7280; margin-bottom: 2rem; }
+        .btn { background: #3b82f6; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="error-code">' . $code . '</div>
+        <h1 class="error-title">' . $title . '</h1>
+        <p class="error-desc">' . $description . '</p>
+        <a href="/" class="btn">Voltar à Página Inicial</a>
+    </div>
+</body>
+</html>';
     }
     
     /**

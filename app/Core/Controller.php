@@ -26,6 +26,7 @@ abstract class Controller
     protected function checkAuth()
     {
         $publicRoutes = ['/login', '/otp', '/', '/logout'];
+        $apiRoutes = ['/api/', '/resend-otp', '/verify-otp']; // API routes that don't need redirect
         $currentUri = $_SERVER['REQUEST_URI'];
         
         // Remove query string
@@ -33,7 +34,40 @@ abstract class Controller
             $currentUri = substr($currentUri, 0, $pos);
         }
         
-        if (!in_array($currentUri, $publicRoutes) && !$this->auth->isAuthenticated()) {
+        // Skip auth check for public routes
+        if (in_array($currentUri, $publicRoutes)) {
+            return;
+        }
+        
+        // Skip auth check for API routes
+        foreach ($apiRoutes as $apiRoute) {
+            if (strpos($currentUri, $apiRoute) !== false) {
+                return;
+            }
+        }
+        
+        // For protected routes, check authentication
+        $isAuthenticated = $this->auth->isAuthenticated();
+        
+        if (DEBUG_MODE) {
+            error_log("CONTROLLER: checkAuth for $currentUri - authenticated: " . ($isAuthenticated ? 'YES' : 'NO'));
+        }
+        
+        if (!$isAuthenticated) {
+            // For AJAX requests, return JSON error instead of redirect
+            if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
+                strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+                header('Content-Type: application/json');
+                http_response_code(401);
+                echo json_encode(['error' => 'Not authenticated']);
+                exit;
+            }
+            
+            if (DEBUG_MODE) {
+                error_log("CONTROLLER: Redirecting unauthenticated user from $currentUri to /login");
+            }
+            
+            // For regular requests, redirect to login
             $this->redirect('/login');
         }
     }

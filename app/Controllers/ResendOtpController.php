@@ -91,11 +91,11 @@ class ResendOtpController extends Controller
     }
     
     /**
-     * Simple resend without password (simplified approach)
+     * Simple resend using backend API endpoint
      */
     public function simpleResend()
     {
-        error_log("RESEND: simpleResend() called - using stored credentials approach");
+        error_log("RESEND: simpleResend() called - using backend /auth/login/backoffice/resend-otp");
         
         try {
             // Check if there's pending authentication
@@ -108,21 +108,36 @@ class ResendOtpController extends Controller
                 return;
             }
             
-            // For security, we'll simulate a successful resend
-            // In a real implementation, you might need to store encrypted credentials
-            // or redirect to login to re-enter password
-            $_SESSION['temp_login']['timestamp'] = time();
+            $tempLogin = $_SESSION['temp_login'];
+            error_log("RESEND: Temp login data: " . print_r($tempLogin, true));
             
-            $this->jsonResponse([
-                'success' => true,
-                'message' => 'Código OTP reenviado com sucesso!'
+            // Call the backend resend OTP endpoint
+            $response = $this->apiClient->post('/auth/login/backoffice/resend-otp', [
+                'emailOrContact' => $tempLogin['emailOrContact']
             ]);
+            
+            error_log("RESEND: Backend resend OTP response: " . print_r($response, true));
+            
+            if ($response['success']) {
+                // Update timestamp for new OTP request
+                $_SESSION['temp_login']['timestamp'] = time();
+                
+                $this->jsonResponse([
+                    'success' => true,
+                    'message' => $response['message'] ?? 'Código OTP reenviado com sucesso!'
+                ]);
+            } else {
+                $this->jsonResponse([
+                    'success' => false,
+                    'message' => $response['message'] ?? 'Erro ao reenviar código OTP'
+                ]);
+            }
             
         } catch (\Exception $e) {
             error_log("RESEND: Exception: " . $e->getMessage());
             $this->jsonResponse([
                 'success' => false,
-                'message' => 'Erro ao reenviar código OTP'
+                'message' => 'Erro ao reenviar código OTP: ' . $e->getMessage()
             ]);
         }
     }

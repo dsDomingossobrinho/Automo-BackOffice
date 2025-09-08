@@ -16,7 +16,15 @@ function e($string)
  */
 function url($path = '/')
 {
-    return BASE_URL . ltrim($path, '/');
+    $baseUrl = defined('BASE_URL') ? BASE_URL : '';
+    
+    // Ensure path starts with /
+    $path = '/' . ltrim($path, '/');
+    
+    // Remove trailing slash from base URL if exists
+    $baseUrl = rtrim($baseUrl, '/');
+    
+    return $baseUrl . $path;
 }
 
 /**

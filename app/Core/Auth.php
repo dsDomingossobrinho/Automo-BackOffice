@@ -18,7 +18,19 @@ class Auth
      */
     public function isAuthenticated()
     {
-        return isset($_SESSION['user']) && isset($_SESSION['token']);
+        // Check if session exists and has required data
+        $hasUser = isset($_SESSION['user']) && !empty($_SESSION['user']);
+        $hasToken = isset($_SESSION['token']) && !empty($_SESSION['token']);
+        
+        if (DEBUG_MODE) {
+            error_log("AUTH: isAuthenticated check - hasUser: " . ($hasUser ? 'YES' : 'NO') . ", hasToken: " . ($hasToken ? 'YES' : 'NO'));
+            if (isset($_SESSION['user'])) {
+                error_log("AUTH: Current user: " . print_r($_SESSION['user'], true));
+            }
+            error_log("AUTH: Session ID: " . session_id());
+        }
+        
+        return $hasUser && $hasToken;
     }
     
     /**
@@ -97,7 +109,9 @@ class Auth
                 'otpCode' => $otpCode
             ]);
             
-            error_log("AUTH: VerifyOTP response: " . print_r($response, true));
+            if (DEBUG_MODE) {
+                error_log("AUTH: VerifyOTP response: " . print_r($response, true));
+            }
             
             if ($response['success'] && isset($response['data']['token'])) {
                 // Extract user info from JWT token or use what backend provides
@@ -146,6 +160,144 @@ class Auth
     public function requestOtp($emailOrContact, $password)
     {
         return $this->authenticate($emailOrContact, $password);
+    }
+    
+    /**
+     * Request password reset using forgot-password endpoint
+     */
+    public function forgotPassword($emailOrContact)
+    {
+        try {
+            error_log("AUTH: Calling forgot-password endpoint");
+            error_log("AUTH: API Base URL: " . API_BASE_URL);
+            error_log("AUTH: Email/Contact: " . $emailOrContact);
+            
+            $response = $this->apiClient->post('/auth/forgot-password', [
+                'emailOrContact' => $emailOrContact
+            ]);
+            
+            error_log("AUTH: Forgot password response: " . print_r($response, true));
+            
+            if ($response['success']) {
+                // Store temporary forgot password data for reset verification
+                $_SESSION['temp_forgot_password'] = [
+                    'emailOrContact' => $emailOrContact,
+                    'timestamp' => time()
+                ];
+                
+                return [
+                    'success' => true,
+                    'message' => $response['data']['message'] ?? 'Código de recuperação enviado com sucesso. Verifique seu email.',
+                    'requires_otp' => true
+                ];
+            }
+            
+            return [
+                'success' => false,
+                'message' => $response['message'] ?? 'Email/contacto não encontrado. Verifique os dados informados.'
+            ];
+        } catch (Exception $e) {
+            error_log("AUTH: Exception in forgot-password: " . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Serviço de recuperação de senha temporariamente indisponível. Tente novamente.'
+            ];
+        }
+    }
+    
+    /**
+     * Reset password using OTP verification
+     */
+    public function resetPassword($otpCode, $newPassword, $confirmPassword)
+    {
+        if (!isset($_SESSION['temp_forgot_password'])) {
+            return [
+                'success' => false,
+                'message' => 'Nenhuma solicitação de recuperação de senha encontrada'
+            ];
+        }
+        
+        $tempForgot = $_SESSION['temp_forgot_password'];
+        
+        // Check if forgot password request has expired (15 minutes)
+        if (time() - $tempForgot['timestamp'] > 900) {
+            unset($_SESSION['temp_forgot_password']);
+            return [
+                'success' => false,
+                'message' => 'Código de recuperação expirado. Solicite um novo código.'
+            ];
+        }
+        
+        // Validate passwords
+        if ($newPassword !== $confirmPassword) {
+            return [
+                'success' => false,
+                'message' => 'As senhas não coincidem. Verifique e tente novamente.'
+            ];
+        }
+        
+        if (strlen($newPassword) < 6) {
+            return [
+                'success' => false,
+                'message' => 'A senha deve ter pelo menos 6 caracteres.'
+            ];
+        }
+        
+        try {
+            error_log("AUTH: Calling reset-password endpoint");
+            error_log("AUTH: Contact: " . $tempForgot['emailOrContact']);
+            error_log("AUTH: OTP Code: " . $otpCode);
+            
+            $response = $this->apiClient->post('/auth/reset-password', [
+                'emailOrContact' => $tempForgot['emailOrContact'],
+                'otpCode' => $otpCode,
+                'newPassword' => $newPassword
+                // Note: confirmPassword is validated locally, backend only needs newPassword
+            ]);
+            
+            if (DEBUG_MODE) {
+                error_log("AUTH: Reset password response: " . print_r($response, true));
+            }
+            
+            if ($response['success']) {
+                // Clear temporary forgot password data
+                unset($_SESSION['temp_forgot_password']);
+                
+                return [
+                    'success' => true,
+                    'message' => $response['data']['message'] ?? 'Senha alterada com sucesso! Você pode fazer login com sua nova senha.'
+                ];
+            }
+            
+            return [
+                'success' => false,
+                'message' => $response['message'] ?? 'Código inválido ou senha não pôde ser alterada'
+            ];
+        } catch (Exception $e) {
+            error_log("AUTH: Exception in reset-password: " . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Falha na alteração da senha. Tente novamente.'
+            ];
+        }
+    }
+    
+    /**
+     * Resend forgot password OTP
+     */
+    public function resendForgotPasswordOtp()
+    {
+        if (!isset($_SESSION['temp_forgot_password'])) {
+            return [
+                'success' => false,
+                'message' => 'Nenhuma solicitação de recuperação de senha encontrada'
+            ];
+        }
+        
+        $tempForgot = $_SESSION['temp_forgot_password'];
+        
+        // Use the same forgotPassword method to resend OTP
+        return $this->forgotPassword($tempForgot['emailOrContact']);
     }
     
     /**

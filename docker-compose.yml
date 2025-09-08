@@ -23,6 +23,10 @@ services:
       PHP_ERROR_REPORTING: ${PHP_ERROR_REPORTING:-E_ALL}
       PHP_LOG_ERRORS: ${PHP_LOG_ERRORS:-On}
       
+    # Memory limits to prevent OOM kills
+    mem_limit: 256m
+    memswap_limit: 256m
+      
     volumes:
       - ./storage/logs:/var/www/html/storage/logs
       - ./public/uploads:/var/www/html/public/uploads

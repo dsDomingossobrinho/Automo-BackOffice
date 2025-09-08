@@ -11,10 +11,26 @@ $router->get('/otp', 'AuthController@otp');
 $router->post('/verify-otp', 'AuthController@verifyOtp');
 $router->post('/resend-otp', 'ResendOtpController@resend');
 $router->get('/api/resend-otp', 'ResendOtpController@simpleResend');
+
+// Forgot Password routes
+$router->get('/forgot-password', 'AuthController@forgotPassword');
+$router->post('/forgot-password', 'AuthController@processForgotPassword');
+$router->get('/reset-password', 'AuthController@resetPassword');
+$router->post('/reset-password', 'AuthController@processResetPassword');
+$router->post('/resend-forgot-password-otp', 'AuthController@resendForgotPasswordOtp');
+
+// AJAX routes for OTP validation with pop-up errors
+$router->post('/api/verify-otp', 'AuthController@verifyOtpAjax');
+$router->post('/api/reset-password', 'AuthController@resetPasswordAjax');
+
 $router->get('/logout', 'AuthController@logout');
 
 // Dashboard routes (protected)
 $router->get('/dashboard', 'DashboardController@index');
+
+// User profile and settings routes
+$router->get('/profile', 'UserController@profile');
+$router->get('/settings', 'UserController@settings');
 
 // Accounts & Permissions
 $router->get('/accounts', 'AccountController@index');
@@ -77,7 +93,7 @@ $router->get('/invoices/planos', 'InvoiceController@plans');
 $router->post('/api/auth/login', 'Api\\AuthController@login');
 $router->post('/api/auth/verify-otp', 'Api\\AuthController@verifyOtp');
 $router->get('/api/auth/resend-otp', 'Api\\AuthController@resendOtp');
-$router->post('/api/auth/forgot-password', 'Api\\AuthController@forgotPassword');
+// Removed: $router->post('/api/auth/forgot-password', 'Api\\AuthController@forgotPassword'); - Now handled by /forgot-password
 $router->get('/api/clients/search', 'Api\\ClientController@search');
 $router->get('/api/messages/stats', 'Api\\MessageController@stats');
 $router->get('/api/finances/chart', 'Api\\FinanceController@chartData');

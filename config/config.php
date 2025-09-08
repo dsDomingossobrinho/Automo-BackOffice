@@ -6,6 +6,57 @@
 // Start output buffering to prevent headers already sent errors
 ob_start();
 
+// Set global error handlers
+function handleError($errno, $errstr, $errfile, $errline) {
+    // Log error details
+    if (defined('DEBUG_MODE') && DEBUG_MODE) {
+        error_log("PHP Error [$errno]: $errstr in $errfile on line $errline");
+    }
+    
+    // For fatal errors, show error page
+    if ($errno === E_ERROR || $errno === E_PARSE || $errno === E_CORE_ERROR || $errno === E_COMPILE_ERROR) {
+        http_response_code(500);
+        $error_file = defined('APP_PATH') ? APP_PATH . '/Views/errors/500.php' : null;
+        if ($error_file && file_exists($error_file)) {
+            include $error_file;
+        } else {
+            echo '<h1>500 - Internal Server Error</h1><p>An unexpected error occurred.</p>';
+        }
+        exit;
+    }
+    
+    return false; // Let PHP handle non-fatal errors normally
+}
+
+function handleShutdown() {
+    $error = error_get_last();
+    if ($error && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
+        http_response_code(500);
+        
+        if (defined('DEBUG_MODE') && DEBUG_MODE) {
+            error_log("Fatal Error: {$error['message']} in {$error['file']} on line {$error['line']}");
+            $error_details = "Fatal Error: {$error['message']}\nFile: {$error['file']}\nLine: {$error['line']}";
+        }
+        
+        // Clean any output buffer to prevent corrupted pages
+        if (ob_get_length()) {
+            ob_clean();
+        }
+        
+        $error_file = defined('APP_PATH') ? APP_PATH . '/Views/errors/500.php' : null;
+        if ($error_file && file_exists($error_file)) {
+            include $error_file;
+        } else {
+            echo '<h1>500 - Internal Server Error</h1><p>An unexpected error occurred.</p>';
+        }
+        exit;
+    }
+}
+
+// Register error handlers
+set_error_handler('handleError');
+register_shutdown_function('handleShutdown');
+
 // Configure session BEFORE starting session
 if (session_status() === PHP_SESSION_NONE) {
     // Session file storage configuration

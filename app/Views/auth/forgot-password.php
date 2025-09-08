@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - <?= APP_NAME ?></title>
+    <title>Recuperar Senha - <?= APP_NAME ?></title>
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="<?= asset('images/automo-logo.png') ?>">
@@ -17,9 +17,9 @@
     <link rel="stylesheet" href="<?= asset('css/modern-ui.css') ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     
-    <!-- Custom Login Styles -->
+    <!-- Custom Forgot Password Styles -->
     <style>
-        .login-container {
+        .forgot-password-container {
             min-height: 100vh;
             background: #f4f4f4;
             display: flex;
@@ -30,7 +30,7 @@
             overflow: hidden;
         }
         
-        .login-container::before {
+        .forgot-password-container::before {
             content: '';
             position: absolute;
             top: 0;
@@ -41,7 +41,7 @@
             opacity: 0.3;
         }
         
-        .login-card {
+        .forgot-password-card {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
             border-radius: 1.5rem;
@@ -66,34 +66,33 @@
             }
         }
         
-        .login-header {
+        .forgot-password-header {
             text-align: center;
             margin-bottom: var(--space-6);
         }
         
-        .login-logo {
-            width: 80px;
-            height: 80px;
+        .forgot-password-logo {
+            width: 70px;
+            height: 70px;
             margin-bottom: var(--space-3);
             display: inline-flex;
             align-items: center;
             justify-content: center;
             position: relative;
-            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
             border-radius: var(--radius-xl);
             padding: var(--space-3);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 24px rgba(245, 158, 11, 0.25);
             border: 2px solid rgba(255, 255, 255, 0.9);
         }
         
-        .login-logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+        .forgot-password-logo i {
+            font-size: 1.75rem;
+            color: white;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
         }
         
-        .login-title {
+        .forgot-password-title {
             font-size: 1.5rem;
             font-weight: 700;
             color: var(--secondary-800);
@@ -101,14 +100,38 @@
             letter-spacing: -0.025em;
         }
         
-        .login-subtitle {
+        .forgot-password-subtitle {
             color: var(--secondary-600);
             font-size: 0.9375rem;
-            margin: 0;
+            margin: 0 0 var(--space-3) 0;
             font-weight: 400;
+            line-height: 1.5;
         }
         
-        .login-form {
+        .instruction-box {
+            background: rgba(59, 130, 246, 0.05);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: var(--radius-md);
+            padding: var(--space-3);
+            margin-bottom: var(--space-4);
+        }
+        
+        .instruction-text {
+            color: var(--primary-700);
+            font-size: 0.875rem;
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-2);
+            line-height: 1.5;
+        }
+        
+        .instruction-text i {
+            font-size: 1rem;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+        
+        .forgot-password-form {
             display: flex;
             flex-direction: column;
             gap: var(--space-4);
@@ -128,10 +151,10 @@
         
         .form-input-enhanced {
             width: 100%;
-            padding: var(--space-3) var(--space-3) var(--space-3) 2.75rem;
-            font-size: 0.95rem;
+            padding: var(--space-4) var(--space-4) var(--space-4) 3rem;
+            font-size: 1rem;
             border: 2px solid var(--secondary-200);
-            border-radius: var(--radius-lg);
+            border-radius: var(--radius-xl);
             background: rgba(255, 255, 255, 0.9);
             transition: all var(--transition-medium);
             font-family: var(--font-family-sans);
@@ -153,14 +176,14 @@
         
         .form-icon {
             position: absolute;
-            left: var(--space-3);
+            left: var(--space-4);
             top: 50%;
             transform: translateY(-50%);
             color: var(--secondary-400);
-            font-size: 1rem;
+            font-size: 1.125rem;
             transition: all var(--transition-fast);
             z-index: 2;
-            pointer-events: none; /* Prevent icon from blocking input clicks */
+            pointer-events: none;
         }
         
         .form-group-enhanced:focus-within .form-icon {
@@ -168,142 +191,67 @@
             transform: translateY(-50%) scale(1.1);
         }
         
-        .login-button {
+        .forgot-password-button {
             width: 100%;
-            padding: var(--space-3) var(--space-5);
-            font-size: 0.95rem;
+            padding: var(--space-4) var(--space-6);
+            font-size: 1rem;
             font-weight: 600;
-            background: var(--gradient-primary);
+            background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
             color: white;
             border: none;
-            border-radius: var(--radius-lg);
+            border-radius: var(--radius-xl);
             cursor: pointer;
             transition: all var(--transition-medium);
             position: relative;
             overflow: hidden;
-            min-height: 48px;
+            min-height: 56px;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: var(--space-2);
-            box-shadow: 0 3px 12px 0 rgba(59, 130, 246, 0.3);
+            box-shadow: 0 4px 14px 0 rgba(245, 158, 11, 0.4);
             font-family: var(--font-family-sans);
         }
         
-        .login-button:hover:not(:disabled) {
+        .forgot-password-button:hover:not(:disabled) {
             transform: translateY(-3px);
-            box-shadow: 0 8px 25px 0 rgba(59, 130, 246, 0.4);
+            box-shadow: 0 8px 25px 0 rgba(245, 158, 11, 0.5);
         }
         
-        .login-button:active:not(:disabled) {
+        .forgot-password-button:active:not(:disabled) {
             transform: translateY(-1px);
         }
         
-        .login-button:disabled {
+        .forgot-password-button:disabled {
             opacity: 0.7;
             cursor: not-allowed;
             transform: none !important;
         }
         
-        .login-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transition: left 0.5s;
-        }
-        
-        .login-button:hover::before {
-            left: 100%;
-        }
-        
-        .forgot-password-section {
+        .back-to-login {
             text-align: center;
-            margin-top: var(--space-4);
+            margin-top: var(--space-6);
         }
         
-        .forgot-password-link {
-            color: var(--primary-600);
+        .back-to-login-link {
+            color: var(--secondary-600);
             text-decoration: none;
             font-size: 0.875rem;
             font-weight: 500;
             transition: all var(--transition-fast);
             display: inline-flex;
             align-items: center;
-            gap: var(--space-1);
+            gap: var(--space-2);
             padding: var(--space-2) var(--space-3);
             border-radius: var(--radius-md);
         }
         
-        .forgot-password-link:hover {
-            color: var(--primary-700);
+        .back-to-login-link:hover {
+            color: var(--primary-600);
             background: rgba(59, 130, 246, 0.05);
             transform: translateY(-1px);
         }
         
-        .login-footer {
-            text-align: center;
-            margin-top: var(--space-8);
-            padding-top: var(--space-6);
-            border-top: 1px solid var(--secondary-200);
-        }
-        
-        .login-footer-text {
-            color: var(--secondary-600);
-            font-size: 0.8125rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: var(--space-2);
-        }
-        
-        .security-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: var(--space-2);
-            background: rgba(16, 185, 129, 0.1);
-            color: #065f46;
-            padding: var(--space-2) var(--space-3);
-            border-radius: var(--radius-full);
-            font-size: 0.75rem;
-            font-weight: 500;
-            margin-top: var(--space-4);
-        }
-        
-        .floating-particles {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: 0;
-        }
-        
-        .particle {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.6);
-            border-radius: 50%;
-            animation: float 6s infinite ease-in-out;
-        }
-        
-        .particle:nth-child(1) { left: 10%; animation-delay: 0s; }
-        .particle:nth-child(2) { left: 20%; animation-delay: 1s; }
-        .particle:nth-child(3) { left: 30%; animation-delay: 2s; }
-        .particle:nth-child(4) { left: 40%; animation-delay: 3s; }
-        .particle:nth-child(5) { left: 50%; animation-delay: 4s; }
-        .particle:nth-child(6) { left: 60%; animation-delay: 5s; }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(100vh) translateX(0px) rotate(0deg); opacity: 0; }
-            10%, 90% { opacity: 1; }
-            50% { transform: translateY(-10vh) translateX(20px) rotate(180deg); }
-        }
-        
-        /* Loading state */
         .loading-overlay {
             position: absolute;
             top: 0;
@@ -325,13 +273,13 @@
         
         /* Responsive adjustments */
         @media (max-width: 480px) {
-            .login-card {
+            .forgot-password-card {
                 padding: var(--space-8);
                 margin: var(--space-4);
                 max-width: calc(100% - 2rem);
             }
             
-            .login-title {
+            .forgot-password-title {
                 font-size: 1.5rem;
             }
             
@@ -348,27 +296,27 @@
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <div class="floating-particles">
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-        </div>
-        
-        <div class="login-card">
+    <div class="forgot-password-container">
+        <div class="forgot-password-card">
             <div class="loading-overlay" id="loadingOverlay">
                 <div class="loading-spinner-modern"></div>
             </div>
             
-            <div class="login-header">
-                <div class="login-logo">
-                    <img src="<?= asset('images/automo-logo.png') ?>" alt="Automo Logo" />
+            <div class="forgot-password-header">
+                <div class="forgot-password-logo">
+                    <i class="fas fa-key"></i>
                 </div>
-                <h1 class="login-title"><?= APP_NAME ?></h1>
-                <p class="login-subtitle">Acesso seguro ao sistema de gestão</p>
+                <h1 class="forgot-password-title">Recuperar Senha</h1>
+                <p class="forgot-password-subtitle">
+                    Insira seu email ou contacto para receber o código de recuperação
+                </p>
+            </div>
+            
+            <div class="instruction-box">
+                <div class="instruction-text">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Enviaremos um código de 6 dígitos para o seu email ou SMS. Use este código para definir uma nova senha.</span>
+                </div>
             </div>
             
             <!-- Flash Messages -->
@@ -392,20 +340,20 @@
                 <?php unset($_SESSION['flash_errors']); ?>
             <?php endif; ?>
             
-            <form method="POST" action="/login" class="login-form" id="loginForm">
+            <form method="POST" action="/forgot-password" class="forgot-password-form" id="forgotPasswordForm">
                 <?= csrfField() ?>
                 
                 <div class="form-group-enhanced">
-                    <label for="email" class="form-label-enhanced">Email ou Contacto</label>
+                    <label for="emailOrContact" class="form-label-enhanced">Email ou Contacto</label>
                     <div style="position: relative;">
                         <i class="fas fa-envelope form-icon"></i>
                         <input 
                             type="text" 
-                            id="email" 
-                            name="email" 
+                            id="emailOrContact" 
+                            name="emailOrContact" 
                             class="form-input-enhanced"
                             placeholder="Digite seu email ou contacto"
-                            value="<?= old('email') ?>"
+                            value="<?= old('emailOrContact') ?>"
                             required
                             autocomplete="email"
                             autofocus
@@ -413,159 +361,80 @@
                     </div>
                 </div>
                 
-                <div class="form-group-enhanced">
-                    <label for="password" class="form-label-enhanced">Senha</label>
-                    <div style="position: relative;">
-                        <i class="fas fa-lock form-icon"></i>
-                        <input 
-                            type="password" 
-                            id="password" 
-                            name="password" 
-                            class="form-input-enhanced"
-                            placeholder="Digite sua senha"
-                            required
-                            autocomplete="current-password"
-                        >
-                    </div>
-                </div>
-                
-                <button type="submit" class="login-button" id="loginButton">
+                <button type="submit" class="forgot-password-button" id="forgotPasswordButton">
                     <span class="button-text">
-                        <i class="fas fa-sign-in-alt"></i>
-                        Entrar no Sistema
+                        <i class="fas fa-paper-plane"></i>
+                        Enviar Código de Recuperação
                     </span>
                 </button>
-                
-                <div class="forgot-password-section">
-                    <a href="/forgot-password" class="forgot-password-link" id="forgotPasswordLink">
-                        <i class="fas fa-question-circle"></i>
-                        Esqueceu a senha?
-                    </a>
-                </div>
             </form>
             
-            <div class="login-footer">
-                <div class="login-footer-text">
-                    <i class="fas fa-shield-alt"></i>
-                    Acesso protegido por autenticação de dois fatores
-                </div>
-                <div class="security-badge">
-                    <i class="fas fa-lock"></i>
-                    Conexão SSL Segura
-                </div>
+            <div class="back-to-login">
+                <a href="/login" class="back-to-login-link">
+                    <i class="fas fa-arrow-left"></i>
+                    Voltar para o Login
+                </a>
             </div>
         </div>
     </div>
     
-    <!-- Enhanced JavaScript -->
+    <!-- JavaScript -->
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const form = document.getElementById('loginForm');
-        const emailField = document.getElementById('email');
-        const passwordField = document.getElementById('password');
-        const loginButton = document.getElementById('loginButton');
+        const form = document.getElementById('forgotPasswordForm');
+        const emailField = document.getElementById('emailOrContact');
+        const forgotPasswordButton = document.getElementById('forgotPasswordButton');
         const loadingOverlay = document.getElementById('loadingOverlay');
         
         // Enhanced form validation
         function validateForm() {
             const email = emailField.value.trim();
-            const password = passwordField.value.trim();
-            const isValid = email.length > 0 && password.length > 0;
+            const isValid = email.length > 0;
             
-            loginButton.disabled = !isValid;
-            loginButton.style.opacity = isValid ? '1' : '0.5';
+            forgotPasswordButton.disabled = !isValid;
+            forgotPasswordButton.style.opacity = isValid ? '1' : '0.5';
             
             return isValid;
         }
         
         // Real-time validation
         emailField.addEventListener('input', validateForm);
-        passwordField.addEventListener('input', validateForm);
         
-        // Initial validation - delay to ensure DOM is ready
+        // Initial validation
         setTimeout(() => {
             validateForm();
         }, 100);
         
-        // AJAX Form submission handling
+        // Form submission handling
         form.addEventListener('submit', function(e) {
-            e.preventDefault(); // Always prevent default form submission
-            
             if (!validateForm()) {
-                showNotification('Por favor, preencha todos os campos', 'error');
+                e.preventDefault();
+                showNotification('Por favor, preencha seu email ou contacto', 'error');
                 return;
             }
             
-            // Show loading state immediately
+            // Show loading state
             loadingOverlay.classList.add('show');
-            loginButton.disabled = true;
+            forgotPasswordButton.disabled = true;
             
-            const buttonText = loginButton.querySelector('.button-text');
+            const buttonText = forgotPasswordButton.querySelector('.button-text');
             const originalButtonText = buttonText.innerHTML;
             if (buttonText) {
-                buttonText.innerHTML = '<div class="loading-spinner-modern"></div> Conectando...';
+                buttonText.innerHTML = '<div class="loading-spinner-modern"></div> Enviando código...';
             }
             
-            // Enhanced logging
-            console.log('🚀 Iniciando login AJAX:', {
+            console.log('🔑 Enviando solicitação de recuperação de senha:', {
                 timestamp: new Date().toISOString(),
                 email: emailField.value,
                 apiUrl: '<?= API_BASE_URL ?>',
                 debugMode: <?= DEBUG_MODE ? 'true' : 'false' ?>
             });
             
-            // Prepare form data
-            const formData = new FormData(form);
-            
-            // Make AJAX request to API endpoint
-            fetch('/api/auth/login', {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            })
-            .then(response => {
-                if (!response.ok) {
-                    return response.json().then(data => Promise.reject(data));
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('✅ Login response:', data);
-                
-                if (data.success) {
-                    // Show success notification
-                    showNotification(data.message, 'success');
-                    
-                    // Redirect to OTP page after short delay
-                    setTimeout(() => {
-                        window.location.href = data.redirect || '/otp';
-                    }, 1000);
-                } else {
-                    throw data;
-                }
-            })
-            .catch(error => {
-                console.error('❌ Login error:', error);
-                
-                // Hide loading state
-                loadingOverlay.classList.remove('show');
-                loginButton.disabled = false;
-                if (buttonText) {
-                    buttonText.innerHTML = originalButtonText;
-                }
-                
-                // Show error notification
-                const message = error.message || 'Erro na autenticação. Tente novamente.';
-                showNotification(message, 'error');
-            });
-            
             // Auto-timeout for loading state (failsafe)
             setTimeout(() => {
                 if (loadingOverlay.classList.contains('show')) {
                     loadingOverlay.classList.remove('show');
-                    loginButton.disabled = false;
+                    forgotPasswordButton.disabled = false;
                     if (buttonText) {
                         buttonText.innerHTML = originalButtonText;
                     }
@@ -602,7 +471,9 @@
             setTimeout(() => {
                 notification.style.animation = 'slideOutRight 0.3s ease';
                 setTimeout(() => {
-                    document.body.removeChild(notification);
+                    if (document.body.contains(notification)) {
+                        document.body.removeChild(notification);
+                    }
                 }, 300);
             }, 5000);
         }
@@ -621,21 +492,8 @@
         `;
         document.head.appendChild(style);
         
-        // Performance monitoring
-        const perfStart = performance.now();
-        window.addEventListener('load', () => {
-            const loadTime = Math.round(performance.now() - perfStart);
-            console.log(`⚡ Página carregada em ${loadTime}ms`);
-        });
-        
         // Enhanced keyboard navigation
         emailField.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                passwordField.focus();
-            }
-        });
-        
-        passwordField.addEventListener('keypress', function(e) {
             if (e.key === 'Enter' && validateForm()) {
                 form.submit();
             }
@@ -644,12 +502,14 @@
         // Auto-focus on load
         if (emailField && !emailField.value) {
             emailField.focus();
-        } else if (passwordField) {
-            passwordField.focus();
         }
         
-        // Forgot password link - now handled by simple href redirect to /forgot-password
-        console.log('🔑 Forgot password link configured - redirects to /forgot-password');
+        // Performance monitoring
+        const perfStart = performance.now();
+        window.addEventListener('load', () => {
+            const loadTime = Math.round(performance.now() - perfStart);
+            console.log(`⚡ Página de recuperação carregada em ${loadTime}ms`);
+        });
     });
     </script>
 </body>

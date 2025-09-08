@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>500 - Erro Interno - <?= APP_NAME ?? 'Automo BackOffice' ?></title>
+    <title>403 - Acesso Negado - <?= APP_NAME ?? 'Automo BackOffice' ?></title>
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="<?= ASSETS_URL ?? '/assets' ?>/images/automo-logo.png">
@@ -23,7 +23,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
             font-family: 'Inter', sans-serif;
         }
         
@@ -41,15 +41,15 @@
         
         .error-icon {
             font-size: 4rem;
-            color: #ef4444;
+            color: #dc2626;
             margin-bottom: 1.5rem;
-            animation: shake 1s infinite;
+            animation: bounce 2s infinite;
         }
         
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
         }
         
         .error-title {
@@ -110,17 +110,6 @@
             transform: translateY(-1px);
         }
         
-        .btn-success {
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
-        }
-        
-        .btn-success:hover {
-            background: linear-gradient(135deg, #059669, #047857);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
-        }
-        
         .error-footer {
             padding-top: 1.5rem;
             border-top: 1px solid rgba(107, 114, 128, 0.2);
@@ -141,17 +130,6 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
         
-        .error-details {
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.2);
-            border-radius: 8px;
-            padding: 1rem;
-            margin: 1.5rem 0;
-            font-family: monospace;
-            font-size: 0.875rem;
-            text-align: left;
-        }
-        
         @media (max-width: 768px) {
             .error-card {
                 margin: 1rem;
@@ -160,10 +138,6 @@
             
             .error-title {
                 font-size: 2rem;
-            }
-            
-            .error-buttons {
-                flex-direction: column;
             }
         }
     </style>
@@ -176,99 +150,57 @@
             </div>
             
             <div class="error-icon">
-                <i class="fas fa-exclamation-triangle"></i>
+                <i class="fas fa-ban"></i>
             </div>
             
-            <h1 class="error-title">500</h1>
+            <h1 class="error-title">403</h1>
             <p class="error-subtitle">
-                Erro Interno do Servidor
+                Acesso Negado
             </p>
             <p class="error-subtitle" style="font-size: 1rem; margin-bottom: 2.5rem;">
-                Ocorreu um erro interno no servidor. Nossa equipe técnica foi notificada automaticamente e está trabalhando na correção.
+                Você não tem permissão para acessar esta página ou recurso. Contacte o administrador se necessário.
             </p>
-            
-            <?php if (defined('DEBUG_MODE') && DEBUG_MODE && isset($error_details)): ?>
-                <div class="error-details">
-                    <strong>Detalhes do Erro (Debug Mode):</strong><br>
-                    <?= htmlspecialchars($error_details) ?>
-                </div>
-            <?php endif; ?>
             
             <div class="error-buttons">
                 <a href="<?= BASE_URL ?? '' ?>/dashboard" class="btn-error btn-primary">
                     <i class="fas fa-home"></i>
                     Voltar ao Dashboard
                 </a>
-                <button onclick="location.reload()" class="btn-error btn-success">
-                    <i class="fas fa-refresh"></i>
-                    Tentar Novamente
-                </button>
-                <button onclick="window.history.back()" class="btn-error btn-secondary">
-                    <i class="fas fa-arrow-left"></i>
-                    Página Anterior
-                </button>
+                <a href="<?= BASE_URL ?? '' ?>/login" class="btn-error btn-secondary">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Fazer Login
+                </a>
             </div>
             
             <div class="error-footer">
-                <p>Se o problema persistir, contacte o administrador do sistema.</p>
+                <p>Verifique suas credenciais ou contacte o administrador do sistema.</p>
                 <p style="margin-top: 0.5rem;">
-                    <strong>Erro ID:</strong> <?= uniqid('ERR_') ?> | 
-                    <strong>Timestamp:</strong> <?= date('d/m/Y H:i:s') ?>
-                </p>
-                <p style="margin-top: 0.25rem; font-size: 0.75rem;">
-                    <strong>User Agent:</strong> <?= htmlspecialchars($_SERVER['HTTP_USER_AGENT'] ?? 'N/A') ?>
+                    <strong>Código:</strong> 403 | <strong>Timestamp:</strong> <?= date('d/m/Y H:i:s') ?>
                 </p>
             </div>
         </div>
     </div>
     
     <script>
-        // Add some interactive behavior
         document.addEventListener('DOMContentLoaded', function() {
-            // Animate the error icon on hover
             const icon = document.querySelector('.error-icon');
             if (icon) {
                 icon.addEventListener('mouseenter', function() {
                     this.style.animation = 'none';
-                    this.style.transform = 'scale(1.2)';
-                    this.style.color = '#dc2626';
+                    this.style.transform = 'scale(1.3) rotate(-5deg)';
+                    this.style.color = '#991b1b';
                 });
                 
                 icon.addEventListener('mouseleave', function() {
-                    this.style.animation = 'shake 1s infinite';
+                    this.style.animation = 'bounce 2s infinite';
                     this.style.transform = 'scale(1)';
-                    this.style.color = '#ef4444';
+                    this.style.color = '#dc2626';
                 });
             }
             
-            // Auto-focus on primary button for keyboard navigation
             const primaryBtn = document.querySelector('.btn-primary');
             if (primaryBtn) {
                 primaryBtn.focus();
-            }
-            
-            // Add retry countdown functionality
-            let retryCount = 0;
-            const maxRetries = 3;
-            const retryBtn = document.querySelector('.btn-success');
-            
-            if (retryBtn) {
-                retryBtn.addEventListener('click', function(e) {
-                    retryCount++;
-                    if (retryCount >= maxRetries) {
-                        this.innerHTML = '<i class="fas fa-times"></i> Limite de tentativas atingido';
-                        this.disabled = true;
-                        this.style.opacity = '0.6';
-                        this.style.cursor = 'not-allowed';
-                        e.preventDefault();
-                        return false;
-                    }
-                    
-                    this.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Tentando... (${retryCount}/${maxRetries})`;
-                    setTimeout(() => {
-                        location.reload();
-                    }, 1000);
-                });
             }
         });
     </script>

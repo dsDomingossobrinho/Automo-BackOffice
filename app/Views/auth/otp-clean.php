@@ -44,12 +44,12 @@
         .otp-card {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
-            border-radius: 2rem;
-            box-shadow: 0 32px 64px rgba(0, 0, 0, 0.15);
+            border-radius: 1.5rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
             border: 1px solid rgba(255, 255, 255, 0.2);
             width: 100%;
-            max-width: 420px;
-            padding: var(--space-12);
+            max-width: 400px;
+            padding: var(--space-8);
             position: relative;
             z-index: 1;
             animation: slideInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
@@ -68,19 +68,19 @@
         
         .otp-header {
             text-align: center;
-            margin-bottom: var(--space-8);
+            margin-bottom: var(--space-6);
         }
         
         .otp-icon {
-            width: 80px;
-            height: 80px;
+            width: 60px;
+            height: 60px;
             background: var(--gradient-primary);
-            border-radius: var(--radius-2xl);
+            border-radius: var(--radius-xl);
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: var(--space-4);
-            box-shadow: var(--shadow-lg);
+            margin-bottom: var(--space-3);
+            box-shadow: var(--shadow-md);
             position: relative;
             overflow: hidden;
         }
@@ -110,10 +110,10 @@
         }
         
         .otp-title {
-            font-size: 1.875rem;
+            font-size: 1.5rem;
             font-weight: 700;
             color: var(--secondary-800);
-            margin: 0 0 var(--space-2) 0;
+            margin: 0;
             letter-spacing: -0.025em;
         }
         
@@ -141,7 +141,7 @@
         .otp-form {
             display: flex;
             flex-direction: column;
-            gap: var(--space-6);
+            gap: var(--space-4);
         }
         
         .form-group-otp {
@@ -161,13 +161,13 @@
         
         .otp-input {
             width: 100%;
-            padding: var(--space-4);
-            font-size: 1.5rem;
+            padding: var(--space-3);
+            font-size: 1.25rem;
             font-weight: 600;
-            letter-spacing: 0.5rem;
+            letter-spacing: 0.4rem;
             text-align: center;
             border: 2px solid var(--secondary-200);
-            border-radius: var(--radius-xl);
+            border-radius: var(--radius-lg);
             background: rgba(255, 255, 255, 0.9);
             transition: all var(--transition-medium);
             font-family: var(--font-family-mono);
@@ -189,23 +189,23 @@
         
         .verify-button {
             width: 100%;
-            padding: var(--space-4) var(--space-6);
-            font-size: 1rem;
+            padding: var(--space-3) var(--space-5);
+            font-size: 0.95rem;
             font-weight: 600;
             background: var(--gradient-primary);
             color: white;
             border: none;
-            border-radius: var(--radius-xl);
+            border-radius: var(--radius-lg);
             cursor: pointer;
             transition: all var(--transition-medium);
             position: relative;
             overflow: hidden;
-            min-height: 56px;
+            min-height: 48px;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: var(--space-2);
-            box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.3);
+            box-shadow: 0 3px 12px 0 rgba(59, 130, 246, 0.3);
             font-family: var(--font-family-sans);
         }
         
@@ -239,9 +239,9 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: var(--space-4);
-            margin-top: var(--space-4);
-            padding-top: var(--space-4);
+            gap: var(--space-3);
+            margin-top: var(--space-3);
+            padding-top: var(--space-3);
             border-top: 1px solid var(--secondary-200);
         }
         
@@ -447,23 +447,75 @@
             verifyButton.style.opacity = isValid ? '1' : '0.5';
         });
         
-        // Form submission - let it submit naturally to backend
+        // AJAX Form submission with pop-up error messages
         form.addEventListener('submit', function(e) {
+            e.preventDefault(); // Always prevent default to use AJAX
+            
             if (otpInput.value.length !== 6) {
-                e.preventDefault();
-                // Show error inline instead of popup
-                showInlineError('Digite um código válido de 6 dígitos');
+                showNotification('Digite um código válido de 6 dígitos', 'error');
                 return;
             }
             
             // Show loading state during submission
             verifyButton.disabled = true;
             const buttonText = verifyButton.querySelector('.button-text');
-            buttonText.innerHTML = '<div class="loading-spinner-modern"></div> Verificando com o backend...';
+            const originalText = buttonText.innerHTML;
+            buttonText.innerHTML = '<div class="loading-spinner-modern"></div> Verificando...';
             
-            // Form will POST to /verify-otp and backend will validate
-            // Success: redirects to /dashboard
-            // Error: stays on /otp with error message
+            // Prepare form data
+            const formData = {
+                _token: form.querySelector('input[name="_token"]').value,
+                otp_code: otpInput.value.trim()
+            };
+            
+            console.log('🔐 Verificando OTP via AJAX:', {
+                timestamp: new Date().toISOString(),
+                otp_length: otpInput.value.length,
+                debugMode: <?= DEBUG_MODE ? 'true' : 'false' ?>
+            });
+            
+            // Make AJAX request to verify OTP
+            fetch('/api/verify-otp', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('✅ OTP verification response:', data);
+                
+                if (data.success) {
+                    // Success - show success message and redirect
+                    showNotification(data.message, 'success');
+                    
+                    setTimeout(() => {
+                        window.location.href = data.redirect || '/dashboard';
+                    }, 1000);
+                } else {
+                    // Error - show pop-up error message and allow retry
+                    showNotification(data.message || 'Código OTP inválido', 'error');
+                    
+                    // Clear the OTP field and focus for retry
+                    otpInput.value = '';
+                    otpInput.focus();
+                }
+            })
+            .catch(error => {
+                console.error('❌ OTP verification error:', error);
+                showNotification('Erro na verificação OTP. Tente novamente.', 'error');
+                
+                // Clear the OTP field and focus for retry
+                otpInput.value = '';
+                otpInput.focus();
+            })
+            .finally(() => {
+                // Reset button state
+                verifyButton.disabled = false;
+                buttonText.innerHTML = originalText;
+            });
         });
         
         // Countdown timer
@@ -493,18 +545,76 @@
             this.disabled = true;
             resendText.innerHTML = '<div class="loading-spinner-modern" style="width:12px;height:12px;"></div> Reenviando...';
             
-            // Simple resend simulation (you can implement real API call here)
-            setTimeout(() => {
-                // Success - restart countdown and reset form
-                startCountdown();
+            console.log('🔄 Reenviando código OTP de login');
+            
+            // Make request to resend OTP endpoint for login
+            fetch('/api/resend-otp', {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('🔄 Resend OTP response:', data);
+                
+                if (data.success) {
+                    showNotification(data.message || 'Código reenviado com sucesso!', 'success');
+                    
+                    // Success - restart countdown and reset form
+                    startCountdown();
+                    otpInput.value = '';
+                    otpInput.focus();
+                    verifyButton.disabled = true;
+                    verifyButton.style.opacity = '0.5';
+                } else {
+                    showNotification(data.message || 'Erro ao reenviar código', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('❌ Resend OTP error:', error);
+                showNotification('Erro ao reenviar código. Tente novamente.', 'error');
+            })
+            .finally(() => {
                 this.disabled = false;
                 resendText.textContent = 'Reenviar código';
-                otpInput.value = '';
-                otpInput.focus();
-                verifyButton.disabled = true;
-                verifyButton.style.opacity = '0.5';
-            }, 2000);
+            });
         });
+        
+        // Enhanced notification system
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `alert-modern alert-${type}-modern`;
+            notification.style.position = 'fixed';
+            notification.style.top = '20px';
+            notification.style.right = '20px';
+            notification.style.zIndex = '9999';
+            notification.style.minWidth = '300px';
+            notification.style.animation = 'slideInRight 0.3s ease';
+            
+            const icons = {
+                success: 'fas fa-check-circle',
+                error: 'fas fa-exclamation-triangle',
+                warning: 'fas fa-exclamation-circle',
+                info: 'fas fa-info-circle'
+            };
+            
+            notification.innerHTML = `
+                <i class="${icons[type]}"></i>
+                <span>${message}</span>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.3s ease';
+                setTimeout(() => {
+                    if (document.body.contains(notification)) {
+                        document.body.removeChild(notification);
+                    }
+                }, 300);
+            }, 5000);
+        }
         
         // Show inline error message instead of popup
         function showInlineError(message) {
@@ -561,6 +671,14 @@
             @keyframes fadeOut {
                 from { opacity: 1; transform: translateY(0); }
                 to { opacity: 0; transform: translateY(-10px); }
+            }
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOutRight {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
             }
         `;
         document.head.appendChild(style);
