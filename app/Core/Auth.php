@@ -122,9 +122,26 @@ class Auth
                     $userInfo = $this->extractUserFromToken($response['data']['token']);
                 }
                 
-                // Store user session
-                $_SESSION['user'] = $userInfo;
+                // Store token first
                 $_SESSION['token'] = $response['data']['token'];
+                
+                // Fetch user profile data (NAME, IDENTIFY_ID, IMG)
+                $profileData = $this->fetchUserProfile();
+                
+                // Merge basic user info with profile data
+                if ($profileData['success']) {
+                    $userInfo = array_merge($userInfo ?? [], $profileData['profile']);
+                    if (DEBUG_MODE) {
+                        error_log("AUTH: Profile data fetched successfully: " . print_r($profileData['profile'], true));
+                    }
+                } else {
+                    if (DEBUG_MODE) {
+                        error_log("AUTH: Failed to fetch profile data: " . $profileData['message']);
+                    }
+                }
+                
+                // Store complete user session
+                $_SESSION['user'] = $userInfo;
                 $_SESSION['login_time'] = time();
                 
                 // Clear temporary login data
@@ -404,26 +421,53 @@ class Auth
         
         foreach ($roles as $roleId) {
             switch ($roleId) {
-                case 1: // Admin
+                case 1: // Admin - Full access to everything
                     $permissions = array_merge($permissions, [
+                        // General permissions
                         'view_all', 'create_all', 'edit_all', 'delete_all',
-                        'manage_users', 'manage_permissions', 'view_finances'
+                        
+                        // Account management
+                        'view_accounts', 'create_accounts', 'edit_accounts', 'delete_accounts',
+                        'manage_users', 'manage_permissions',
+                        
+                        // Client management
+                        'view_clients', 'create_clients', 'edit_clients', 'delete_clients',
+                        
+                        // Message management
+                        'view_messages', 'create_messages', 'edit_messages', 'delete_messages',
+                        'send_messages',
+                        
+                        // Financial management
+                        'view_finances', 'create_finances', 'edit_finances', 'delete_finances',
+                        
+                        // Invoice management
+                        'view_invoices', 'create_invoices', 'edit_invoices', 'delete_invoices',
+                        
+                        // Reports and analytics
+                        'view_reports', 'view_analytics', 'export_data'
                     ]);
                     break;
-                case 2: // User
+                    
+                case 2: // User - Basic access
                     $permissions = array_merge($permissions, [
-                        'view_own', 'create_basic', 'edit_own'
+                        'view_own', 'create_basic', 'edit_own',
+                        'view_clients', 'view_messages'
                     ]);
                     break;
-                case 3: // Agent
+                    
+                case 3: // Agent - Client and message focused
                     $permissions = array_merge($permissions, [
                         'view_clients', 'create_clients', 'edit_clients',
-                        'view_messages', 'send_messages'
+                        'view_messages', 'create_messages', 'send_messages',
+                        'view_own', 'edit_own'
                     ]);
                     break;
-                case 4: // Manager
+                    
+                case 4: // Manager - Team management and reports
                     $permissions = array_merge($permissions, [
-                        'view_team', 'manage_team', 'view_reports'
+                        'view_team', 'manage_team', 'view_reports',
+                        'view_clients', 'view_messages', 'view_finances',
+                        'view_accounts', 'view_analytics'
                     ]);
                     break;
             }
@@ -473,5 +517,86 @@ class Auth
             error_log("AUTH: Error extracting user from token: " . $e->getMessage());
             return null;
         }
+    }
+    
+    /**
+     * Fetch user profile data after successful authentication
+     */
+    private function fetchUserProfile()
+    {
+        try {
+            if (DEBUG_MODE) {
+                error_log("AUTH: Fetching user profile from /auth/profile");
+            }
+            
+            // Make authenticated request to get profile
+            $response = $this->apiClient->authenticatedRequest('GET', '/auth/profile');
+            
+            if (DEBUG_MODE) {
+                error_log("AUTH: Profile response: " . print_r($response, true));
+            }
+            
+            if ($response['success'] && isset($response['data'])) {
+                $profileData = $response['data'];
+                
+                // Extract the required fields: NAME, IDENTIFY_ID, IMG
+                $profile = [
+                    'name' => $profileData['name'] ?? null,
+                    'identify_id' => $profileData['identifyId'] ?? $profileData['identify_id'] ?? null,
+                    'img' => $profileData['img'] ?? $profileData['image'] ?? null,
+                ];
+                
+                // Store in session for quick access
+                $_SESSION['user_profile'] = $profile;
+                
+                if (DEBUG_MODE) {
+                    error_log("AUTH: Profile data extracted: " . print_r($profile, true));
+                }
+                
+                return [
+                    'success' => true,
+                    'profile' => $profile
+                ];
+            }
+            
+            return [
+                'success' => false,
+                'message' => $response['message'] ?? 'Falha ao buscar dados do perfil'
+            ];
+            
+        } catch (Exception $e) {
+            error_log("AUTH: Error fetching user profile: " . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Erro ao buscar dados do perfil: ' . $e->getMessage()
+            ];
+        }
+    }
+    
+    /**
+     * Get user name from profile
+     */
+    public function getUserName()
+    {
+        $user = $this->getUser();
+        return $user['name'] ?? null;
+    }
+    
+    /**
+     * Get user identify ID from profile
+     */
+    public function getUserIdentifyId()
+    {
+        $user = $this->getUser();
+        return $user['identify_id'] ?? null;
+    }
+    
+    /**
+     * Get user image from profile
+     */
+    public function getUserImage()
+    {
+        $user = $this->getUser();
+        return $user['img'] ?? null;
     }
 }

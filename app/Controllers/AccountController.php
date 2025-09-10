@@ -3,13 +3,25 @@
 namespace App\Controllers;
 
 use App\Core\Controller;
+use Exception;
 
 class AccountController extends Controller
 {
     public function index()
     {
-        if (!$this->auth->hasPermission('view_accounts')) {
-            $this->setFlash('errors', ['Sem permissão para acessar contas']);
+        // Debug information
+        if (DEBUG_MODE) {
+            $user = $this->auth->getUser();
+            $permissions = $this->auth->getPermissions();
+            error_log("ACCOUNTS: User data: " . print_r($user, true));
+            error_log("ACCOUNTS: User permissions: " . print_r($permissions, true));
+            error_log("ACCOUNTS: Has view_accounts permission: " . ($this->auth->hasPermission('view_accounts') ? 'YES' : 'NO'));
+            error_log("ACCOUNTS: Is admin: " . ($this->auth->isAdmin() ? 'YES' : 'NO'));
+        }
+        
+        // Check if user is admin OR has specific permission
+        if (!$this->auth->isAdmin() && !$this->auth->hasPermission('view_accounts')) {
+            $this->setFlash('errors', ['Sem permissão para acessar contas. Role atual: ' . implode(', ', $this->auth->getUser()['allRoleIds'] ?? [])]);
             $this->redirect('/dashboard');
         }
 
@@ -18,221 +30,409 @@ class AccountController extends Controller
         $status = $_GET['status'] ?? '';
         
         $params = [
-            'page' => $page,
-            'limit' => 15,
+            'page' => max(0, $page - 1), // Backend uses 0-based pagination
+            'size' => 15,
+            'sortBy' => 'createdAt',
+            'sortDirection' => 'DESC'
         ];
         
         if ($search) {
             $params['search'] = $search;
         }
-        
-        if ($status) {
-            $params['status'] = $status;
-        }
 
         try {
-            $response = $this->apiClient->authenticatedRequest('GET', '/backoffice/accounts', $params);
+            // Use the correct admin endpoint with pagination
+            $response = $this->apiClient->authenticatedRequest('GET', '/admins/paginated', $params);
+            
+            if (DEBUG_MODE) {
+                error_log("ACCOUNTS: API Response from /admins/paginated: " . print_r($response, true));
+            }
             
             if ($response['success'] ?? false) {
-                $accounts = $response['data']['accounts'] ?? [];
-                $pagination = $response['data']['pagination'] ?? [];
-                $stats = $response['data']['stats'] ?? [];
+                // The PaginatedResponse is returned directly in response['data']
+                $paginatedData = $response['data'] ?? [];
+                $accounts = $paginatedData['content'] ?? [];
+                $pagination = [
+                    'current_page' => ($paginatedData['pageNumber'] ?? 0) + 1,
+                    'total_pages' => $paginatedData['totalPages'] ?? 1,
+                    'total_elements' => $paginatedData['totalElements'] ?? 0,
+                    'size' => $paginatedData['pageSize'] ?? 10,
+                    'has_next' => $paginatedData['hasNext'] ?? false,
+                    'has_previous' => $paginatedData['hasPrevious'] ?? false
+                ];
+                
+                $stats = [
+                    'total_admins' => $pagination['total_elements'],
+                    'active_admins' => count(array_filter($accounts, fn($a) => ($a['state'] ?? '') === 'ACTIVE')),
+                    'inactive_admins' => count(array_filter($accounts, fn($a) => ($a['state'] ?? '') !== 'ACTIVE'))
+                ];
             } else {
                 $accounts = [];
-                $pagination = [];
-                $stats = [];
-                $this->setFlash('errors', ['Erro ao carregar contas: ' . ($response['message'] ?? 'Erro desconhecido')]);
+                $pagination = ['current_page' => 1, 'total_pages' => 1, 'total_elements' => 0, 'size' => 10];
+                $stats = ['total_admins' => 0, 'active_admins' => 0, 'inactive_admins' => 0];
+                $this->setFlash('errors', ['Erro ao carregar administradores: ' . ($response['message'] ?? 'Erro desconhecido')]);
             }
         } catch (Exception $e) {
             $accounts = [];
-            $pagination = [];
-            $stats = [];
+            $pagination = ['current_page' => 1, 'total_pages' => 1, 'total_elements' => 0, 'size' => 10];
+            $stats = ['total_admins' => 0, 'active_admins' => 0, 'inactive_admins' => 0];
             $this->setFlash('errors', ['Erro de conexão: ' . $e->getMessage()]);
         }
 
-        return $this->view('accounts/index', [
+        // Get auxiliary data for modals
+        $accountTypes = $this->getAccountTypes();
+        $states = $this->getStates();
+
+        $this->view('accounts/index', [
             'accounts' => $accounts,
             'pagination' => $pagination,
             'stats' => $stats,
             'search' => $search,
-            'status' => $status
+            'status' => $status,
+            'page' => $page,
+            'accountTypes' => $accountTypes,
+            'states' => $states
         ]);
     }
 
     public function create()
     {
-        if (!$this->auth->hasPermission('create_accounts')) {
-            $this->setFlash('errors', ['Sem permissão para criar contas']);
+        if (!$this->auth->isAdmin() && !$this->auth->hasPermission('create_accounts')) {
+            $this->setFlash('errors', ['Sem permissão para criar administradores']);
             $this->redirect('/accounts');
         }
 
-        try {
-            $response = $this->apiClient->authenticatedRequest('GET', '/backoffice/accounts/create-data');
-            $roles = $response['data']['roles'] ?? [];
-        } catch (Exception $e) {
-            $roles = [];
-            $this->setFlash('errors', ['Erro ao carregar dados: ' . $e->getMessage()]);
-        }
-
-        return $this->view('accounts/create', [
-            'roles' => $roles
+        // Get auxiliary data from real backend endpoints
+        $roles = $this->getRoles();
+        $accountTypes = $this->getAccountTypes();
+        $states = $this->getStates();
+        
+        $this->view('accounts/create', [
+            'roles' => $roles,
+            'accountTypes' => $accountTypes,
+            'states' => $states
         ]);
     }
 
     public function store()
     {
-        if (!$this->auth->hasPermission('create_accounts')) {
-            $this->setFlash('errors', ['Sem permissão para criar contas']);
-            $this->redirect('/accounts');
+        if (!$this->auth->isAdmin() && !$this->auth->hasPermission('create_accounts')) {
+            $this->json(['success' => false, 'message' => 'Sem permissão para criar administradores'], 403);
+            return;
         }
 
-        if (!$this->validateCsrf()) {
-            $this->setFlash('errors', ['Token de segurança inválido']);
-            $this->redirect('/accounts/create');
+        $data = $this->getRequestData();
+        
+        // Validate required fields based on AdminDto structure
+        $required = ['name', 'email', 'password', 'contact', 'accountTypeId'];
+        foreach ($required as $field) {
+            if (empty($data[$field])) {
+                $this->json(['success' => false, 'message' => "Campo {$field} é obrigatório"], 400);
+                return;
+            }
         }
-
-        $data = [
-            'email' => $_POST['email'] ?? '',
-            'password' => $_POST['password'] ?? '',
-            'name' => $_POST['name'] ?? '',
-            'role_id' => (int)($_POST['role_id'] ?? 0),
-            'is_active' => isset($_POST['is_active']) ? 1 : 0
-        ];
 
         try {
-            $response = $this->apiClient->authenticatedRequest('POST', '/backoffice/accounts', $data);
+            // Use the correct admin creation endpoint
+            $response = $this->apiClient->authenticatedRequest('POST', '/admins', [
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'password' => $data['password'],
+                'contact' => $data['contact'],
+                'accountTypeId' => (int)$data['accountTypeId'],
+                'stateId' => (int)($data['stateId'] ?? 1), // Default to ACTIVE
+                'img' => $data['img'] ?? null // Optional image path
+            ]);
+            
+            // Check if this is an AJAX request
+            $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
             
             if ($response['success'] ?? false) {
-                $this->setFlash('success', ['Conta criada com sucesso']);
-                $this->redirect('/accounts');
+                if ($isAjax) {
+                    $this->json(['success' => true, 'message' => 'Administrador criado com sucesso']);
+                } else {
+                    $this->setFlash('success', ['Administrador criado com sucesso']);
+                    $this->redirect('/accounts');
+                }
             } else {
-                $this->setFlash('errors', [$response['message'] ?? 'Erro ao criar conta']);
-                $this->redirect('/accounts/create');
+                if ($isAjax) {
+                    $this->json(['success' => false, 'message' => $response['message'] ?? 'Erro ao criar administrador', 'errors' => $response['errors'] ?? []], 400);
+                } else {
+                    $this->setFlash('errors', [$response['message'] ?? 'Erro ao criar administrador']);
+                    $this->redirect('/accounts/create');
+                }
             }
         } catch (Exception $e) {
-            $this->setFlash('errors', ['Erro de conexão: ' . $e->getMessage()]);
-            $this->redirect('/accounts/create');
+            $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
+            if ($isAjax) {
+                $this->json(['success' => false, 'message' => 'Erro de conexão: ' . $e->getMessage()], 500);
+            } else {
+                $this->setFlash('errors', ['Erro de conexão: ' . $e->getMessage()]);
+                $this->redirect('/accounts/create');
+            }
         }
     }
 
     public function show($id)
     {
-        if (!$this->auth->hasPermission('view_accounts')) {
-            $this->setFlash('errors', ['Sem permissão para visualizar conta']);
+        if (!$this->auth->isAdmin() && !$this->auth->hasPermission('view_accounts')) {
+            $this->setFlash('errors', ['Sem permissão para visualizar administradores']);
             $this->redirect('/accounts');
         }
 
         try {
-            $response = $this->apiClient->authenticatedRequest('GET', "/backoffice/accounts/{$id}");
+            $response = $this->apiClient->authenticatedRequest('GET', "/admins/{$id}");
             
             if ($response['success'] ?? false) {
                 $account = $response['data'] ?? [];
             } else {
-                $this->setFlash('errors', ['Conta não encontrada']);
+                $this->setFlash('errors', ['Administrador não encontrado']);
                 $this->redirect('/accounts');
+                return;
             }
         } catch (Exception $e) {
-            $this->setFlash('errors', ['Erro de conexão: ' . $e->getMessage()]);
+            $this->setFlash('errors', ['Erro ao carregar administrador']);
             $this->redirect('/accounts');
+            return;
         }
 
-        return $this->view('accounts/show', [
+        $this->view('accounts/show', [
             'account' => $account
         ]);
     }
 
     public function edit($id)
     {
-        if (!$this->auth->hasPermission('update_accounts')) {
-            $this->setFlash('errors', ['Sem permissão para editar conta']);
+        if (!$this->auth->isAdmin() && !$this->auth->hasPermission('edit_accounts')) {
+            $this->setFlash('errors', ['Sem permissão para editar administradores']);
             $this->redirect('/accounts');
         }
 
         try {
-            $accountResponse = $this->apiClient->authenticatedRequest('GET', "/backoffice/accounts/{$id}");
-            $rolesResponse = $this->apiClient->authenticatedRequest('GET', '/backoffice/accounts/create-data');
+            $accountResponse = $this->apiClient->authenticatedRequest('GET', "/admins/{$id}");
             
             if ($accountResponse['success'] ?? false) {
                 $account = $accountResponse['data'] ?? [];
-                $roles = $rolesResponse['data']['roles'] ?? [];
+                $roles = $this->getRoles();
+                $accountTypes = $this->getAccountTypes();
+                $states = $this->getStates();
             } else {
-                $this->setFlash('errors', ['Conta não encontrada']);
+                $this->setFlash('errors', ['Administrador não encontrado']);
                 $this->redirect('/accounts');
+                return;
             }
         } catch (Exception $e) {
-            $this->setFlash('errors', ['Erro de conexão: ' . $e->getMessage()]);
+            $this->setFlash('errors', ['Erro ao carregar dados']);
             $this->redirect('/accounts');
+            return;
         }
 
-        return $this->view('accounts/edit', [
+        $this->view('accounts/edit', [
             'account' => $account,
-            'roles' => $roles
+            'roles' => $roles,
+            'accountTypes' => $accountTypes,
+            'states' => $states
         ]);
     }
 
     public function update($id)
     {
-        if (!$this->auth->hasPermission('update_accounts')) {
-            $this->setFlash('errors', ['Sem permissão para editar conta']);
-            $this->redirect('/accounts');
+        if (!$this->auth->isAdmin() && !$this->auth->hasPermission('edit_accounts')) {
+            $this->json(['success' => false, 'message' => 'Sem permissão para editar administradores'], 403);
+            return;
         }
 
-        if (!$this->validateCsrf()) {
-            $this->setFlash('errors', ['Token de segurança inválido']);
-            $this->redirect("/accounts/{$id}/edit");
-        }
-
-        $data = [
-            'email' => $_POST['email'] ?? '',
-            'name' => $_POST['name'] ?? '',
-            'role_id' => (int)($_POST['role_id'] ?? 0),
-            'is_active' => isset($_POST['is_active']) ? 1 : 0
-        ];
-
-        if (!empty($_POST['password'])) {
-            $data['password'] = $_POST['password'];
-        }
-
+        $data = $this->getRequestData();
+        
         try {
-            $response = $this->apiClient->authenticatedRequest('PUT', "/backoffice/accounts/{$id}", $data);
-            
+            // Update admin using the correct endpoint
+            $response = $this->apiClient->authenticatedRequest('PUT', "/admins/{$id}", [
+                'name' => $data['name'] ?? null,
+                'email' => $data['email'] ?? null,
+                'accountTypeId' => isset($data['accountTypeId']) ? (int)$data['accountTypeId'] : null,
+                'stateId' => isset($data['stateId']) ? (int)$data['stateId'] : null,
+                'img' => $data['img'] ?? null
+            ]);
+
             if ($response['success'] ?? false) {
-                $this->setFlash('success', ['Conta atualizada com sucesso']);
+                $this->setFlash('success', ['Administrador atualizado com sucesso']);
                 $this->redirect('/accounts');
             } else {
-                $this->setFlash('errors', [$response['message'] ?? 'Erro ao atualizar conta']);
+                $this->setFlash('errors', ['Erro ao atualizar administrador: ' . ($response['message'] ?? 'Erro desconhecido')]);
                 $this->redirect("/accounts/{$id}/edit");
             }
         } catch (Exception $e) {
-            $this->setFlash('errors', ['Erro de conexão: ' . $e->getMessage()]);
+            $this->setFlash('errors', ['Erro ao atualizar administrador: ' . $e->getMessage()]);
             $this->redirect("/accounts/{$id}/edit");
         }
     }
 
     public function delete($id)
     {
-        if (!$this->auth->hasPermission('delete_accounts')) {
-            $this->setFlash('errors', ['Sem permissão para excluir conta']);
-            $this->redirect('/accounts');
-        }
-
-        if (!$this->validateCsrf()) {
-            $this->setFlash('errors', ['Token de segurança inválido']);
-            $this->redirect('/accounts');
+        if (!$this->auth->isAdmin() && !$this->auth->hasPermission('delete_accounts')) {
+            $this->json(['success' => false, 'message' => 'Sem permissão para excluir administradores'], 403);
+            return;
         }
 
         try {
-            $response = $this->apiClient->authenticatedRequest('DELETE', "/backoffice/accounts/{$id}");
+            // Use the correct admin deletion endpoint (soft delete)
+            $response = $this->apiClient->authenticatedRequest('DELETE', "/admins/{$id}");
             
             if ($response['success'] ?? false) {
-                $this->setFlash('success', ['Conta excluída com sucesso']);
+                $this->setFlash('success', ['Administrador eliminado com sucesso']);
             } else {
-                $this->setFlash('errors', [$response['message'] ?? 'Erro ao excluir conta']);
+                $this->setFlash('errors', [$response['message'] ?? 'Erro ao eliminar administrador']);
             }
         } catch (Exception $e) {
             $this->setFlash('errors', ['Erro de conexão: ' . $e->getMessage()]);
         }
 
         $this->redirect('/accounts');
+    }
+
+    // AJAX endpoints for status change
+    public function activate($id)
+    {
+        if (!$this->auth->isAdmin() && !$this->auth->hasPermission('edit_accounts')) {
+            $this->json(['success' => false, 'message' => 'Sem permissão'], 403);
+            return;
+        }
+
+        try {
+            // First, get the current admin data
+            $adminResponse = $this->apiClient->authenticatedRequest('GET', "/admins/{$id}");
+            
+            if (!($adminResponse['success'] ?? false)) {
+                $this->json(['success' => false, 'message' => 'Administrador não encontrado']);
+                return;
+            }
+            
+            $admin = $adminResponse['data'];
+            
+            // Update admin state to ACTIVE (stateId = 1) with complete data
+            // Note: Password and contact are not changed (backend will keep existing values)
+            $response = $this->apiClient->authenticatedRequest('PUT', "/admins/{$id}", [
+                'name' => $admin['name'],
+                'email' => $admin['email'],
+                'password' => '', // Empty string - backend will not change password
+                'contact' => '+244 000 000 000', // Placeholder contact - TODO: get real contact from auth
+                'accountTypeId' => 1, // ADMIN account type for back office
+                'stateId' => 1, // ACTIVE state
+                'img' => $admin['img']
+            ]);
+            $this->json($response);
+        } catch (Exception $e) {
+            $this->json(['success' => false, 'message' => 'Erro ao ativar administrador']);
+        }
+    }
+
+    public function deactivate($id)
+    {
+        if (!$this->auth->isAdmin() && !$this->auth->hasPermission('edit_accounts')) {
+            $this->json(['success' => false, 'message' => 'Sem permissão'], 403);
+            return;
+        }
+
+        try {
+            // First, get the current admin data
+            $adminResponse = $this->apiClient->authenticatedRequest('GET', "/admins/{$id}");
+            
+            if (!($adminResponse['success'] ?? false)) {
+                $this->json(['success' => false, 'message' => 'Administrador não encontrado']);
+                return;
+            }
+            
+            $admin = $adminResponse['data'];
+            
+            // Update admin state to INACTIVE (stateId = 2) with complete data
+            // Note: Password and contact are not changed (backend will keep existing values)
+            $response = $this->apiClient->authenticatedRequest('PUT', "/admins/{$id}", [
+                'name' => $admin['name'],
+                'email' => $admin['email'],
+                'password' => '', // Empty string - backend will not change password
+                'contact' => '+244 000 000 000', // Placeholder contact - TODO: get real contact from auth
+                'accountTypeId' => 1, // ADMIN account type for back office
+                'stateId' => 2, // INACTIVE state
+                'img' => $admin['img']
+            ]);
+            $this->json($response);
+        } catch (Exception $e) {
+            $this->json(['success' => false, 'message' => 'Erro ao desativar administrador']);
+        }
+    }
+
+    // Helper methods to get auxiliary data from real backend endpoints
+    private function getRoles()
+    {
+        try {
+            $response = $this->apiClient->authenticatedRequest('GET', '/roles');
+            
+            if ($response['success'] ?? false) {
+                return $response['data'] ?? [];
+            }
+            
+            // Fallback to default roles if endpoint fails
+            return [
+                ['id' => 1, 'role' => 'ADMIN', 'description' => 'Administrator'],
+                ['id' => 2, 'role' => 'USER', 'description' => 'Regular User'],
+                ['id' => 3, 'role' => 'AGENT', 'description' => 'Agent'],
+                ['id' => 4, 'role' => 'MANAGER', 'description' => 'Manager']
+            ];
+        } catch (Exception $e) {
+            return [
+                ['id' => 1, 'role' => 'ADMIN', 'description' => 'Administrator'],
+                ['id' => 2, 'role' => 'USER', 'description' => 'Regular User'],
+                ['id' => 3, 'role' => 'AGENT', 'description' => 'Agent'],
+                ['id' => 4, 'role' => 'MANAGER', 'description' => 'Manager']
+            ];
+        }
+    }
+
+    private function getAccountTypes()
+    {
+        try {
+            $response = $this->apiClient->authenticatedRequest('GET', '/account-types');
+            
+            if ($response['success'] ?? false) {
+                return $response['data'] ?? [];
+            }
+            
+            // Fallback to default account types
+            return [
+                ['id' => 1, 'type' => 'INDIVIDUAL', 'description' => 'Back Office Individual'],
+                ['id' => 2, 'type' => 'CORPORATE', 'description' => 'Corporate Account']
+            ];
+        } catch (Exception $e) {
+            return [
+                ['id' => 1, 'type' => 'INDIVIDUAL', 'description' => 'Back Office Individual'],
+                ['id' => 2, 'type' => 'CORPORATE', 'description' => 'Corporate Account']
+            ];
+        }
+    }
+
+    private function getStates()
+    {
+        try {
+            $response = $this->apiClient->authenticatedRequest('GET', '/states');
+            
+            if ($response['success'] ?? false) {
+                return $response['data'] ?? [];
+            }
+            
+            // Fallback to default states
+            return [
+                ['id' => 1, 'state' => 'ACTIVE', 'description' => 'Active'],
+                ['id' => 2, 'state' => 'INACTIVE', 'description' => 'Inactive'],
+                ['id' => 3, 'state' => 'PENDING', 'description' => 'Pending'],
+                ['id' => 4, 'state' => 'ELIMINATED', 'description' => 'Eliminated']
+            ];
+        } catch (Exception $e) {
+            return [
+                ['id' => 1, 'state' => 'ACTIVE', 'description' => 'Active'],
+                ['id' => 2, 'state' => 'INACTIVE', 'description' => 'Inactive'],
+                ['id' => 3, 'state' => 'PENDING', 'description' => 'Pending'],
+                ['id' => 4, 'state' => 'ELIMINATED', 'description' => 'Eliminated']
+            ];
+        }
     }
 }

@@ -319,3 +319,97 @@ function getCurrentRoute()
     
     return $currentUri;
 }
+
+/**
+ * Get authenticated user data
+ */
+function auth()
+{
+    static $authInstance = null;
+    
+    if ($authInstance === null) {
+        $authInstance = new \App\Core\Auth();
+    }
+    
+    return $authInstance;
+}
+
+/**
+ * Get current authenticated user
+ */
+function user()
+{
+    return auth()->getUser();
+}
+
+/**
+ * Get current user's name
+ */
+function userName()
+{
+    return auth()->getUserName();
+}
+
+/**
+ * Get current user's identify ID
+ */
+function userIdentifyId()
+{
+    return auth()->getUserIdentifyId();
+}
+
+/**
+ * Get current user's image
+ */
+function userImage()
+{
+    return auth()->getUserImage();
+}
+
+/**
+ * Get user display name (name or email fallback)
+ */
+function userDisplayName()
+{
+    $user = user();
+    if (!$user) return null;
+    
+    return $user['name'] ?? $user['username'] ?? $user['email'] ?? 'Usuário';
+}
+
+/**
+ * Get user avatar URL (image or default)
+ */
+function userAvatar()
+{
+    $image = userImage();
+    
+    if ($image) {
+        // If it's a full URL, return as is
+        if (filter_var($image, FILTER_VALIDATE_URL)) {
+            return $image;
+        }
+        
+        // If it's a relative path, construct full URL
+        return asset('uploads/avatars/' . $image);
+    }
+    
+    // Return default avatar
+    return asset('images/default-avatar.png');
+}
+
+/**
+ * Check if user is authenticated
+ */
+function isAuthenticated()
+{
+    return auth()->isAuthenticated();
+}
+
+/**
+ * Check if user is admin
+ */
+function isAdmin()
+{
+    return auth()->isAdmin();
+}

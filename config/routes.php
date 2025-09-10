@@ -32,7 +32,7 @@ $router->get('/dashboard', 'DashboardController@index');
 $router->get('/profile', 'UserController@profile');
 $router->get('/settings', 'UserController@settings');
 
-// Accounts & Permissions
+// Accounts & Permissions (Admin Management)
 $router->get('/accounts', 'AccountController@index');
 $router->get('/accounts/create', 'AccountController@create');
 $router->post('/accounts', 'AccountController@store');
@@ -41,12 +41,9 @@ $router->get('/accounts/{id}/edit', 'AccountController@edit');
 $router->put('/accounts/{id}', 'AccountController@update');
 $router->delete('/accounts/{id}', 'AccountController@delete');
 
-$router->get('/accounts/permission', 'PermissionController@index');
-$router->get('/accounts/permission/create', 'PermissionController@create');
-$router->post('/accounts/permission', 'PermissionController@store');
-$router->get('/accounts/permission/{id}/edit', 'PermissionController@edit');
-$router->put('/accounts/permission/{id}', 'PermissionController@update');
-$router->delete('/accounts/permission/{id}', 'PermissionController@delete');
+// AJAX endpoints for accounts
+$router->post('/api/accounts/{id}/activate', 'AccountController@activate');
+$router->post('/api/accounts/{id}/deactivate', 'AccountController@deactivate');
 
 // Clients routes
 $router->get('/clients', 'ClientController@index');

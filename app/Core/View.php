@@ -120,8 +120,7 @@ class View
             ['to' => '/dashboard', 'label' => 'Dashboard', 'icon' => 'tachometer-alt'],
 
             ['group' => 'Param. & Estatística'],
-            ['to' => '/accounts', 'label' => 'Contas & Permissões', 'icon' => 'users-cog'],
-            ['to' => '/accounts/permission', 'label' => 'Gestão de Permissões', 'icon' => 'shield-alt'],
+            ['to' => '/accounts', 'label' => 'Administradores', 'icon' => 'users-cog'],
 
             ['group' => 'Estatísticas Gerais'],
             [
