@@ -164,7 +164,8 @@
                         <?php endforeach; ?>
                     </tbody>
                 </table>
-            </div>
-        <?php endif; ?>
+            <?php endif; ?>
+        </div>
     </div>
-</div>
+
+</div> <!-- End global-main-container -->

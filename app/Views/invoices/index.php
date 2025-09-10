@@ -256,51 +256,33 @@
                         <?php endforeach; ?>
                     </tbody>
                 </table>
-            </div>
 
-            <!-- Pagination -->
-            <?php if (!empty($pagination)): ?>
-                <div class="card-footer">
-                    <?= renderPagination($pagination, url('/invoices')) ?>
+                <!-- Pagination -->
+                <?php if (!empty($pagination)): ?>
+                    <div class="card-footer">
+                        <?= renderPagination($pagination, url('/invoices')) ?>
+                    </div>
+                <?php endif; ?>
+            <?php else: ?>
+                <div class="text-center py-5">
+                    <i class="fas fa-file-invoice-dollar fa-3x text-muted mb-3"></i>
+                    <h5>Nenhum documento encontrado</h5>
+                    <p class="text-muted">Não há documentos que correspondam aos critérios de pesquisa.</p>
+                    <button class="global-btn-add-primary" onclick="createNewDocument()">
+                        <div class="global-btn-icon">
+                            <i class="fas fa-plus"></i>
+                        </div>
+                        <div class="global-btn-content">
+                            <div class="global-btn-title">Criar Primeiro Documento</div>
+                        </div>
+                    </button>
                 </div>
             <?php endif; ?>
-        <?php else: ?>
-            <div class="text-center py-5">
-                <i class="fas fa-file-invoice-dollar fa-3x text-muted mb-3"></i>
-                <h5>Nenhum documento encontrado</h5>
-                <p class="text-muted">Não há documentos que correspondam aos critérios de pesquisa.</p>
-                <button class="btn btn-primary">
-                    <i class="fas fa-plus me-2"></i>
-                    Criar Primeiro Documento
-                </button>
-            </div>
-        <?php endif; ?>
-    </div>
-</div>
-
-<!-- Delete Confirmation Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Confirmar Exclusão</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <p>Tem certeza que deseja excluir este documento?</p>
-                <p class="text-danger small">Esta ação não pode ser desfeita.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <form id="deleteForm" method="POST" style="display: inline;">
-                    <?= csrfField() ?>
-                    <?= methodField('DELETE') ?>
-                    <button type="submit" class="btn btn-danger">Excluir</button>
-                </form>
-            </div>
         </div>
     </div>
-</div>
+
+</div> <!-- End global-main-container -->
+
 
 <style>
 .stat-card {

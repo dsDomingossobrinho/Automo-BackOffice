@@ -404,7 +404,7 @@
 </style>
 
 <script>
-// Placeholder for chart initialization
+// Finance dashboard functionality
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Finance dashboard loaded');
     
@@ -431,4 +431,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+// Export functionality
+function exportFinanceData() {
+    // Implementation for exporting finance data
+    console.log('Exporting finance data...');
+    alert('Funcionalidade de exportação será implementada em breve.');
+}
 </script>

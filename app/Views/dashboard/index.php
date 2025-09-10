@@ -1,4 +1,4 @@
-<div class="page-container">
+<div class="global-main-container">
     <?php if (isset($api_error) && $api_error): ?>
     <div class="alert alert-warning d-flex align-items-center mb-4" role="alert">
         <i class="fas fa-exclamation-triangle me-2"></i>
@@ -830,4 +830,4 @@ body {
 }
 </style>
 
-</div> <!-- End page-container -->
+</div> <!-- End global-main-container -->

@@ -1,221 +1,168 @@
-<!-- Modern Clients Management Page -->
-<div class="page-header-section mb-4">
-    <div class="d-flex align-items-center justify-content-between">
-        <div class="page-title-group">
-            <h1 class="page-title">
-                <i class="fas fa-users me-3 text-primary"></i>
-                Clientes Registados
-            </h1>
-            <p class="page-subtitle text-muted">Gerencie todos os clientes registados no sistema</p>
-        </div>
-        <div class="page-actions">
-            <button class="btn btn-outline-secondary me-2" data-bs-toggle="tooltip" title="Exportar dados">
-                <i class="fas fa-download me-2"></i>Exportar
-            </button>
-            <a href="<?= url('/clients/create') ?>" class="btn btn-primary">
-                <i class="fas fa-plus me-2"></i>Novo Cliente
-            </a>
-        </div>
-    </div>
-</div>
-
-<!-- Search and Filters Section -->
-<div class="search-filters-card mb-4">
-    <div class="card border-0 shadow-sm">
-        <div class="card-body p-4">
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <div class="search-group">
-                        <label for="searchInput" class="form-label small fw-semibold">Pesquisar Clientes</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0">
-                                <i class="fas fa-search text-muted"></i>
-                            </span>
-                            <input type="text" 
-                                   id="searchInput" 
-                                   class="form-control border-start-0 ps-0" 
-                                   placeholder="Nome, email ou contacto..."
-                                   value="<?= e($_GET['search'] ?? '') ?>">
-                        </div>
+<div class="global-main-container">
+    <!-- Enhanced Page Header -->
+    <div class="global-page-header">
+        <div class="global-header-content">
+            <div class="global-header-left">
+                <h2><i class="fas fa-users me-2"></i>Gestão de Clientes</h2>
+                <p>Gerencie e monitore todos os clientes registados no sistema automotivo</p>
+            </div>
+            <div class="global-header-actions">
+                <div class="global-stats-card">
+                    <div class="global-stats-icon"><i class="fas fa-users"></i></div>
+                    <div class="global-stats-content">
+                        <div class="global-stats-number"><?= count($clients ?? []) ?></div>
+                        <div class="global-stats-label">Cliente<?= count($clients ?? []) !== 1 ? 's' : '' ?></div>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <div class="filter-group">
-                        <label for="statusFilter" class="form-label small fw-semibold">Estado</label>
-                        <select id="statusFilter" class="form-select">
-                            <option value="">Todos os estados</option>
-                            <option value="active" <?= ($_GET['status'] ?? '') === 'active' ? 'selected' : '' ?>>Ativos</option>
-                            <option value="inactive" <?= ($_GET['status'] ?? '') === 'inactive' ? 'selected' : '' ?>>Inativos</option>
-                            <option value="pending" <?= ($_GET['status'] ?? '') === 'pending' ? 'selected' : '' ?>>Pendentes</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="filter-group">
-                        <label for="sortFilter" class="form-label small fw-semibold">Ordenar por</label>
-                        <select id="sortFilter" class="form-select">
-                            <option value="name" <?= ($_GET['sort'] ?? '') === 'name' ? 'selected' : '' ?>>Nome</option>
-                            <option value="created" <?= ($_GET['sort'] ?? '') === 'created' ? 'selected' : '' ?>>Data de Registo</option>
-                            <option value="updated" <?= ($_GET['sort'] ?? '') === 'updated' ? 'selected' : '' ?>>Última Atualização</option>
-                        </select>
+                <div class="global-quick-actions">
+                    <div class="global-action-group">
+                        <a href="<?= url('/clients/create') ?>" class="global-btn-add-primary">
+                            <div class="global-btn-icon"><i class="fas fa-plus"></i></div>
+                            <div class="global-btn-content">
+                                <div class="global-btn-title">Novo Cliente</div>
+                                <div class="global-btn-subtitle">Registar novo cliente</div>
+                            </div>
+                        </a>
                     </div>
                 </div>
             </div>
-            <div class="mt-3 d-flex gap-2">
-                <button type="button" class="btn btn-outline-primary btn-sm" onclick="applyFilters()">
-                    <i class="fas fa-filter me-1"></i>Aplicar Filtros
-                </button>
-                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="clearFilters()">
-                    <i class="fas fa-times me-1"></i>Limpar
-                </button>
-            </div>
         </div>
     </div>
-</div>
 
-<!-- Data Table Section -->
-<div class="data-table-card">
-    <div class="card border-0 shadow-sm">
-        <div class="card-header bg-white border-bottom-0 pt-4 px-4 pb-0">
-            <div class="d-flex align-items-center justify-content-between">
-                <div class="d-flex align-items-center">
-                    <h5 class="card-title mb-0">Lista de Clientes</h5>
-                    <span class="badge bg-light text-dark ms-2"><?= count($clients) ?> registos</span>
+    <!-- Enhanced Search Section -->
+    <div class="global-search-section">
+        <div class="global-search-header">
+            <h5 class="global-search-title">
+                <i class="fas fa-filter me-2"></i>Filtros de Pesquisa
+            </h5>
+            <p class="global-search-subtitle">Use os filtros abaixo para encontrar clientes específicos</p>
+        </div>
+        
+        <form method="GET" action="<?= url('/clients') ?>" class="global-search-form">
+            <div class="global-search-row">
+                <div class="global-form-group">
+                    <label for="search" class="global-form-label">
+                        <i class="fas fa-search me-1"></i>Pesquisar
+                    </label>
+                    <input type="text" 
+                           id="search" 
+                           name="search" 
+                           class="global-form-control" 
+                           placeholder="Nome, email ou contacto..."
+                           value="<?= e($_GET['search'] ?? '') ?>">
                 </div>
-                <div class="table-actions">
-                    <button class="btn btn-outline-secondary btn-sm me-2" onclick="toggleSelectAll()">
-                        <i class="fas fa-check-square me-1"></i>Selecionar Todos
+                <div class="global-form-group">
+                    <label for="status" class="global-form-label">
+                        <i class="fas fa-toggle-on me-1"></i>Estado
+                    </label>
+                    <select id="status" name="status" class="global-form-control">
+                        <option value="">Todos os estados</option>
+                        <option value="active" <?= ($_GET['status'] ?? '') === 'active' ? 'selected' : '' ?>>Ativos</option>
+                        <option value="inactive" <?= ($_GET['status'] ?? '') === 'inactive' ? 'selected' : '' ?>>Inativos</option>
+                        <option value="pending" <?= ($_GET['status'] ?? '') === 'pending' ? 'selected' : '' ?>>Pendentes</option>
+                    </select>
+                    </div>
+                </div>
+                <div class="global-form-group">
+                    <label for="sort" class="global-form-label">
+                        <i class="fas fa-sort me-1"></i>Ordenar por
+                    </label>
+                    <select id="sort" name="sort" class="global-form-control">
+                        <option value="name" <?= ($_GET['sort'] ?? '') === 'name' ? 'selected' : '' ?>>Nome</option>
+                        <option value="created" <?= ($_GET['sort'] ?? '') === 'created' ? 'selected' : '' ?>>Data de Registo</option>
+                        <option value="updated" <?= ($_GET['sort'] ?? '') === 'updated' ? 'selected' : '' ?>>Última Atualização</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="global-search-actions">
+                <div class="global-search-actions-main">
+                    <button type="submit" class="global-btn-search">
+                        <i class="fas fa-search me-1"></i>Pesquisar
                     </button>
-                    <div class="dropdown">
-                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-ellipsis-h me-1"></i>Ações
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#" onclick="bulkAction('activate')">
-                                <i class="fas fa-check-circle text-success me-2"></i>Ativar Selecionados
-                            </a></li>
-                            <li><a class="dropdown-item" href="#" onclick="bulkAction('deactivate')">
-                                <i class="fas fa-ban text-warning me-2"></i>Desativar Selecionados
-                            </a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#" onclick="bulkAction('delete')">
-                                <i class="fas fa-trash text-danger me-2"></i>Remover Selecionados
-                            </a></li>
-                        </ul>
-                    </div>
+                </div>
+                <div class="global-clear-filter-container <?= (!empty($_GET['search']) || !empty($_GET['status'])) ? 'active' : 'inactive' ?>">
+                    <a href="<?= url('/clients') ?>" class="global-btn-clear-filters">
+                        <i class="fas fa-times"></i>
+                        <span>Limpar Filtros</span>
+                    </a>
                 </div>
             </div>
+        </form>
+    </div>
+
+    <!-- Enhanced Data Table -->
+    <div class="global-data-table-container">
+        <div class="global-table-header">
+            <h5 class="global-table-title">
+                <i class="fas fa-table me-2"></i>Lista de Clientes
+            </h5>
         </div>
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0" id="clientsTable">
-                    <thead class="table-light">
-                        <tr>
-                            <th width="40">
-                                <input type="checkbox" class="form-check-input" id="selectAll">
-                            </th>
-                            <th class="sortable" data-sort="name">
-                                <i class="fas fa-user me-2 text-muted"></i>Nome
-                                <i class="fas fa-sort ms-1 text-muted"></i>
-                            </th>
-                            <th class="sortable" data-sort="email">
-                                <i class="fas fa-envelope me-2 text-muted"></i>Email
-                                <i class="fas fa-sort ms-1 text-muted"></i>
-                            </th>
-                            <th class="sortable" data-sort="phone">
-                                <i class="fas fa-phone me-2 text-muted"></i>Contacto
-                                <i class="fas fa-sort ms-1 text-muted"></i>
-                            </th>
-                            <th class="sortable" data-sort="status">
-                                <i class="fas fa-circle me-2 text-muted"></i>Estado
-                                <i class="fas fa-sort ms-1 text-muted"></i>
-                            </th>
-                            <th class="sortable" data-sort="created">
-                                <i class="fas fa-calendar me-2 text-muted"></i>Registado
-                                <i class="fas fa-sort ms-1 text-muted"></i>
-                            </th>
+        <div class="global-table-responsive">
+            <table class="global-table" id="clientsTable">
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-user me-1"></i>Nome</th>
+                        <th><i class="fas fa-envelope me-1"></i>Email</th>
+                        <th class="d-none d-md-table-cell"><i class="fas fa-phone me-1"></i>Contacto</th>
+                        <th><i class="fas fa-circle me-1"></i>Estado</th>
+                        <th class="d-none d-lg-table-cell"><i class="fas fa-calendar me-1"></i>Registado</th>
+                        <th>Ações</th>
+                    </tr>
                             <th width="120" class="text-center">Ações</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php if (empty($clients)): ?>
                             <tr>
-                                <td colspan="7" class="text-center py-5">
-                                    <div class="empty-state">
-                                        <div class="empty-icon mb-3">
-                                            <i class="fas fa-users fa-3x text-muted"></i>
-                                        </div>
-                                        <h6 class="empty-title">Nenhum cliente encontrado</h6>
-                                        <p class="empty-text text-muted">Comece adicionando o primeiro cliente ao sistema</p>
-                                        <a href="<?= url('/clients/create') ?>" class="btn btn-primary mt-2">
-                                            <i class="fas fa-plus me-2"></i>Adicionar Cliente
+                                <td colspan="6" style="text-align: center; padding: 3rem;">
+                                    <div style="color: var(--text-muted);">
+                                        <i class="fas fa-users" style="font-size: 3rem; margin-bottom: 1rem; display: block;"></i>
+                                        <h6>Nenhum cliente encontrado</h6>
+                                        <p>Comece adicionando o primeiro cliente ao sistema</p>
+                                        <a href="<?= url('/clients/create') ?>" class="global-btn-add-primary" style="margin-top: 1rem; display: inline-flex;">
+                                            <div class="global-btn-icon"><i class="fas fa-plus"></i></div>
+                                            <div class="global-btn-content">
+                                                <div class="global-btn-title">Adicionar Cliente</div>
+                                            </div>
                                         </a>
                                     </div>
                                 </td>
                             </tr>
                         <?php else: ?>
                             <?php foreach ($clients as $client): ?>
-                                <tr class="client-row" data-client-id="<?= $client['id'] ?>">
+                                <tr>
                                     <td>
-                                        <input type="checkbox" class="form-check-input client-checkbox" value="<?= $client['id'] ?>">
-                                    </td>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <div class="client-avatar me-3">
-                                                <?= strtoupper(substr($client['name'] ?? 'C', 0, 1)) ?>
-                                            </div>
-                                            <div>
-                                                <div class="fw-semibold"><?= e($client['name'] ?? 'N/A') ?></div>
-                                                <small class="text-muted">ID: <?= $client['id'] ?></small>
-                                            </div>
+                                        <div style="font-weight: 600; color: var(--text-primary);">
+                                            <?= e($client['name'] ?? 'N/A') ?>
                                         </div>
+                                        <small style="color: var(--text-muted);">ID: <?= $client['id'] ?></small>
                                     </td>
+                                    <td><?= e($client['email'] ?? 'N/A') ?></td>
+                                    <td class="d-none d-md-table-cell"><?= e($client['phone'] ?? 'N/A') ?></td>
                                     <td>
-                                        <div class="email-cell">
-                                            <?= e($client['email'] ?? 'N/A') ?>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="phone-cell">
-                                            <i class="fas fa-phone me-2 text-muted"></i>
-                                            <?= e($client['phone'] ?? 'N/A') ?>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span class="status-badge status-<?= strtolower($client['status'] ?? 'inactive') ?>">
+                                        <span class="global-status-badge <?= strtolower($client['status'] ?? 'inactive') ?>">
                                             <i class="fas fa-circle me-1"></i>
                                             <?= ucfirst($client['status'] ?? 'Inativo') ?>
                                         </span>
                                     </td>
-                                    <td>
-                                        <div class="date-cell">
-                                            <?= date('d/m/Y', strtotime($client['createdAt'] ?? 'now')) ?>
-                                            <small class="d-block text-muted">
-                                                <?= date('H:i', strtotime($client['createdAt'] ?? 'now')) ?>
-                                            </small>
-                                        </div>
+                                    <td class="d-none d-lg-table-cell">
+                                        <?= date('d/m/Y', strtotime($client['createdAt'] ?? 'now')) ?>
                                     </td>
                                     <td>
-                                        <div class="action-buttons text-center">
-                                            <div class="btn-group" role="group">
-                                                <a href="<?= url('/clients/' . $client['id']) ?>" 
-                                                   class="btn btn-outline-primary btn-sm" 
-                                                   data-bs-toggle="tooltip" 
-                                                   title="Ver detalhes">
+                                        <div class="global-action-buttons-container">
+                                            <div class="global-action-buttons-group">
+                                                <a href="<?= url('/clients/' . $client['id']) ?>" class="global-btn-action-table">
                                                     <i class="fas fa-eye"></i>
+                                                    <span class="btn-text">Ver</span>
                                                 </a>
-                                                <a href="<?= url('/clients/' . $client['id'] . '/edit') ?>" 
-                                                   class="btn btn-outline-secondary btn-sm" 
-                                                   data-bs-toggle="tooltip" 
-                                                   title="Editar">
+                                                <a href="<?= url('/clients/' . $client['id'] . '/edit') ?>" class="global-btn-action-table">
                                                     <i class="fas fa-edit"></i>
+                                                    <span class="btn-text">Editar</span>
                                                 </a>
-                                                <button type="button" 
-                                                        class="btn btn-outline-danger btn-sm" 
-                                                        onclick="confirmDelete(<?= $client['id'] ?>)"
-                                                        data-bs-toggle="tooltip" 
-                                                        title="Remover">
+                                                <button type="button" class="global-btn-action-table" onclick="confirmDelete(<?= $client['id'] ?>)">
                                                     <i class="fas fa-trash"></i>
+                                                    <span class="btn-text">Remover</span>
                                                 </button>
                                             </div>
                                         </div>
@@ -227,40 +174,9 @@
                 </table>
             </div>
         </div>
-        
-        <!-- Pagination -->
-        <?php if (!empty($clients) && count($clients) > 0): ?>
-        <div class="card-footer bg-white border-top">
-            <div class="d-flex align-items-center justify-content-between">
-                <div class="pagination-info">
-                    <small class="text-muted">
-                        Mostrando <strong><?= count($clients) ?></strong> de <strong><?= $total_clients ?? count($clients) ?></strong> registos
-                    </small>
-                </div>
-                <nav aria-label="Paginação de clientes">
-                    <ul class="pagination pagination-sm mb-0">
-                        <li class="page-item <?= ($current_page ?? 1) <= 1 ? 'disabled' : '' ?>">
-                            <a class="page-link" href="?page=<?= ($current_page ?? 1) - 1 ?>">
-                                <i class="fas fa-chevron-left"></i>
-                            </a>
-                        </li>
-                        <?php for ($i = 1; $i <= ($total_pages ?? 1); $i++): ?>
-                            <li class="page-item <?= ($current_page ?? 1) === $i ? 'active' : '' ?>">
-                                <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
-                            </li>
-                        <?php endfor; ?>
-                        <li class="page-item <?= ($current_page ?? 1) >= ($total_pages ?? 1) ? 'disabled' : '' ?>">
-                            <a class="page-link" href="?page=<?= ($current_page ?? 1) + 1 ?>">
-                                <i class="fas fa-chevron-right"></i>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
-        </div>
-        <?php endif; ?>
     </div>
-</div>
+
+</div> <!-- End global-main-container -->
 
 <!-- Delete Confirmation Modal -->
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
