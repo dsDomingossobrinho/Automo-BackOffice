@@ -42,6 +42,7 @@ $router->put('/accounts/{id}', 'AccountController@update');
 $router->delete('/accounts/{id}', 'AccountController@delete');
 
 // AJAX endpoints for accounts
+$router->get('/api/accounts/search', 'AccountController@ajaxSearch');
 $router->post('/api/accounts/{id}/activate', 'AccountController@activate');
 $router->post('/api/accounts/{id}/deactivate', 'AccountController@deactivate');
 

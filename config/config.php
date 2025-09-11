@@ -73,6 +73,9 @@ if (session_status() === PHP_SESSION_NONE) {
     ini_set('session.cookie_secure', isset($_SERVER['HTTPS']) ? '1' : '0');
     ini_set('session.use_strict_mode', 1);
     ini_set('session.name', 'automo_backoffice_session');
+    
+    // Start session with proper configuration
+    session_start();
 }
 
 // Environment settings

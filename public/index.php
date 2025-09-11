@@ -4,8 +4,6 @@
  * Entry Point - Front Controller Pattern
  */
 
-session_start();
-
 // Define constants
 define('ROOT_PATH', dirname(__DIR__));
 define('APP_PATH', ROOT_PATH . '/app');
@@ -18,8 +16,10 @@ require_once ROOT_PATH . '/config/autoload.php';
 // Load environment variables
 require_once CONFIG_PATH . '/env.php';
 
-// Load configuration
+// Load configuration (this will start the session with proper config)
 require_once CONFIG_PATH . '/config.php';
+
+// Session is started by config.php with proper settings
 
 // Load helpers
 require_once HELPERS_PATH . '/functions.php';

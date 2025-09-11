@@ -89,6 +89,12 @@ class ApiClient
     {
         $ch = curl_init();
         
+        // Handle GET parameters as query string
+        if ($data && $method === 'GET') {
+            $queryString = http_build_query($data);
+            $url .= (strpos($url, '?') !== false ? '&' : '?') . $queryString;
+        }
+        
         // Basic cURL options
         curl_setopt_array($ch, [
             CURLOPT_URL => $url,

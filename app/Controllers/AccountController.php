@@ -29,6 +29,10 @@ class AccountController extends Controller
         $search = $_GET['search'] ?? '';
         $status = $_GET['status'] ?? '';
         
+        if (DEBUG_MODE) {
+            error_log("ACCOUNTS: Received parameters - page: $page, search: '$search', status: '$status'");
+        }
+        
         $params = [
             'page' => max(0, $page - 1), // Backend uses 0-based pagination
             'size' => 15,
@@ -38,6 +42,28 @@ class AccountController extends Controller
         
         if ($search) {
             $params['search'] = $search;
+            if (DEBUG_MODE) {
+                error_log("ACCOUNTS: Added search parameter: '$search'");
+            }
+        }
+        
+        if ($status) {
+            // Map frontend status to backend format
+            if ($status === 'active') {
+                $params['stateId'] = 1; // ACTIVE state
+                if (DEBUG_MODE) {
+                    error_log("ACCOUNTS: Mapped 'active' status to stateId: 1");
+                }
+            } elseif ($status === 'inactive') {
+                $params['stateId'] = 2; // INACTIVE state  
+                if (DEBUG_MODE) {
+                    error_log("ACCOUNTS: Mapped 'inactive' status to stateId: 2");
+                }
+            }
+        }
+        
+        if (DEBUG_MODE) {
+            error_log("ACCOUNTS: Final API parameters: " . print_r($params, true));
         }
 
         try {
@@ -176,8 +202,16 @@ class AccountController extends Controller
     public function show($id)
     {
         if (!$this->auth->isAdmin() && !$this->auth->hasPermission('view_accounts')) {
-            $this->setFlash('errors', ['Sem permissão para visualizar administradores']);
-            $this->redirect('/accounts');
+            // Check if this is an AJAX request
+            $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
+            
+            if ($isAjax) {
+                $this->json(['success' => false, 'message' => 'Sem permissão para visualizar administradores'], 403);
+                return;
+            } else {
+                $this->setFlash('errors', ['Sem permissão para visualizar administradores']);
+                $this->redirect('/accounts');
+            }
         }
 
         try {
@@ -185,15 +219,40 @@ class AccountController extends Controller
             
             if ($response['success'] ?? false) {
                 $account = $response['data'] ?? [];
+                
+                // Check if this is an AJAX request
+                $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
+                
+                if ($isAjax) {
+                    // Return JSON data for modal
+                    $this->json(['success' => true, 'data' => $account]);
+                    return;
+                }
             } else {
-                $this->setFlash('errors', ['Administrador não encontrado']);
+                // Check if this is an AJAX request
+                $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
+                
+                if ($isAjax) {
+                    $this->json(['success' => false, 'message' => 'Administrador não encontrado'], 404);
+                    return;
+                } else {
+                    $this->setFlash('errors', ['Administrador não encontrado']);
+                    $this->redirect('/accounts');
+                    return;
+                }
+            }
+        } catch (Exception $e) {
+            // Check if this is an AJAX request
+            $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
+            
+            if ($isAjax) {
+                $this->json(['success' => false, 'message' => 'Erro ao carregar administrador'], 500);
+                return;
+            } else {
+                $this->setFlash('errors', ['Erro ao carregar administrador']);
                 $this->redirect('/accounts');
                 return;
             }
-        } catch (Exception $e) {
-            $this->setFlash('errors', ['Erro ao carregar administrador']);
-            $this->redirect('/accounts');
-            return;
         }
 
         $this->view('accounts/show', [
@@ -204,8 +263,16 @@ class AccountController extends Controller
     public function edit($id)
     {
         if (!$this->auth->isAdmin() && !$this->auth->hasPermission('edit_accounts')) {
-            $this->setFlash('errors', ['Sem permissão para editar administradores']);
-            $this->redirect('/accounts');
+            // Check if this is an AJAX request
+            $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
+            
+            if ($isAjax) {
+                $this->json(['success' => false, 'message' => 'Sem permissão para editar administradores'], 403);
+                return;
+            } else {
+                $this->setFlash('errors', ['Sem permissão para editar administradores']);
+                $this->redirect('/accounts');
+            }
         }
 
         try {
@@ -213,18 +280,44 @@ class AccountController extends Controller
             
             if ($accountResponse['success'] ?? false) {
                 $account = $accountResponse['data'] ?? [];
+                
+                // Check if this is an AJAX request
+                $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
+                
+                if ($isAjax) {
+                    // Return JSON data for modal
+                    $this->json(['success' => true, 'data' => $account]);
+                    return;
+                }
+                
                 $roles = $this->getRoles();
                 $accountTypes = $this->getAccountTypes();
                 $states = $this->getStates();
             } else {
-                $this->setFlash('errors', ['Administrador não encontrado']);
+                // Check if this is an AJAX request
+                $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
+                
+                if ($isAjax) {
+                    $this->json(['success' => false, 'message' => 'Administrador não encontrado'], 404);
+                    return;
+                } else {
+                    $this->setFlash('errors', ['Administrador não encontrado']);
+                    $this->redirect('/accounts');
+                    return;
+                }
+            }
+        } catch (Exception $e) {
+            // Check if this is an AJAX request
+            $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
+            
+            if ($isAjax) {
+                $this->json(['success' => false, 'message' => 'Erro ao carregar dados'], 500);
+                return;
+            } else {
+                $this->setFlash('errors', ['Erro ao carregar dados']);
                 $this->redirect('/accounts');
                 return;
             }
-        } catch (Exception $e) {
-            $this->setFlash('errors', ['Erro ao carregar dados']);
-            $this->redirect('/accounts');
-            return;
         }
 
         $this->view('accounts/edit', [
@@ -245,25 +338,67 @@ class AccountController extends Controller
         $data = $this->getRequestData();
         
         try {
-            // Update admin using the correct endpoint
-            $response = $this->apiClient->authenticatedRequest('PUT', "/admins/{$id}", [
+            // Prepare update data, including contact if provided
+            $updateData = [
                 'name' => $data['name'] ?? null,
                 'email' => $data['email'] ?? null,
                 'accountTypeId' => isset($data['accountTypeId']) ? (int)$data['accountTypeId'] : null,
                 'stateId' => isset($data['stateId']) ? (int)$data['stateId'] : null,
                 'img' => $data['img'] ?? null
-            ]);
+            ];
+            
+            // Add contact if provided
+            if (!empty($data['contact'])) {
+                $updateData['contact'] = $data['contact'];
+            }
+            
+            // Add password only if provided (for password change)
+            if (!empty($data['password'])) {
+                $updateData['password'] = $data['password'];
+            }
+            
+            // Update admin using the correct endpoint
+            $response = $this->apiClient->authenticatedRequest('PUT', "/admins/{$id}", $updateData);
+
+            // Check if this is an AJAX request
+            $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
 
             if ($response['success'] ?? false) {
-                $this->setFlash('success', ['Administrador atualizado com sucesso']);
-                $this->redirect('/accounts');
+                if ($isAjax) {
+                    $this->json(['success' => true, 'message' => 'Administrador atualizado com sucesso']);
+                } else {
+                    $this->setFlash('success', ['Administrador atualizado com sucesso']);
+                    $this->redirect('/accounts');
+                }
             } else {
-                $this->setFlash('errors', ['Erro ao atualizar administrador: ' . ($response['message'] ?? 'Erro desconhecido')]);
-                $this->redirect("/accounts/{$id}/edit");
+                if ($isAjax) {
+                    // Pass through field errors from backend if available
+                    $errorResponse = [
+                        'success' => false, 
+                        'message' => $response['message'] ?? 'Erro ao atualizar administrador'
+                    ];
+                    
+                    // Include field errors if they exist in the response data
+                    if (isset($response['data']['fieldErrors'])) {
+                        $errorResponse['fieldErrors'] = $response['data']['fieldErrors'];
+                    }
+                    
+                    $this->json($errorResponse, 400);
+                } else {
+                    $this->setFlash('errors', ['Erro ao atualizar administrador: ' . ($response['message'] ?? 'Erro desconhecido')]);
+                    $this->redirect("/accounts/{$id}/edit");
+                }
             }
         } catch (Exception $e) {
-            $this->setFlash('errors', ['Erro ao atualizar administrador: ' . $e->getMessage()]);
-            $this->redirect("/accounts/{$id}/edit");
+            // Check if this is an AJAX request
+            $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
+            
+            if ($isAjax) {
+                $this->json(['success' => false, 'message' => 'Erro ao atualizar administrador: ' . $e->getMessage()], 500);
+            } else {
+                $this->setFlash('errors', ['Erro ao atualizar administrador: ' . $e->getMessage()]);
+                $this->redirect("/accounts/{$id}/edit");
+            }
         }
     }
 
@@ -278,16 +413,35 @@ class AccountController extends Controller
             // Use the correct admin deletion endpoint (soft delete)
             $response = $this->apiClient->authenticatedRequest('DELETE', "/admins/{$id}");
             
+            // Check if this is an AJAX request
+            $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
+            
             if ($response['success'] ?? false) {
-                $this->setFlash('success', ['Administrador eliminado com sucesso']);
+                if ($isAjax) {
+                    $this->json(['success' => true, 'message' => 'Administrador eliminado com sucesso']);
+                } else {
+                    $this->setFlash('success', ['Administrador eliminado com sucesso']);
+                    $this->redirect('/accounts');
+                }
             } else {
-                $this->setFlash('errors', [$response['message'] ?? 'Erro ao eliminar administrador']);
+                if ($isAjax) {
+                    $this->json(['success' => false, 'message' => $response['message'] ?? 'Erro ao eliminar administrador'], 400);
+                } else {
+                    $this->setFlash('errors', [$response['message'] ?? 'Erro ao eliminar administrador']);
+                    $this->redirect('/accounts');
+                }
             }
         } catch (Exception $e) {
-            $this->setFlash('errors', ['Erro de conexão: ' . $e->getMessage()]);
+            // Check if this is an AJAX request
+            $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
+            
+            if ($isAjax) {
+                $this->json(['success' => false, 'message' => 'Erro de conexão: ' . $e->getMessage()], 500);
+            } else {
+                $this->setFlash('errors', ['Erro de conexão: ' . $e->getMessage()]);
+                $this->redirect('/accounts');
+            }
         }
-
-        $this->redirect('/accounts');
     }
 
     // AJAX endpoints for status change
@@ -433,6 +587,129 @@ class AccountController extends Controller
                 ['id' => 3, 'state' => 'PENDING', 'description' => 'Pending'],
                 ['id' => 4, 'state' => 'ELIMINATED', 'description' => 'Eliminated']
             ];
+        }
+    }
+
+    /**
+     * AJAX endpoint for real-time search and filtering
+     */
+    public function ajaxSearch()
+    {
+        // Check for AJAX request
+        if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] !== 'XMLHttpRequest') {
+            $this->json(['success' => false, 'message' => 'Only AJAX requests allowed'], 400);
+            return;
+        }
+
+        if (!$this->auth->isAdmin() && !$this->auth->hasPermission('view_accounts')) {
+            $this->json(['success' => false, 'message' => 'Sem permissão para acessar contas'], 403);
+            return;
+        }
+
+        $page = (int)($_GET['page'] ?? 1);
+        $search = $_GET['search'] ?? '';
+        $status = $_GET['status'] ?? '';
+        
+        if (DEBUG_MODE) {
+            error_log("AJAX SEARCH: Received parameters - page: $page, search: '$search', status: '$status'");
+        }
+        
+        $params = [
+            'page' => max(0, $page - 1), // Backend uses 0-based pagination
+            'size' => 15,
+            'sortBy' => 'createdAt',
+            'sortDirection' => 'DESC'
+        ];
+        
+        if ($search) {
+            $params['search'] = $search;
+            if (DEBUG_MODE) {
+                error_log("AJAX SEARCH: Added search parameter: '$search'");
+            }
+        }
+        
+        if ($status) {
+            // Map frontend status to backend format
+            if ($status === 'active') {
+                $params['stateId'] = 1; // ACTIVE state
+                if (DEBUG_MODE) {
+                    error_log("AJAX SEARCH: Mapped 'active' status to stateId: 1");
+                }
+            } elseif ($status === 'inactive') {
+                $params['stateId'] = 2; // INACTIVE state  
+                if (DEBUG_MODE) {
+                    error_log("AJAX SEARCH: Mapped 'inactive' status to stateId: 2");
+                }
+            }
+        }
+        
+        if (DEBUG_MODE) {
+            error_log("AJAX SEARCH: Final API parameters: " . print_r($params, true));
+        }
+
+        try {
+            // Use the correct admin endpoint with pagination
+            $response = $this->apiClient->authenticatedRequest('GET', '/admins/paginated', $params);
+            
+            if (DEBUG_MODE) {
+                error_log("AJAX SEARCH: API Response from /admins/paginated: " . print_r($response, true));
+            }
+            
+            if ($response['success'] ?? false) {
+                // The PaginatedResponse is returned directly in response['data']
+                $paginatedData = $response['data'] ?? [];
+                $accounts = $paginatedData['content'] ?? [];
+                $pagination = [
+                    'current_page' => ($paginatedData['pageNumber'] ?? 0) + 1,
+                    'total_pages' => $paginatedData['totalPages'] ?? 1,
+                    'total_elements' => $paginatedData['totalElements'] ?? 0,
+                    'size' => $paginatedData['pageSize'] ?? 10,
+                    'has_next' => $paginatedData['hasNext'] ?? false,
+                    'has_previous' => $paginatedData['hasPrevious'] ?? false
+                ];
+                
+                $stats = [
+                    'total_admins' => $pagination['total_elements'],
+                    'active_admins' => count(array_filter($accounts, fn($a) => ($a['state'] ?? '') === 'ACTIVE')),
+                    'inactive_admins' => count(array_filter($accounts, fn($a) => ($a['state'] ?? '') !== 'ACTIVE'))
+                ];
+
+                // Return JSON response with data
+                $this->json([
+                    'success' => true,
+                    'data' => [
+                        'accounts' => $accounts,
+                        'pagination' => $pagination,
+                        'stats' => $stats,
+                        'search' => $search,
+                        'status' => $status
+                    ]
+                ]);
+            } else {
+                $this->json([
+                    'success' => false, 
+                    'message' => $response['message'] ?? 'Erro ao carregar administradores',
+                    'data' => [
+                        'accounts' => [],
+                        'pagination' => ['current_page' => 1, 'total_pages' => 1, 'total_elements' => 0, 'size' => 10],
+                        'stats' => ['total_admins' => 0, 'active_admins' => 0, 'inactive_admins' => 0]
+                    ]
+                ]);
+            }
+        } catch (Exception $e) {
+            if (DEBUG_MODE) {
+                error_log("AJAX SEARCH: Exception occurred: " . $e->getMessage());
+            }
+            
+            $this->json([
+                'success' => false,
+                'message' => 'Erro de conexão: ' . $e->getMessage(),
+                'data' => [
+                    'accounts' => [],
+                    'pagination' => ['current_page' => 1, 'total_pages' => 1, 'total_elements' => 0, 'size' => 10],
+                    'stats' => ['total_admins' => 0, 'active_admins' => 0, 'inactive_admins' => 0]
+                ]
+            ]);
         }
     }
 }
