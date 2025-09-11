@@ -1,509 +1,600 @@
-<div class="global-main-container">
-    <!-- Enhanced Page Header -->
-    <div class="global-page-header">
-        <div class="global-header-content">
-            <div class="global-header-left">
-                <h2><i class="fas fa-users me-2"></i>Gestão de Clientes</h2>
-                <p>Gerencie e monitore todos os clientes registados no sistema automotivo</p>
-            </div>
-            <div class="global-header-actions">
-                <div class="global-stats-card">
-                    <div class="global-stats-icon"><i class="fas fa-users"></i></div>
-                    <div class="global-stats-content">
-                        <div class="global-stats-number"><?= count($clients ?? []) ?></div>
-                        <div class="global-stats-label">Cliente<?= count($clients ?? []) !== 1 ? 's' : '' ?></div>
-                    </div>
-                </div>
-                <div class="global-quick-actions">
-                    <div class="global-action-group">
-                        <a href="<?= url('/clients/create') ?>" class="global-btn-add-primary">
-                            <div class="global-btn-icon"><i class="fas fa-plus"></i></div>
-                            <div class="global-btn-content">
-                                <div class="global-btn-title">Novo Cliente</div>
-                                <div class="global-btn-subtitle">Registar novo cliente</div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+<!-- 1. TÍTULO DA PÁGINA - ISOLADO -->
+<div class="page-title-section">
+    <div class="page-title-container">
+        <h1 class="main-page-title">
+            <i class="fas fa-users page-icon"></i>
+            Gestão de Clientes
+        </h1>
     </div>
+</div>
 
-    <!-- Enhanced Search Section -->
-    <div class="global-search-section">
-        <div class="global-search-header">
-            <h5 class="global-search-title">
-                <i class="fas fa-filter me-2"></i>Filtros de Pesquisa
-            </h5>
-            <p class="global-search-subtitle">Use os filtros abaixo para encontrar clientes específicos</p>
-        </div>
-        
-        <form method="GET" action="<?= url('/clients') ?>" class="global-search-form">
-            <div class="global-search-row">
-                <div class="global-form-group">
-                    <label for="search" class="global-form-label">
-                        <i class="fas fa-search me-1"></i>Pesquisar
-                    </label>
+<!-- 2. BOTÃO ADICIONAR CLIENTE - PROEMINENTE -->
+<div class="add-action-section">
+    <div class="add-action-container">
+        <button type="button" class="primary-add-button" onclick="openCreateCard()">
+            <div class="add-button-icon">
+                <i class="fas fa-plus"></i>
+            </div>
+            <div class="add-button-content">
+                <span class="add-button-text">Adicionar Cliente</span>
+                <small class="add-button-subtitle">Criar novo cliente no sistema</small>
+            </div>
+        </button>
+    </div>
+</div>
+
+<!-- 3. ÁREA DE FILTROS -->
+<div class="filters-section">
+    <div class="filters-container">
+        <form method="GET" action="<?= url('/clients') ?>" class="filters-form">
+            <div class="filter-group">
+                <div class="filter-field">
                     <input type="text" 
                            id="search" 
                            name="search" 
-                           class="global-form-control" 
-                           placeholder="Nome, email ou contacto..."
+                           class="search-input" 
+                           placeholder="Pesquisar clientes..."
                            value="<?= e($_GET['search'] ?? '') ?>">
+                    <i class="fas fa-search search-icon"></i>
                 </div>
-                <div class="global-form-group">
-                    <label for="status" class="global-form-label">
-                        <i class="fas fa-toggle-on me-1"></i>Estado
-                    </label>
-                    <select id="status" name="status" class="global-form-control">
-                        <option value="">Todos os estados</option>
-                        <option value="active" <?= ($_GET['status'] ?? '') === 'active' ? 'selected' : '' ?>>Ativos</option>
-                        <option value="inactive" <?= ($_GET['status'] ?? '') === 'inactive' ? 'selected' : '' ?>>Inativos</option>
-                        <option value="pending" <?= ($_GET['status'] ?? '') === 'pending' ? 'selected' : '' ?>>Pendentes</option>
-                    </select>
-                    </div>
-                </div>
-                <div class="global-form-group">
-                    <label for="sort" class="global-form-label">
-                        <i class="fas fa-sort me-1"></i>Ordenar por
-                    </label>
-                    <select id="sort" name="sort" class="global-form-control">
-                        <option value="name" <?= ($_GET['sort'] ?? '') === 'name' ? 'selected' : '' ?>>Nome</option>
-                        <option value="created" <?= ($_GET['sort'] ?? '') === 'created' ? 'selected' : '' ?>>Data de Registo</option>
-                        <option value="updated" <?= ($_GET['sort'] ?? '') === 'updated' ? 'selected' : '' ?>>Última Atualização</option>
-                    </select>
-                </div>
-            </div>
-            
-            <div class="global-search-actions">
-                <div class="global-search-actions-main">
-                    <button type="submit" class="global-btn-search">
-                        <i class="fas fa-search me-1"></i>Pesquisar
+                
+                <div class="filter-actions">
+                    <button type="submit" class="filter-button search-button">
+                        <i class="fas fa-search"></i>
+                        Pesquisar
                     </button>
-                </div>
-                <div class="global-clear-filter-container <?= (!empty($_GET['search']) || !empty($_GET['status'])) ? 'active' : 'inactive' ?>">
-                    <a href="<?= url('/clients') ?>" class="global-btn-clear-filters">
+                    
+                    <a href="<?= url('/clients') ?>" class="filter-button clear-button <?= (!empty($_GET['search']) || !empty($_GET['status'])) ? 'active' : '' ?>">
                         <i class="fas fa-times"></i>
-                        <span>Limpar Filtros</span>
+                        Limpar
                     </a>
                 </div>
             </div>
         </form>
     </div>
+</div>
 
-    <!-- Enhanced Data Table -->
-    <div class="global-data-table-container">
-        <div class="global-table-header">
-            <h5 class="global-table-title">
-                <i class="fas fa-table me-2"></i>Lista de Clientes
-            </h5>
-        </div>
-        <div class="global-table-responsive">
-            <table class="global-table" id="clientsTable">
+<!-- 4. TABELA DE DADOS -->
+<div class="data-table-section">
+    <div class="data-table-container">
+        <div class="table-wrapper">
+            <table class="data-table">
                 <thead>
                     <tr>
-                        <th><i class="fas fa-user me-1"></i>Nome</th>
-                        <th><i class="fas fa-envelope me-1"></i>Email</th>
-                        <th class="d-none d-md-table-cell"><i class="fas fa-phone me-1"></i>Contacto</th>
-                        <th><i class="fas fa-circle me-1"></i>Estado</th>
-                        <th class="d-none d-lg-table-cell"><i class="fas fa-calendar me-1"></i>Registado</th>
+                        <th><i class="fas fa-user"></i>Nome</th>
+                        <th><i class="fas fa-envelope"></i>Email</th>
+                        <th class="mobile-hidden"><i class="fas fa-phone"></i>Contacto</th>
+                        <th><i class="fas fa-circle"></i>Estado</th>
+                        <th class="mobile-hidden"><i class="fas fa-calendar"></i>Registado</th>
                         <th>Ações</th>
                     </tr>
-                            <th width="120" class="text-center">Ações</th>
+                </thead>
+                <tbody>
+                    <?php if (empty($clients)): ?>
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 3rem;">
+                                <div style="color: var(--text-muted);">
+                                    <i class="fas fa-users" style="font-size: 3rem; margin-bottom: 1rem; display: block;"></i>
+                                    <h6>Nenhum cliente encontrado</h6>
+                                    <p>Comece adicionando o primeiro cliente ao sistema</p>
+                                    <button type="button" class="primary-add-button" onclick="openCreateCard()" style="margin-top: 1rem;">
+                                        <div class="add-button-icon"><i class="fas fa-plus"></i></div>
+                                        <div class="add-button-content">
+                                            <span class="add-button-text">Adicionar Cliente</span>
+                                        </div>
+                                    </button>
+                                </div>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (empty($clients)): ?>
+                    <?php else: ?>
+                        <?php foreach ($clients as $client): ?>
                             <tr>
-                                <td colspan="6" style="text-align: center; padding: 3rem;">
-                                    <div style="color: var(--text-muted);">
-                                        <i class="fas fa-users" style="font-size: 3rem; margin-bottom: 1rem; display: block;"></i>
-                                        <h6>Nenhum cliente encontrado</h6>
-                                        <p>Comece adicionando o primeiro cliente ao sistema</p>
-                                        <a href="<?= url('/clients/create') ?>" class="global-btn-add-primary" style="margin-top: 1rem; display: inline-flex;">
-                                            <div class="global-btn-icon"><i class="fas fa-plus"></i></div>
-                                            <div class="global-btn-content">
-                                                <div class="global-btn-title">Adicionar Cliente</div>
-                                            </div>
-                                        </a>
+                                <td>
+                                    <div style="font-weight: 600; color: var(--text-primary);">
+                                        <?= e($client['name'] ?? 'N/A') ?>
+                                    </div>
+                                    <small style="color: var(--text-muted);">ID: <?= isset($client['id']) ? $client['id'] : 'N/A' ?></small>
+                                </td>
+                                <td><?= e($client['email'] ?? 'N/A') ?></td>
+                                <td class="mobile-hidden"><?= e($client['phone'] ?? 'N/A') ?></td>
+                                <td>
+                                    <span class="status-badge <?= strtolower($client['status'] ?? 'inactive') ?>">
+                                        <i class="fas fa-circle"></i>
+                                        <?= ucfirst($client['status'] ?? 'Inativo') ?>
+                                    </span>
+                                </td>
+                                <td class="mobile-hidden">
+                                    <?= date('d/m/Y', strtotime($client['createdAt'] ?? 'now')) ?>
+                                </td>
+                                <td>
+                                    <div class="table-actions">
+                                        <button type="button" class="action-btn view-btn" onclick="openViewCard(<?= htmlspecialchars(json_encode($client)) ?>)">
+                                            <i class="fas fa-eye"></i>
+                                            <span>Ver</span>
+                                        </button>
+                                        <button type="button" class="action-btn edit-btn" onclick="openEditCard(<?= htmlspecialchars(json_encode($client)) ?>)">
+                                            <i class="fas fa-edit"></i>
+                                            <span>Editar</span>
+                                        </button>
+                                        <button type="button" class="action-btn delete-btn" onclick="openDeleteCard(<?= isset($client['id']) ? $client['id'] : 0 ?>, '<?= e($client['name'] ?? 'N/A') ?>')">
+                                            <i class="fas fa-trash"></i>
+                                            <span>Eliminar</span>
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
-                        <?php else: ?>
-                            <?php foreach ($clients as $client): ?>
-                                <tr>
-                                    <td>
-                                        <div style="font-weight: 600; color: var(--text-primary);">
-                                            <?= e($client['name'] ?? 'N/A') ?>
-                                        </div>
-                                        <small style="color: var(--text-muted);">ID: <?= $client['id'] ?></small>
-                                    </td>
-                                    <td><?= e($client['email'] ?? 'N/A') ?></td>
-                                    <td class="d-none d-md-table-cell"><?= e($client['phone'] ?? 'N/A') ?></td>
-                                    <td>
-                                        <span class="global-status-badge <?= strtolower($client['status'] ?? 'inactive') ?>">
-                                            <i class="fas fa-circle me-1"></i>
-                                            <?= ucfirst($client['status'] ?? 'Inativo') ?>
-                                        </span>
-                                    </td>
-                                    <td class="d-none d-lg-table-cell">
-                                        <?= date('d/m/Y', strtotime($client['createdAt'] ?? 'now')) ?>
-                                    </td>
-                                    <td>
-                                        <div class="global-action-buttons-container">
-                                            <div class="global-action-buttons-group">
-                                                <a href="<?= url('/clients/' . $client['id']) ?>" class="global-btn-action-table">
-                                                    <i class="fas fa-eye"></i>
-                                                    <span class="btn-text">Ver</span>
-                                                </a>
-                                                <a href="<?= url('/clients/' . $client['id'] . '/edit') ?>" class="global-btn-action-table">
-                                                    <i class="fas fa-edit"></i>
-                                                    <span class="btn-text">Editar</span>
-                                                </a>
-                                                <button type="button" class="global-btn-action-table" onclick="confirmDelete(<?= $client['id'] ?>)">
-                                                    <i class="fas fa-trash"></i>
-                                                    <span class="btn-text">Remover</span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
         </div>
     </div>
+</div>
 
-</div> <!-- End global-main-container -->
+<!-- MODAL CARDS -->
 
-<!-- Delete Confirmation Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content border-0 shadow">
-            <div class="modal-header border-bottom-0 pb-0">
-                <div class="d-flex align-items-center">
-                    <div class="modal-icon me-3">
-                        <i class="fas fa-exclamation-triangle text-warning"></i>
+<!-- 1. CREATE CLIENT CARD -->
+<div class="card-overlay" id="createCardOverlay" style="display: none;">
+    <div class="modal-card create-card">
+        <div class="card-header">
+            <div class="card-title">
+                <i class="fas fa-user-plus"></i>
+                Criar Novo Cliente
+            </div>
+            <button type="button" class="card-close" onclick="closeCard('createCardOverlay')">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="card-body">
+            <form id="createClientForm" onsubmit="handleCreateSubmit(event)">
+                <input type="hidden" name="_token" value="<?= $csrf_token ?>">
+                
+                <div class="form-grid">
+                    <div class="form-column">
+                        <div class="form-group">
+                            <label for="create_name">Nome Completo *</label>
+                            <input type="text" id="create_name" name="name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="create_email">Email *</label>
+                            <input type="email" id="create_email" name="email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="create_phone">Contacto</label>
+                            <input type="tel" id="create_phone" name="phone">
+                        </div>
                     </div>
-                    <h5 class="modal-title" id="deleteModalLabel">Confirmar Remoção</h5>
+                    
+                    <div class="form-column">
+                        <div class="form-group">
+                            <label for="create_company">Empresa</label>
+                            <input type="text" id="create_company" name="company">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="create_address">Morada</label>
+                            <textarea id="create_address" name="address" rows="3"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="create_status">Estado</label>
+                            <select id="create_status" name="status">
+                                <option value="active">Ativo</option>
+                                <option value="inactive">Inativo</option>
+                                <option value="pending">Pendente</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </form>
+        </div>
+        
+        <div class="card-footer">
+            <button type="button" class="footer-btn cancel-btn" onclick="closeCard('createCardOverlay')">
+                <i class="fas fa-times"></i>
+                Cancelar
+            </button>
+            <button type="submit" form="createClientForm" class="footer-btn submit-btn">
+                <i class="fas fa-plus"></i>
+                Criar Cliente
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- 2. VIEW CLIENT CARD -->
+<div class="card-overlay" id="viewCardOverlay" style="display: none;">
+    <div class="modal-card view-card">
+        <div class="card-header">
+            <div class="card-title">
+                <i class="fas fa-eye"></i>
+                Visualizar Cliente
             </div>
-            <div class="modal-body pt-2">
-                <p class="mb-1">Tem certeza que deseja remover este cliente?</p>
-                <small class="text-muted">Esta ação não pode ser desfeita.</small>
+            <button type="button" class="card-close" onclick="closeCard('viewCardOverlay')">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="card-body">
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="profile-info">
+                    <h3 id="view_name">-</h3>
+                    <p id="view_email">-</p>
+                </div>
             </div>
-            <div class="modal-footer border-top-0 pt-0">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
-                    <i class="fas fa-trash me-2"></i>Remover
-                </button>
+            
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Contacto</div>
+                    <div class="info-value" id="view_phone">-</div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-label">Empresa</div>
+                    <div class="info-value" id="view_company">-</div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-label">Estado</div>
+                    <div class="info-value">
+                        <span class="status-badge" id="view_status">-</span>
+                    </div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-label">Data de Registo</div>
+                    <div class="info-value" id="view_created">-</div>
+                </div>
+                
+                <div class="info-item full-width">
+                    <div class="info-label">Morada</div>
+                    <div class="info-value" id="view_address">-</div>
+                </div>
             </div>
+        </div>
+        
+        <div class="card-footer">
+            <button type="button" class="footer-btn cancel-btn" onclick="closeCard('viewCardOverlay')">
+                <i class="fas fa-times"></i>
+                Fechar
+            </button>
+            <button type="button" class="footer-btn edit-btn" onclick="switchToEditCard()">
+                <i class="fas fa-edit"></i>
+                Editar Cliente
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- 3. EDIT CLIENT CARD -->
+<div class="card-overlay" id="editCardOverlay" style="display: none;">
+    <div class="modal-card edit-card">
+        <div class="card-header">
+            <div class="card-title">
+                <i class="fas fa-edit"></i>
+                Editar Cliente
+            </div>
+            <button type="button" class="card-close" onclick="closeCard('editCardOverlay')">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="card-body">
+            <form id="editClientForm" onsubmit="handleEditSubmit(event)">
+                <input type="hidden" name="_token" value="<?= $csrf_token ?>">
+                <input type="hidden" name="_method" value="PUT">
+                <input type="hidden" id="edit_client_id" name="id">
+                
+                <div class="form-grid">
+                    <div class="form-column">
+                        <div class="form-group">
+                            <label for="edit_name">Nome Completo *</label>
+                            <input type="text" id="edit_name" name="name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="edit_email">Email *</label>
+                            <input type="email" id="edit_email" name="email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="edit_phone">Contacto</label>
+                            <input type="tel" id="edit_phone" name="phone">
+                        </div>
+                    </div>
+                    
+                    <div class="form-column">
+                        <div class="form-group">
+                            <label for="edit_company">Empresa</label>
+                            <input type="text" id="edit_company" name="company">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="edit_address">Morada</label>
+                            <textarea id="edit_address" name="address" rows="3"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="edit_status">Estado</label>
+                            <select id="edit_status" name="status">
+                                <option value="active">Ativo</option>
+                                <option value="inactive">Inativo</option>
+                                <option value="pending">Pendente</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        
+        <div class="card-footer">
+            <button type="button" class="footer-btn cancel-btn" onclick="closeCard('editCardOverlay')">
+                <i class="fas fa-times"></i>
+                Cancelar
+            </button>
+            <button type="submit" form="editClientForm" class="footer-btn submit-btn">
+                <i class="fas fa-save"></i>
+                Guardar Alterações
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- 4. DELETE CLIENT CARD -->
+<div class="card-overlay" id="deleteCardOverlay" style="display: none;">
+    <div class="modal-card delete-card">
+        <div class="card-header">
+            <div class="card-title">
+                <i class="fas fa-trash"></i>
+                Eliminar Cliente
+            </div>
+            <button type="button" class="card-close" onclick="closeCard('deleteCardOverlay')">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="card-body">
+            <div class="delete-warning">
+                <div class="warning-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="warning-content">
+                    <h4>Tem a certeza?</h4>
+                    <p>Está prestes a eliminar o cliente <strong id="delete_client_name">-</strong>.</p>
+                    
+                    <div class="consequences">
+                        <h5>Esta acção irá:</h5>
+                        <ul>
+                            <li>Remover permanentemente o cliente do sistema</li>
+                            <li>Eliminar todo o histórico associado</li>
+                            <li>Esta operação não pode ser desfeita</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-footer">
+            <button type="button" class="footer-btn cancel-btn" onclick="closeCard('deleteCardOverlay')">
+                <i class="fas fa-times"></i>
+                Cancelar
+            </button>
+            <button type="button" class="footer-btn danger-btn" onclick="confirmClientDelete()">
+                <i class="fas fa-trash"></i>
+                Eliminar Cliente
+            </button>
         </div>
     </div>
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize tooltips
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
-    });
+// Global variables
+let currentViewClient = null;
+let currentEditClient = null;
+let currentDeleteClientId = null;
+
+// Card management functions
+function openCreateCard() {
+    document.getElementById('createCardOverlay').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
     
-    // Search functionality
-    const searchInput = document.getElementById('searchInput');
-    let searchTimeout;
+    // Clear form
+    document.getElementById('createClientForm').reset();
+}
+
+function openViewCard(client) {
+    currentViewClient = client;
     
-    searchInput.addEventListener('input', function() {
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(() => {
-            applyFilters();
-        }, 300);
-    });
+    // Populate view card
+    document.getElementById('view_name').textContent = client.name || 'N/A';
+    document.getElementById('view_email').textContent = client.email || 'N/A';
+    document.getElementById('view_phone').textContent = client.phone || 'N/A';
+    document.getElementById('view_company').textContent = client.company || 'N/A';
+    document.getElementById('view_address').textContent = client.address || 'N/A';
+    document.getElementById('view_created').textContent = client.createdAt ? 
+        new Date(client.createdAt).toLocaleDateString('pt-PT') : 'N/A';
     
-    // Sort functionality
-    document.querySelectorAll('.sortable').forEach(header => {
-        header.addEventListener('click', function() {
-            const sortBy = this.dataset.sort;
-            applySorting(sortBy);
+    // Status badge
+    const statusBadge = document.getElementById('view_status');
+    const status = client.status || 'inactive';
+    statusBadge.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+    statusBadge.className = `status-badge ${status.toLowerCase()}`;
+    
+    document.getElementById('viewCardOverlay').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function openEditCard(client) {
+    currentEditClient = client;
+    
+    // Populate edit form
+    document.getElementById('edit_client_id').value = client.id;
+    document.getElementById('edit_name').value = client.name || '';
+    document.getElementById('edit_email').value = client.email || '';
+    document.getElementById('edit_phone').value = client.phone || '';
+    document.getElementById('edit_company').value = client.company || '';
+    document.getElementById('edit_address').value = client.address || '';
+    document.getElementById('edit_status').value = client.status || 'active';
+    
+    document.getElementById('editCardOverlay').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function openDeleteCard(clientId, clientName) {
+    currentDeleteClientId = clientId;
+    document.getElementById('delete_client_name').textContent = clientName;
+    
+    document.getElementById('deleteCardOverlay').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeCard(overlayId) {
+    document.getElementById(overlayId).style.display = 'none';
+    document.body.style.overflow = 'auto';
+    
+    // Clear current data
+    if (overlayId === 'viewCardOverlay') {
+        currentViewClient = null;
+    } else if (overlayId === 'editCardOverlay') {
+        currentEditClient = null;
+    } else if (overlayId === 'deleteCardOverlay') {
+        currentDeleteClientId = null;
+    }
+}
+
+function switchToEditCard() {
+    if (currentViewClient) {
+        closeCard('viewCardOverlay');
+        setTimeout(() => openEditCard(currentViewClient), 100);
+    }
+}
+
+// Form submission handlers
+async function handleCreateSubmit(event) {
+    event.preventDefault();
+    
+    const formData = new FormData(event.target);
+    
+    try {
+        const response = await fetch('<?= url('/clients') ?>', {
+            method: 'POST',
+            body: formData
         });
-    });
+        
+        if (response.ok) {
+            closeCard('createCardOverlay');
+            location.reload();
+        } else {
+            alert('Erro ao criar cliente');
+        }
+    } catch (error) {
+        alert('Erro de conexão');
+    }
+}
+
+async function handleEditSubmit(event) {
+    event.preventDefault();
     
-    // Select all functionality
-    const selectAllCheckbox = document.getElementById('selectAll');
-    if (selectAllCheckbox) {
-        selectAllCheckbox.addEventListener('change', function() {
-            const checkboxes = document.querySelectorAll('.client-checkbox');
-            checkboxes.forEach(checkbox => {
-                checkbox.checked = this.checked;
-            });
+    if (!currentEditClient) return;
+    
+    const formData = new FormData(event.target);
+    
+    try {
+        const response = await fetch(`<?= url('/clients') ?>/${currentEditClient.id}`, {
+            method: 'POST',
+            body: formData
         });
+        
+        if (response.ok) {
+            closeCard('editCardOverlay');
+            location.reload();
+        } else {
+            alert('Erro ao atualizar cliente');
+        }
+    } catch (error) {
+        alert('Erro de conexão');
+    }
+}
+
+async function confirmClientDelete() {
+    if (!currentDeleteClientId) return;
+    
+    const formData = new FormData();
+    formData.append('_method', 'DELETE');
+    formData.append('_token', '<?= $csrf_token ?>');
+    
+    try {
+        const response = await fetch(`<?= url('/clients') ?>/${currentDeleteClientId}`, {
+            method: 'POST',
+            body: formData
+        });
+        
+        if (response.ok) {
+            closeCard('deleteCardOverlay');
+            location.reload();
+        } else {
+            alert('Erro ao eliminar cliente');
+        }
+    } catch (error) {
+        alert('Erro de conexão');
+    }
+}
+
+// Close cards when clicking outside
+document.addEventListener('click', function(event) {
+    if (event.target.classList.contains('card-overlay')) {
+        const overlayId = event.target.id;
+        closeCard(overlayId);
     }
 });
 
-// Filter functions
-function applyFilters() {
-    const search = document.getElementById('searchInput').value;
-    const status = document.getElementById('statusFilter').value;
-    const sort = document.getElementById('sortFilter').value;
-    
-    const params = new URLSearchParams();
-    if (search) params.append('search', search);
-    if (status) params.append('status', status);
-    if (sort) params.append('sort', sort);
-    
-    window.location.href = '<?= url('/clients') ?>?' + params.toString();
-}
-
-function clearFilters() {
-    window.location.href = '<?= url('/clients') ?>';
-}
-
-function applySorting(sortBy) {
-    const params = new URLSearchParams(window.location.search);
-    params.set('sort', sortBy);
-    window.location.href = '<?= url('/clients') ?>?' + params.toString();
-}
-
-// Selection functions
-function toggleSelectAll() {
-    const selectAllCheckbox = document.getElementById('selectAll');
-    selectAllCheckbox.click();
-}
-
-// Bulk actions
-function bulkAction(action) {
-    const selectedIds = getSelectedClientIds();
-    
-    if (selectedIds.length === 0) {
-        alert('Selecione pelo menos um cliente.');
-        return;
-    }
-    
-    if (confirm(`Tem certeza que deseja ${action} ${selectedIds.length} cliente(s)?`)) {
-        // Implement bulk action logic here
-        console.log(`Bulk ${action} for clients:`, selectedIds);
-    }
-}
-
-function getSelectedClientIds() {
-    const checkboxes = document.querySelectorAll('.client-checkbox:checked');
-    return Array.from(checkboxes).map(cb => cb.value);
-}
-
-// Delete functions
-let clientToDelete = null;
-
-function confirmDelete(clientId) {
-    clientToDelete = clientId;
-    const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
-    modal.show();
-}
-
-document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
-    if (clientToDelete) {
-        // Create form and submit
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = `<?= url('/clients') ?>/${clientToDelete}`;
-        
-        const methodInput = document.createElement('input');
-        methodInput.type = 'hidden';
-        methodInput.name = '_method';
-        methodInput.value = 'DELETE';
-        
-        const tokenInput = document.createElement('input');
-        tokenInput.type = 'hidden';
-        tokenInput.name = '_token';
-        tokenInput.value = '<?= $csrf_token ?>';
-        
-        form.appendChild(methodInput);
-        form.appendChild(tokenInput);
-        document.body.appendChild(form);
-        form.submit();
+// Close cards with Escape key
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        const openCards = ['createCardOverlay', 'viewCardOverlay', 'editCardOverlay', 'deleteCardOverlay'];
+        openCards.forEach(cardId => {
+            const card = document.getElementById(cardId);
+            if (card.style.display === 'flex') {
+                closeCard(cardId);
+            }
+        });
     }
 });
 </script>
 
+
 <style>
-/* Modern CRUD Page Styles */
-.page-header-section {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 51, 234, 0.1) 100%);
-    border-radius: 16px;
-    padding: 2rem;
-    border: 1px solid rgba(59, 130, 246, 0.1);
+/* Override specific classes for clients */
+.page-icon:before {
+    content: "\f0c0"; /* fa-users */
 }
 
-.page-title {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #1e293b;
-    margin-bottom: 0.5rem;
+.create-card .card-title i:before {
+    content: "\f234"; /* fa-user-plus */
 }
 
-.page-subtitle {
-    font-size: 1.1rem;
-    margin-bottom: 0;
+/* Client-specific status colors */
+.status-badge.active {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(34, 197, 94, 0.05));
+    color: #15803d;
+    border: 1px solid rgba(34, 197, 94, 0.2);
 }
 
-.search-filters-card .card {
-    border-radius: 12px;
-}
-
-.search-group .input-group-text {
-    background-color: #f8fafc;
-    border-color: #e2e8f0;
-}
-
-.search-group .form-control {
-    border-color: #e2e8f0;
-}
-
-.search-group .form-control:focus {
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
-}
-
-.data-table-card .card {
-    border-radius: 12px;
-}
-
-.table th {
-    font-weight: 600;
-    color: #475569;
-    background-color: #f8fafc !important;
-    border-bottom: 2px solid #e2e8f0;
-    padding: 1rem 0.75rem;
-    font-size: 0.875rem;
-}
-
-.table td {
-    padding: 1rem 0.75rem;
-    vertical-align: middle;
-    border-color: #f1f5f9;
-}
-
-.sortable {
-    cursor: pointer;
-    user-select: none;
-    transition: color 0.2s ease;
-}
-
-.sortable:hover {
-    color: #3b82f6;
-}
-
-.client-avatar {
-    width: 40px;
-    height: 40px;
-    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-weight: 600;
-    font-size: 0.875rem;
-}
-
-.status-badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.375rem 0.75rem;
-    border-radius: 50px;
-    font-size: 0.75rem;
-    font-weight: 500;
-    text-transform: capitalize;
-}
-
-.status-active {
-    background-color: rgba(16, 185, 129, 0.1);
-    color: #047857;
-}
-
-.status-inactive {
-    background-color: rgba(156, 163, 175, 0.2);
+.status-badge.inactive {
+    background: linear-gradient(135deg, rgba(156, 163, 175, 0.1), rgba(156, 163, 175, 0.05));
     color: #374151;
+    border: 1px solid rgba(156, 163, 175, 0.2);
 }
 
-.status-pending {
-    background-color: rgba(245, 158, 11, 0.1);
-    color: #d97706;
-}
-
-.action-buttons .btn {
-    border-radius: 8px;
-    transition: all 0.2s ease;
-}
-
-.action-buttons .btn:hover {
-    transform: translateY(-1px);
-}
-
-.empty-state {
-    padding: 3rem 2rem;
-}
-
-.empty-icon {
-    width: 80px;
-    height: 80px;
-    background: rgba(59, 130, 246, 0.1);
-    border-radius: 50%;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto;
-}
-
-.pagination .page-link {
-    border-radius: 8px;
-    margin: 0 2px;
-    border: 1px solid #e2e8f0;
-    color: #475569;
-}
-
-.pagination .page-item.active .page-link {
-    background-color: #3b82f6;
-    border-color: #3b82f6;
-}
-
-.modal-icon {
-    width: 48px;
-    height: 48px;
-    background: rgba(245, 158, 11, 0.1);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.25rem;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .page-header-section {
-        padding: 1.5rem;
-        text-align: center;
-    }
-    
-    .page-title {
-        font-size: 1.5rem;
-    }
-    
-    .page-actions {
-        margin-top: 1rem;
-    }
-    
-    .table-responsive {
-        border-radius: 8px;
-    }
-    
-    .action-buttons .btn-group {
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-    }
+.status-badge.pending {
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(251, 191, 36, 0.05));
+    color: #92400e;
+    border: 1px solid rgba(251, 191, 36, 0.2);
 }
 </style>

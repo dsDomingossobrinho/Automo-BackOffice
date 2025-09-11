@@ -1,219 +1,159 @@
-<div class="global-main-container">
-    <?php if (isset($api_error) && $api_error): ?>
-    <div class="alert alert-warning d-flex align-items-center mb-4" role="alert">
-        <i class="fas fa-exclamation-triangle me-2"></i>
+<!-- 1. TÍTULO DA PÁGINA - ISOLADO -->
+<div class="page-title-section">
+    <div class="page-title-container">
+        <h1 class="main-page-title">
+            <i class="fas fa-tachometer-alt page-icon"></i>
+            Dashboard
+        </h1>
+    </div>
+</div>
+
+<?php if (isset($api_error) && $api_error): ?>
+<div class="alert-section">
+    <div class="alert alert-warning">
+        <i class="fas fa-exclamation-triangle"></i>
         <div>
             <strong>Atenção:</strong> Não foi possível conectar com o sistema backend. 
             Os dados exibidos podem não estar atualizados.
         </div>
     </div>
-    <?php endif; ?>
-
-    <!-- Modern Dashboard Header -->
-    <div class="dashboard-welcome-card mb-4">
-    <div class="row align-items-center">
-        <div class="col-lg-8">
-            <div class="d-flex align-items-center">
-                <div class="dashboard-avatar me-3">
-                    <img src="<?= asset('images/automo-logo.png') ?>" alt="Automo" class="avatar-img">
-                </div>
-                <div>
-                    <h1 class="dashboard-title mb-1">Bem-vindo ao Automo BackOffice</h1>
-                    <p class="dashboard-subtitle mb-0">
-                        Sistema de gestão automotiva • 
-                        <span class="text-primary"><?= date('d/m/Y') ?></span>
-                    </p>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
-            <div class="d-flex align-items-center justify-content-lg-end gap-2">
-                <button class="btn btn-outline-primary btn-sm d-flex align-items-center">
-                    <i class="fas fa-sync me-1"></i>
-                    Atualizar
-                </button>
-                <button class="btn btn-primary btn-sm d-flex align-items-center">
-                    <i class="fas fa-download me-1"></i>
-                    Relatório
-                </button>
-            </div>
-        </div>
-    </div>
 </div>
+<?php endif; ?>
 
-<!-- Modern Statistics Grid -->
-<div class="row mb-4 g-4">
-    <!-- Total Clients -->
-    <div class="col-xl-3 col-md-6">
-        <div class="stat-card h-100">
-            <div class="stat-card-body">
-                <div class="d-flex align-items-center">
-                    <div class="stat-icon stat-icon-primary me-3">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <div class="flex-grow-1">
-                        <div class="stat-label">Total de Clientes</div>
-                        <div class="stat-value"><?= number_format($stats['total_clients']) ?></div>
-                    </div>
-                </div>
-                <div class="stat-footer mt-3">
-                    <div class="stat-trend trend-up">
-                        <i class="fas fa-arrow-up"></i>
-                        <span>+<?= $stats['new_clients_month'] ?></span>
-                        <small>este mês</small>
-                    </div>
+<!-- 2. ESTATÍSTICAS PRINCIPAIS -->
+<div class="stats-section">
+    <div class="stats-grid">
+        <!-- Total Clients -->
+        <div class="stat-card">
+            <div class="stat-icon stat-icon-primary">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value"><?= number_format($stats['total_clients']) ?></div>
+                <div class="stat-label">Total de Clientes</div>
+                <div class="stat-trend trend-up">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+<?= $stats['new_clients_month'] ?></span>
+                    <small>este mês</small>
                 </div>
             </div>
         </div>
-    </div>
-    
-    <!-- Active Clients -->
-    <div class="col-xl-3 col-md-6">
-        <div class="stat-card h-100">
-            <div class="stat-card-body">
-                <div class="d-flex align-items-center">
-                    <div class="stat-icon stat-icon-success me-3">
-                        <i class="fas fa-user-check"></i>
-                    </div>
-                    <div class="flex-grow-1">
-                        <div class="stat-label">Clientes Ativos</div>
-                        <div class="stat-value"><?= number_format($stats['active_clients']) ?></div>
-                    </div>
-                </div>
-                <div class="stat-footer mt-3">
-                    <div class="stat-trend trend-neutral">
-                        <i class="fas fa-percentage"></i>
-                        <span><?= $stats['total_clients'] > 0 ? round(($stats['active_clients'] / $stats['total_clients']) * 100, 1) : 0 ?>%</span>
-                        <small>do total</small>
-                    </div>
+        
+        <!-- Active Clients -->
+        <div class="stat-card">
+            <div class="stat-icon stat-icon-success">
+                <i class="fas fa-user-check"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value"><?= number_format($stats['active_clients']) ?></div>
+                <div class="stat-label">Clientes Ativos</div>
+                <div class="stat-trend trend-neutral">
+                    <i class="fas fa-percentage"></i>
+                    <span><?= $stats['total_clients'] > 0 ? round(($stats['active_clients'] / $stats['total_clients']) * 100, 1) : 0 ?>%</span>
+                    <small>do total</small>
                 </div>
             </div>
         </div>
-    </div>
-    
-    <!-- Messages -->
-    <div class="col-xl-3 col-md-6">
-        <div class="stat-card h-100">
-            <div class="stat-card-body">
-                <div class="d-flex align-items-center">
-                    <div class="stat-icon stat-icon-info me-3">
-                        <i class="fas fa-envelope"></i>
-                    </div>
-                    <div class="flex-grow-1">
-                        <div class="stat-label">Mensagens Enviadas</div>
-                        <div class="stat-value"><?= number_format($stats['total_messages']) ?></div>
-                    </div>
-                </div>
-                <div class="stat-footer mt-3">
-                    <div class="stat-trend trend-info">
-                        <i class="fas fa-clock"></i>
-                        <span><?= $stats['messages_today'] ?></span>
-                        <small>hoje</small>
-                    </div>
+        
+        <!-- Messages -->
+        <div class="stat-card">
+            <div class="stat-icon stat-icon-info">
+                <i class="fas fa-envelope"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value"><?= number_format($stats['total_messages']) ?></div>
+                <div class="stat-label">Mensagens Enviadas</div>
+                <div class="stat-trend trend-info">
+                    <i class="fas fa-clock"></i>
+                    <span><?= $stats['messages_today'] ?></span>
+                    <small>hoje</small>
                 </div>
             </div>
         </div>
-    </div>
-    
-    <!-- Revenue -->
-    <div class="col-xl-3 col-md-6">
-        <div class="stat-card h-100">
-            <div class="stat-card-body">
-                <div class="d-flex align-items-center">
-                    <div class="stat-icon stat-icon-warning me-3">
-                        <i class="fas fa-money-bill-wave"></i>
-                    </div>
-                    <div class="flex-grow-1">
-                        <div class="stat-label">Receita Total</div>
-                        <div class="stat-value"><?= number_format($stats['total_revenue'], 0, ',', '.') ?><small class="text-muted ms-1">AOA</small></div>
-                    </div>
-                </div>
-                <div class="stat-footer mt-3">
-                    <div class="stat-trend trend-warning">
-                        <i class="fas fa-calendar"></i>
-                        <span><?= number_format($stats['monthly_revenue'], 0, ',', '.') ?></span>
-                        <small>este mês</small>
-                    </div>
+        
+        <!-- Revenue -->
+        <div class="stat-card">
+            <div class="stat-icon stat-icon-warning">
+                <i class="fas fa-money-bill-wave"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value"><?= number_format($stats['total_revenue'], 0, ',', '.') ?><small class="currency">AOA</small></div>
+                <div class="stat-label">Receita Total</div>
+                <div class="stat-trend trend-warning">
+                    <i class="fas fa-calendar"></i>
+                    <span><?= number_format($stats['monthly_revenue'], 0, ',', '.') ?></span>
+                    <small>este mês</small>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Charts and Analytics -->
-<div class="row mb-4 g-4">
-    <!-- Revenue Chart -->
-    <div class="col-lg-8">
-        <div class="analytics-card h-100">
-            <div class="card-header-modern">
-                <div class="d-flex align-items-center justify-content-between">
-                    <div class="d-flex align-items-center">
-                        <div class="chart-icon me-3">
-                            <i class="fas fa-chart-line"></i>
-                        </div>
-                        <div>
-                            <h5 class="card-title mb-0">Evolução da Receita</h5>
-                            <small class="text-muted">Receita mensal dos últimos 6 meses</small>
-                        </div>
-                    </div>
-                    <div class="dropdown">
-                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-download me-2"></i>Exportar</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-print me-2"></i>Imprimir</a></li>
-                        </ul>
+<!-- 3. GRÁFICOS E ANÁLISES -->
+<div class="charts-section">
+    <div class="charts-grid">
+        <!-- Revenue Chart -->
+        <div class="chart-card main-chart">
+            <div class="card-header">
+                <div class="card-title">
+                    <i class="fas fa-chart-line"></i>
+                    <div class="title-content">
+                        <h3>Evolução da Receita</h3>
+                        <small>Receita mensal dos últimos 6 meses</small>
                     </div>
                 </div>
+                <div class="card-actions">
+                    <button class="action-button">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <button class="action-button">
+                        <i class="fas fa-print"></i>
+                    </button>
+                </div>
             </div>
-            <div class="card-body-modern">
+            <div class="card-body">
                 <div class="chart-container">
-                    <canvas id="revenueChart" height="300"></canvas>
+                    <canvas id="revenueChart"></canvas>
                 </div>
             </div>
         </div>
-    </div>
-    
-    <!-- Quick Stats -->
-    <div class="col-lg-4">
-        <div class="analytics-card h-100">
-            <div class="card-header-modern">
-                <div class="d-flex align-items-center">
-                    <div class="chart-icon me-3">
-                        <i class="fas fa-chart-pie"></i>
-                    </div>
-                    <div>
-                        <h5 class="card-title mb-0">Distribuição</h5>
-                        <small class="text-muted">Mensagens por tipo</small>
+        
+        <!-- Distribution Chart -->
+        <div class="chart-card side-chart">
+            <div class="card-header">
+                <div class="card-title">
+                    <i class="fas fa-chart-pie"></i>
+                    <div class="title-content">
+                        <h3>Distribuição</h3>
+                        <small>Mensagens por tipo</small>
                     </div>
                 </div>
             </div>
-            <div class="card-body-modern">
+            <div class="card-body">
                 <div class="chart-container">
-                    <canvas id="distributionChart" height="220"></canvas>
+                    <canvas id="distributionChart"></canvas>
                 </div>
-                <div class="mt-4">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <div class="d-flex align-items-center">
-                            <div class="chart-legend-dot bg-primary me-2"></div>
-                            <small>Enviadas</small>
+                <div class="chart-legend">
+                    <div class="legend-item">
+                        <div class="legend-dot bg-primary"></div>
+                        <div class="legend-content">
+                            <span>Enviadas</span>
+                            <strong><?= number_format($chart_data['message_stats']['data'][0] ?? 0) ?></strong>
                         </div>
-                        <strong><?= number_format($chart_data['message_stats']['data'][0] ?? 0) ?></strong>
                     </div>
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <div class="d-flex align-items-center">
-                            <div class="chart-legend-dot bg-success me-2"></div>
-                            <small>Entregues</small>
+                    <div class="legend-item">
+                        <div class="legend-dot bg-success"></div>
+                        <div class="legend-content">
+                            <span>Entregues</span>
+                            <strong><?= number_format($chart_data['message_stats']['data'][1] ?? 0) ?></strong>
                         </div>
-                        <strong><?= number_format($chart_data['message_stats']['data'][1] ?? 0) ?></strong>
                     </div>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="d-flex align-items-center">
-                            <div class="chart-legend-dot bg-warning me-2"></div>
-                            <small>Respondidas</small>
+                    <div class="legend-item">
+                        <div class="legend-dot bg-warning"></div>
+                        <div class="legend-content">
+                            <span>Respondidas</span>
+                            <strong><?= number_format($chart_data['message_stats']['data'][2] ?? 0) ?></strong>
                         </div>
-                        <strong><?= number_format($chart_data['message_stats']['data'][2] ?? 0) ?></strong>
                     </div>
                 </div>
             </div>
@@ -221,35 +161,32 @@
     </div>
 </div>
 
-<!-- Activities and Quick Actions -->
-<div class="row g-4">
-    <!-- Recent Activities -->
-    <div class="col-lg-8">
-        <div class="activity-card">
-            <div class="card-header-modern">
-                <div class="d-flex align-items-center justify-content-between">
-                    <div class="d-flex align-items-center">
-                        <div class="activity-icon me-3">
-                            <i class="fas fa-clock"></i>
-                        </div>
-                        <div>
-                            <h5 class="card-title mb-0">Atividades Recentes</h5>
-                            <small class="text-muted">Últimas ações no sistema</small>
-                        </div>
+<!-- 4. ATIVIDADES E AÇÕES RÁPIDAS -->
+<div class="activities-section">
+    <div class="activities-grid">
+        <!-- Recent Activities -->
+        <div class="activities-card">
+            <div class="card-header">
+                <div class="card-title">
+                    <i class="fas fa-clock"></i>
+                    <div class="title-content">
+                        <h3>Atividades Recentes</h3>
+                        <small>Últimas ações no sistema</small>
                     </div>
-                    <a href="#" class="btn btn-outline-primary btn-sm">
-                        <i class="fas fa-history me-1"></i>Ver Todas
-                    </a>
                 </div>
+                <a href="#" class="view-all-button">
+                    <i class="fas fa-history"></i>
+                    Ver Todas
+                </a>
             </div>
-            <div class="card-body-modern">
+            <div class="card-body">
                 <?php if (empty($recent_activity)): ?>
-                    <div class="empty-state py-5 text-center">
-                        <div class="empty-icon mb-3">
+                    <div class="empty-state">
+                        <div class="empty-icon">
                             <i class="fas fa-info-circle"></i>
                         </div>
-                        <h6 class="empty-title">Nenhuma atividade recente</h6>
-                        <p class="empty-text text-muted">As ações do sistema aparecerão aqui</p>
+                        <h4>Nenhuma atividade recente</h4>
+                        <p>As ações do sistema aparecerão aqui</p>
                     </div>
                 <?php else: ?>
                     <div class="activity-timeline">
@@ -261,7 +198,7 @@
                                 <div class="timeline-content">
                                     <div class="timeline-title"><?= e($activity['message']) ?></div>
                                     <div class="timeline-time">
-                                        <i class="fas fa-clock me-1"></i>
+                                        <i class="fas fa-clock"></i>
                                         <?= date('d/m/Y H:i', strtotime($activity['timestamp'])) ?>
                                     </div>
                                 </div>
@@ -271,72 +208,68 @@
                 <?php endif; ?>
             </div>
         </div>
-    </div>
-    
-    <!-- Quick Actions -->
-    <div class="col-lg-4">
+        
+        <!-- Quick Actions -->
         <div class="quick-actions-card">
-            <div class="card-header-modern">
-                <div class="d-flex align-items-center">
-                    <div class="action-icon me-3">
-                        <i class="fas fa-bolt"></i>
-                    </div>
-                    <div>
-                        <h5 class="card-title mb-0">Ações Rápidas</h5>
-                        <small class="text-muted">Operações frequentes</small>
+            <div class="card-header">
+                <div class="card-title">
+                    <i class="fas fa-bolt"></i>
+                    <div class="title-content">
+                        <h3>Ações Rápidas</h3>
+                        <small>Operações frequentes</small>
                     </div>
                 </div>
             </div>
-            <div class="card-body-modern">
+            <div class="card-body">
                 <div class="quick-actions-grid">
-                    <a href="<?= url('/clients/create') ?>" class="quick-action-item">
+                    <button type="button" class="quick-action-item" onclick="window.location.href='<?= url('/clients') ?>'">
                         <div class="quick-action-icon bg-primary">
                             <i class="fas fa-user-plus"></i>
                         </div>
                         <div class="quick-action-content">
-                            <div class="quick-action-title">Novo Cliente</div>
+                            <span class="quick-action-title">Novo Cliente</span>
                             <small class="quick-action-subtitle">Registar cliente</small>
                         </div>
                         <i class="fas fa-arrow-right quick-action-arrow"></i>
-                    </a>
+                    </button>
                     
-                    <a href="<?= url('/messages/create') ?>" class="quick-action-item">
+                    <button type="button" class="quick-action-item" onclick="window.location.href='<?= url('/messages') ?>'">
                         <div class="quick-action-icon bg-info">
                             <i class="fas fa-envelope"></i>
                         </div>
                         <div class="quick-action-content">
-                            <div class="quick-action-title">Enviar Mensagem</div>
+                            <span class="quick-action-title">Enviar Mensagem</span>
                             <small class="quick-action-subtitle">Nova campanha SMS</small>
                         </div>
                         <i class="fas fa-arrow-right quick-action-arrow"></i>
-                    </a>
+                    </button>
                     
-                    <a href="<?= url('/invoices/create') ?>" class="quick-action-item">
+                    <button type="button" class="quick-action-item" onclick="window.location.href='<?= url('/invoices') ?>'">
                         <div class="quick-action-icon bg-success">
                             <i class="fas fa-file-invoice"></i>
                         </div>
                         <div class="quick-action-content">
-                            <div class="quick-action-title">Nova Fatura</div>
+                            <span class="quick-action-title">Nova Fatura</span>
                             <small class="quick-action-subtitle">Gerar documento</small>
                         </div>
                         <i class="fas fa-arrow-right quick-action-arrow"></i>
-                    </a>
+                    </button>
                     
-                    <a href="<?= url('/accounts/create') ?>" class="quick-action-item">
+                    <button type="button" class="quick-action-item" onclick="window.location.href='<?= url('/accounts') ?>'">
                         <div class="quick-action-icon bg-warning">
                             <i class="fas fa-user-shield"></i>
                         </div>
                         <div class="quick-action-content">
-                            <div class="quick-action-title">Nova Conta</div>
+                            <span class="quick-action-title">Nova Conta</span>
                             <small class="quick-action-subtitle">Criar utilizador</small>
                         </div>
                         <i class="fas fa-arrow-right quick-action-arrow"></i>
-                    </a>
+                    </button>
                 </div>
                 
                 <!-- System Summary -->
-                <div class="system-summary mt-4">
-                    <h6 class="summary-title">Resumo do Sistema</h6>
+                <div class="system-summary">
+                    <h4 class="summary-title">Resumo do Sistema</h4>
                     <div class="summary-grid">
                         <div class="summary-item">
                             <div class="summary-value"><?= $stats['total_users'] ?></div>
@@ -465,115 +398,107 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
+<link rel="stylesheet" href="/css/global-design-system.css">
+
 <style>
-/* Modern Dashboard Styles */
-:root {
-    --dashboard-bg: #f8fafc;
-    --card-bg: #ffffff;
-    --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    --card-shadow-hover: 0 10px 25px rgba(0, 0, 0, 0.15);
-    --border-color: #e5e7eb;
-    --text-primary: #111827;
-    --text-secondary: #6b7280;
-    --border-radius: 12px;
-    --border-radius-lg: 16px;
+/* Dashboard specific overrides */
+.page-icon:before {
+    content: "\f3fd"; /* fa-tachometer-alt */
 }
 
-body {
-    background-color: var(--dashboard-bg);
+/* Alert Section */
+.alert-section {
+    margin-bottom: 2rem;
 }
 
-/* Welcome Card */
-.dashboard-welcome-card {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: var(--border-radius-lg);
-    padding: 2rem;
-    color: white;
-    box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
-}
-
-.dashboard-avatar {
-    width: 80px;
-    height: 80px;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: var(--border-radius-lg);
+.alert {
     display: flex;
     align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(10px);
-    border: 2px solid rgba(255, 255, 255, 0.3);
-}
-
-.avatar-img {
-    width: 60px;
-    height: 60px;
-    object-fit: contain;
-    filter: brightness(0) invert(1);
-}
-
-.dashboard-title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin: 0;
-}
-
-.dashboard-subtitle {
-    font-size: 1.1rem;
-    opacity: 0.9;
-}
-
-/* Statistics Cards */
-.stat-card {
-    background: var(--card-bg);
+    padding: 1rem 1.5rem;
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.05));
+    border: 1px solid rgba(245, 158, 11, 0.2);
     border-radius: var(--border-radius);
-    box-shadow: var(--card-shadow);
+    gap: 0.75rem;
+    color: #92400e;
+}
+
+.alert i {
+    font-size: 1.125rem;
+    flex-shrink: 0;
+}
+
+.alert strong {
+    font-weight: 600;
+}
+
+/* Stats Section */
+.stats-section {
+    margin-bottom: 2rem;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.stat-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: var(--card-background);
     border: 1px solid var(--border-color);
-    transition: all 0.3s ease;
-    overflow: hidden;
+    border-radius: var(--border-radius);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .stat-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--card-shadow-hover);
-}
-
-.stat-card-body {
-    padding: 2rem;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
 }
 
 .stat-icon {
-    width: 60px;
-    height: 60px;
-    border-radius: 16px;
+    width: 64px;
+    height: 64px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
     font-size: 1.5rem;
+    flex-shrink: 0;
 }
 
-.stat-icon-primary { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
-.stat-icon-success { background: linear-gradient(135deg, #10b981, #047857); }
-.stat-icon-info { background: linear-gradient(135deg, #06b6d4, #0891b2); }
-.stat-icon-warning { background: linear-gradient(135deg, #f59e0b, #d97706); }
+.stat-icon-primary { background: var(--gradient-primary); }
+.stat-icon-success { background: var(--gradient-success); }
+.stat-icon-info { background: var(--gradient-info); }
+.stat-icon-warning { background: var(--gradient-warning); }
 
-.stat-label {
-    font-size: 0.875rem;
-    color: var(--text-secondary);
-    font-weight: 500;
-    margin-bottom: 0.5rem;
+.stat-content {
+    flex: 1;
 }
 
 .stat-value {
-    font-size: 2.25rem;
+    font-size: 2rem;
     font-weight: 700;
     color: var(--text-primary);
     line-height: 1;
+    margin-bottom: 0.25rem;
 }
 
-.stat-footer {
-    padding-top: 1rem;
-    border-top: 1px solid var(--border-color);
+.stat-value .currency {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-left: 0.5rem;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    margin-bottom: 0.75rem;
 }
 
 .stat-trend {
@@ -584,36 +509,47 @@ body {
     font-weight: 500;
 }
 
-.trend-up { color: #059669; }
-.trend-neutral { color: var(--text-secondary); }
-.trend-info { color: #0891b2; }
-.trend-warning { color: #d97706; }
+.trend-up { color: var(--color-success); }
+.trend-neutral { color: var(--text-muted); }
+.trend-info { color: var(--color-info); }
+.trend-warning { color: var(--color-warning); }
 
-/* Analytics Cards */
-.analytics-card,
-.activity-card,
-.quick-actions-card {
-    background: var(--card-bg);
-    border-radius: var(--border-radius);
-    box-shadow: var(--card-shadow);
-    border: 1px solid var(--border-color);
+/* Charts Section */
+.charts-section {
+    margin-bottom: 2rem;
 }
 
-.card-header-modern {
-    padding: 1.5rem 2rem 1rem;
+.charts-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.5rem;
+}
+
+.chart-card {
+    background: var(--card-background);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+}
+
+.chart-card .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem;
     border-bottom: 1px solid var(--border-color);
 }
 
-.card-body-modern {
-    padding: 1.5rem 2rem 2rem;
+.card-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
 }
 
-.chart-icon,
-.activity-icon,
-.action-icon {
+.card-title i {
     width: 40px;
     height: 40px;
-    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    background: var(--gradient-primary);
     border-radius: 10px;
     display: flex;
     align-items: center;
@@ -622,10 +558,44 @@ body {
     font-size: 1rem;
 }
 
-.card-title {
-    font-size: 1.25rem;
+.title-content h3 {
+    font-size: 1.125rem;
     font-weight: 600;
     color: var(--text-primary);
+    margin: 0 0 0.25rem 0;
+}
+
+.title-content small {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+}
+
+.card-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.action-button {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: var(--border-color);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.action-button:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+.chart-card .card-body {
+    padding: 1.5rem;
 }
 
 .chart-container {
@@ -633,25 +603,137 @@ body {
     height: 300px;
 }
 
-.chart-legend-dot {
+.side-chart .chart-container {
+    height: 220px;
+}
+
+.chart-legend {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.legend-item .legend-content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 1;
+}
+
+.legend-dot {
     width: 12px;
     height: 12px;
     border-radius: 50%;
+    flex-shrink: 0;
 }
 
-/* Activity Timeline */
-.empty-state .empty-icon {
+.legend-dot.bg-primary { background: var(--primary-color); }
+.legend-dot.bg-success { background: var(--color-success); }
+.legend-dot.bg-warning { background: var(--color-warning); }
+
+.legend-item span {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+
+.legend-item strong {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* Activities Section */
+.activities-section {
+    margin-bottom: 2rem;
+}
+
+.activities-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.5rem;
+}
+
+.activities-card,
+.quick-actions-card {
+    background: var(--card-background);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+}
+
+.activities-card .card-header,
+.quick-actions-card .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.view-all-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: var(--primary-color);
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.view-all-button:hover {
+    background: var(--primary-dark);
+    color: white;
+    text-decoration: none;
+}
+
+.activities-card .card-body,
+.quick-actions-card .card-body {
+    padding: 1.5rem;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+}
+
+.empty-icon {
     width: 80px;
     height: 80px;
-    background: rgba(107, 114, 128, 0.1);
+    background: rgba(var(--primary-rgb), 0.1);
     border-radius: 50%;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     font-size: 2rem;
-    color: var(--text-secondary);
+    color: var(--primary-color);
+    margin-bottom: 1rem;
 }
 
+.empty-state h4 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+    color: var(--text-muted);
+    margin: 0;
+}
+
+/* Activity Timeline */
 .activity-timeline {
     max-height: 400px;
     overflow-y: auto;
@@ -659,7 +741,7 @@ body {
 
 .timeline-item {
     display: flex;
-    align-items: start;
+    align-items: flex-start;
     gap: 1rem;
     padding: 1rem 0;
     position: relative;
@@ -687,10 +769,14 @@ body {
     flex-shrink: 0;
 }
 
-.timeline-marker-primary { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
-.timeline-marker-success { background: linear-gradient(135deg, #10b981, #047857); }
-.timeline-marker-info { background: linear-gradient(135deg, #06b6d4, #0891b2); }
-.timeline-marker-warning { background: linear-gradient(135deg, #f59e0b, #d97706); }
+.timeline-marker-primary { background: var(--gradient-primary); }
+.timeline-marker-success { background: var(--gradient-success); }
+.timeline-marker-info { background: var(--gradient-info); }
+.timeline-marker-warning { background: var(--gradient-warning); }
+
+.timeline-content {
+    flex: 1;
+}
 
 .timeline-title {
     font-weight: 500;
@@ -699,8 +785,11 @@ body {
 }
 
 .timeline-time {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     font-size: 0.875rem;
-    color: var(--text-secondary);
+    color: var(--text-muted);
 }
 
 /* Quick Actions */
@@ -708,6 +797,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
+    margin-bottom: 1.5rem;
 }
 
 .quick-action-item {
@@ -715,19 +805,19 @@ body {
     align-items: center;
     gap: 1rem;
     padding: 1rem;
-    background: rgba(59, 130, 246, 0.05);
+    background: rgba(var(--primary-rgb), 0.05);
+    border: 1px solid rgba(var(--primary-rgb), 0.1);
     border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
     text-decoration: none;
     color: inherit;
-    transition: all 0.3s ease;
-    border: 1px solid rgba(59, 130, 246, 0.1);
 }
 
 .quick-action-item:hover {
-    background: rgba(59, 130, 246, 0.1);
+    background: rgba(var(--primary-rgb), 0.1);
     transform: translateY(-2px);
     color: inherit;
-    text-decoration: none;
 }
 
 .quick-action-icon {
@@ -739,6 +829,16 @@ body {
     justify-content: center;
     color: white;
     font-size: 1.125rem;
+    flex-shrink: 0;
+}
+
+.quick-action-icon.bg-primary { background: var(--gradient-primary); }
+.quick-action-icon.bg-info { background: var(--gradient-info); }
+.quick-action-icon.bg-success { background: var(--gradient-success); }
+.quick-action-icon.bg-warning { background: var(--gradient-warning); }
+
+.quick-action-content {
+    flex: 1;
 }
 
 .quick-action-title {
@@ -748,12 +848,12 @@ body {
 }
 
 .quick-action-subtitle {
-    color: var(--text-secondary);
+    color: var(--text-muted);
+    font-size: 0.875rem;
 }
 
 .quick-action-arrow {
-    margin-left: auto;
-    color: var(--text-secondary);
+    color: var(--text-muted);
     font-size: 0.875rem;
     opacity: 0;
     transform: translateX(-10px);
@@ -787,7 +887,7 @@ body {
 
 .summary-item {
     padding: 0.75rem;
-    background: rgba(59, 130, 246, 0.05);
+    background: rgba(var(--primary-rgb), 0.05);
     border-radius: 8px;
 }
 
@@ -800,27 +900,27 @@ body {
 
 .summary-label {
     font-size: 0.75rem;
-    color: var(--text-secondary);
+    color: var(--text-muted);
     font-weight: 500;
 }
 
 /* Responsive Design */
+@media (max-width: 1024px) {
+    .charts-grid,
+    .activities-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 @media (max-width: 768px) {
-    .dashboard-title {
-        font-size: 1.75rem;
+    .stats-grid {
+        grid-template-columns: 1fr;
     }
     
-    .dashboard-subtitle {
-        font-size: 1rem;
-    }
-    
-    .stat-card-body {
-        padding: 1.5rem;
-    }
-    
-    .card-header-modern,
-    .card-body-modern {
-        padding: 1rem;
+    .stat-card {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.75rem;
     }
     
     .summary-grid {
@@ -829,5 +929,3 @@ body {
     }
 }
 </style>
-
-</div> <!-- End global-main-container -->

@@ -1,329 +1,565 @@
-<?php
-/**
- * Finances - Total Revenue View
- */
-?>
+<!-- 1. TÍTULO DA PÁGINA - ISOLADO -->
+<div class="page-title-section">
+    <div class="page-title-container">
+        <h1 class="main-page-title">
+            <i class="fas fa-chart-area page-icon"></i>
+            Gestão Financeira
+        </h1>
+    </div>
+</div>
 
-<div class="page-header mb-4">
-    <div class="d-flex justify-content-between align-items-center">
-        <div>
-            <h1 class="page-title">
-                <i class="fas fa-chart-area me-3 text-success"></i>
-                Total Facturado
-            </h1>
-            <p class="page-subtitle text-muted">Visão geral das receitas totais do sistema</p>
-        </div>
-        <div class="page-actions">
-            <select class="form-select me-2" id="yearFilter">
+<!-- 2. CONTROLOS PRINCIPAIS -->
+<div class="controls-section">
+    <div class="controls-container">
+        <div class="control-group">
+            <select class="control-select" id="yearFilter">
                 <option value="<?= date('Y') ?>" selected><?= date('Y') ?></option>
                 <option value="<?= date('Y') - 1 ?>"><?= date('Y') - 1 ?></option>
                 <option value="<?= date('Y') - 2 ?>"><?= date('Y') - 2 ?></option>
             </select>
-            <button class="btn btn-outline-primary">
-                <i class="fas fa-download me-2"></i>
-                Exportar
+            
+            <button type="button" class="control-button export-button" onclick="openExportCard()">
+                <i class="fas fa-download"></i>
+                Exportar Dados
             </button>
         </div>
     </div>
 </div>
 
-<!-- Revenue Overview Cards -->
-<div class="row mb-4">
-    <div class="col-lg-3 col-md-6">
+<!-- 3. ESTATÍSTICAS PRINCIPAIS -->
+<div class="stats-section">
+    <div class="stats-grid">
+        <!-- Total Revenue -->
         <div class="stat-card">
-            <div class="stat-card-body">
-                <div class="d-flex align-items-center">
-                    <div class="stat-icon bg-gradient-success me-3">
-                        <i class="fas fa-dollar-sign"></i>
-                    </div>
-                    <div>
-                        <h3 class="stat-value"><?= formatCurrency($totalRevenue ?? 0) ?></h3>
-                        <p class="stat-label">Receita Total</p>
-                        <span class="stat-change positive">
-                            <i class="fas fa-arrow-up"></i> +15.3%
-                        </span>
-                    </div>
+            <div class="stat-icon stat-icon-success">
+                <i class="fas fa-dollar-sign"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value"><?= formatCurrency($totalRevenue ?? 0) ?></div>
+                <div class="stat-label">Receita Total</div>
+                <div class="stat-trend trend-up">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+15.3%</span>
+                    <small>vs período anterior</small>
                 </div>
             </div>
         </div>
-    </div>
-    
-    <div class="col-lg-3 col-md-6">
+        
+        <!-- Monthly Average -->
         <div class="stat-card">
-            <div class="stat-card-body">
-                <div class="d-flex align-items-center">
-                    <div class="stat-icon bg-gradient-primary me-3">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <div>
-                        <h3 class="stat-value"><?= formatCurrency(($stats['monthly_avg'] ?? 0)) ?></h3>
-                        <p class="stat-label">Média Mensal</p>
-                        <span class="stat-change positive">
-                            <i class="fas fa-arrow-up"></i> +8.2%
-                        </span>
-                    </div>
+            <div class="stat-icon stat-icon-primary">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value"><?= formatCurrency(($stats['monthly_avg'] ?? 0)) ?></div>
+                <div class="stat-label">Média Mensal</div>
+                <div class="stat-trend trend-up">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+8.2%</span>
+                    <small>vs período anterior</small>
                 </div>
             </div>
         </div>
-    </div>
-    
-    <div class="col-lg-3 col-md-6">
+        
+        <!-- This Month -->
         <div class="stat-card">
-            <div class="stat-card-body">
-                <div class="d-flex align-items-center">
-                    <div class="stat-icon bg-gradient-warning me-3">
-                        <i class="fas fa-calendar-alt"></i>
-                    </div>
-                    <div>
-                        <h3 class="stat-value"><?= formatCurrency(($stats['this_month'] ?? 0)) ?></h3>
-                        <p class="stat-label">Este Mês</p>
-                        <span class="stat-change positive">
-                            <i class="fas fa-arrow-up"></i> +12.1%
-                        </span>
-                    </div>
+            <div class="stat-icon stat-icon-warning">
+                <i class="fas fa-calendar-alt"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value"><?= formatCurrency(($stats['this_month'] ?? 0)) ?></div>
+                <div class="stat-label">Este Mês</div>
+                <div class="stat-trend trend-up">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+12.1%</span>
+                    <small>vs mês anterior</small>
                 </div>
             </div>
         </div>
-    </div>
-    
-    <div class="col-lg-3 col-md-6">
+        
+        <!-- Paying Clients -->
         <div class="stat-card">
-            <div class="stat-card-body">
-                <div class="d-flex align-items-center">
-                    <div class="stat-icon bg-gradient-info me-3">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <div>
-                        <h3 class="stat-value"><?= number_format($stats['total_clients'] ?? 0) ?></h3>
-                        <p class="stat-label">Clientes Pagantes</p>
-                        <span class="stat-change positive">
-                            <i class="fas fa-arrow-up"></i> +5.7%
-                        </span>
-                    </div>
+            <div class="stat-icon stat-icon-info">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value"><?= number_format($stats['total_clients'] ?? 0) ?></div>
+                <div class="stat-label">Clientes Pagantes</div>
+                <div class="stat-trend trend-up">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+5.7%</span>
+                    <small>novos clientes</small>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Revenue Chart -->
-<div class="row mb-4">
-    <div class="col-xl-8">
-        <div class="chart-card">
-            <div class="chart-header">
-                <h4 class="chart-title">Evolução da Receita</h4>
-                <div class="chart-actions">
-                    <div class="btn-group btn-group-sm" role="group">
-                        <button type="button" class="btn btn-outline-primary active" data-period="month">Mensal</button>
-                        <button type="button" class="btn btn-outline-primary" data-period="quarter">Trimestral</button>
-                        <button type="button" class="btn btn-outline-primary" data-period="year">Anual</button>
+<!-- 4. GRÁFICOS E ANÁLISES -->
+<div class="charts-section">
+    <div class="charts-grid">
+        <!-- Revenue Chart -->
+        <div class="chart-card main-chart">
+            <div class="card-header">
+                <div class="card-title">
+                    <i class="fas fa-chart-line"></i>
+                    <div class="title-content">
+                        <h3>Evolução da Receita</h3>
+                        <small>Análise temporal das receitas</small>
+                    </div>
+                </div>
+                <div class="chart-controls">
+                    <div class="period-buttons">
+                        <button class="period-btn active" data-period="month">Mensal</button>
+                        <button class="period-btn" data-period="quarter">Trimestral</button>
+                        <button class="period-btn" data-period="year">Anual</button>
                     </div>
                 </div>
             </div>
-            <div class="chart-container">
-                <canvas id="revenueChart"></canvas>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Top Clients -->
+        <div class="chart-card side-chart">
+            <div class="card-header">
+                <div class="card-title">
+                    <i class="fas fa-crown"></i>
+                    <div class="title-content">
+                        <h3>Top Clientes</h3>
+                        <small>Maiores contribuidores</small>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="top-clients-list">
+                    <?php if (!empty($topClients)): ?>
+                        <?php foreach ($topClients as $index => $client): ?>
+                            <div class="client-item">
+                                <div class="client-info">
+                                    <div class="client-avatar">
+                                        <?= strtoupper(substr($client['name'] ?? 'C', 0, 1)) ?>
+                                    </div>
+                                    <div class="client-details">
+                                        <div class="client-name"><?= e($client['name'] ?? 'Cliente') ?></div>
+                                        <div class="client-amount"><?= formatCurrency($client['total_spent'] ?? 0) ?></div>
+                                    </div>
+                                </div>
+                                <div class="client-rank">#<?= $index + 1 ?></div>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <h4>Sem dados de clientes</h4>
+                            <p>Nenhum dado disponível</p>
+                        </div>
+                    <?php endif; ?>
+                </div>
             </div>
         </div>
     </div>
-    
-    <div class="col-xl-4">
-        <div class="chart-card">
-            <div class="chart-header">
-                <h4 class="chart-title">Top Clientes</h4>
+</div>
+
+<!-- 5. TABELA DE TRANSAÇÕES -->
+<div class="data-table-section">
+    <div class="data-table-container">
+        <div class="table-header">
+            <div class="table-title">
+                <i class="fas fa-receipt"></i>
+                <h3>Transações Recentes</h3>
             </div>
-            <div class="top-clients-list">
-                <?php if (!empty($topClients)): ?>
-                    <?php foreach ($topClients as $index => $client): ?>
-                        <div class="client-item">
-                            <div class="client-info">
-                                <div class="client-avatar">
-                                    <?= strtoupper(substr($client['name'] ?? 'C', 0, 1)) ?>
-                                </div>
-                                <div class="client-details">
-                                    <h6><?= e($client['name'] ?? 'Cliente') ?></h6>
-                                    <p><?= formatCurrency($client['total_spent'] ?? 0) ?></p>
-                                </div>
-                            </div>
-                            <div class="client-rank">
-                                #<?= $index + 1 ?>
+            <button type="button" class="table-action-button" onclick="openTransactionDetails()">
+                <i class="fas fa-list"></i>
+                Ver Todas
+            </button>
+        </div>
+        
+        <div class="table-wrapper">
+            <?php if (!empty($recentTransactions)): ?>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-calendar"></i>Data</th>
+                            <th><i class="fas fa-user"></i>Cliente</th>
+                            <th><i class="fas fa-file-alt"></i>Descrição</th>
+                            <th><i class="fas fa-money-bill"></i>Valor</th>
+                            <th><i class="fas fa-check-circle"></i>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($recentTransactions as $transaction): ?>
+                            <tr>
+                                <td><?= formatDate($transaction['created_at'] ?? '') ?></td>
+                                <td>
+                                    <div class="client-cell">
+                                        <div class="client-mini-avatar">
+                                            <?= strtoupper(substr($transaction['client_name'] ?? 'C', 0, 1)) ?>
+                                        </div>
+                                        <div class="client-mini-info">
+                                            <div class="client-mini-name"><?= e($transaction['client_name'] ?? 'Cliente') ?></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><?= e($transaction['description'] ?? 'Pagamento de serviço') ?></td>
+                                <td>
+                                    <span class="amount-value success"><?= formatCurrency($transaction['amount'] ?? 0) ?></span>
+                                </td>
+                                <td>
+                                    <span class="status-badge success">
+                                        <i class="fas fa-check"></i>
+                                        Pago
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="table-actions">
+                                        <button type="button" class="action-btn view-btn" onclick="openTransactionView('<?= $transaction['id'] ?? '' ?>')">
+                                            <i class="fas fa-eye"></i>
+                                            <span>Ver</span>
+                                        </button>
+                                        <button type="button" class="action-btn download-btn" onclick="downloadReceipt('<?= $transaction['id'] ?? '' ?>')">
+                                            <i class="fas fa-download"></i>
+                                            <span>Recibo</span>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            <?php else: ?>
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        <i class="fas fa-receipt"></i>
+                    </div>
+                    <h4>Nenhuma transação encontrada</h4>
+                    <p>Não há transações recentes para exibir</p>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL CARDS -->
+
+<!-- 1. EXPORT CARD -->
+<div class="card-overlay" id="exportCardOverlay" style="display: none;">
+    <div class="modal-card export-card">
+        <div class="card-header">
+            <div class="card-title">
+                <i class="fas fa-download"></i>
+                Exportar Dados Financeiros
+            </div>
+            <button type="button" class="card-close" onclick="closeCard('exportCardOverlay')">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="card-body">
+            <form id="exportFinanceForm" onsubmit="handleExportSubmit(event)">
+                <div class="form-grid">
+                    <div class="form-column">
+                        <div class="form-group">
+                            <label for="export_format">Formato do Arquivo</label>
+                            <select id="export_format" name="format">
+                                <option value="csv">CSV (Excel)</option>
+                                <option value="pdf">PDF</option>
+                                <option value="xlsx">XLSX</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="export_period">Período</label>
+                            <select id="export_period" name="period">
+                                <option value="current_month">Mês Atual</option>
+                                <option value="last_month">Mês Anterior</option>
+                                <option value="current_year">Ano Atual</option>
+                                <option value="last_year">Ano Anterior</option>
+                                <option value="custom">Período Personalizado</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-column">
+                        <div class="form-group">
+                            <label for="export_data">Dados a Incluir</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="include_transactions" checked>
+                                    <span>Transações</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="include_clients" checked>
+                                    <span>Dados de Clientes</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="include_summary" checked>
+                                    <span>Resumo Estatístico</span>
+                                </label>
                             </div>
                         </div>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <div class="text-center text-muted py-4">
-                        <i class="fas fa-users fa-2x mb-3"></i>
-                        <p>Nenhum dado de cliente disponível</p>
+                        
+                        <div class="form-group custom-period" style="display: none;">
+                            <label for="export_date_from">Data Início</label>
+                            <input type="date" id="export_date_from" name="date_from">
+                            
+                            <label for="export_date_to" style="margin-top: 0.75rem;">Data Fim</label>
+                            <input type="date" id="export_date_to" name="date_to">
+                        </div>
                     </div>
-                <?php endif; ?>
-            </div>
+                </div>
+            </form>
+        </div>
+        
+        <div class="card-footer">
+            <button type="button" class="footer-btn cancel-btn" onclick="closeCard('exportCardOverlay')">
+                <i class="fas fa-times"></i>
+                Cancelar
+            </button>
+            <button type="submit" form="exportFinanceForm" class="footer-btn submit-btn">
+                <i class="fas fa-download"></i>
+                Exportar Dados
+            </button>
         </div>
     </div>
 </div>
 
-<!-- Recent Transactions -->
-<div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header">
-                <h4 class="card-title mb-0">Transações Recentes</h4>
-            </div>
-            <div class="card-body p-0">
-                <?php if (!empty($recentTransactions)): ?>
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead>
-                                <tr>
-                                    <th>Data</th>
-                                    <th>Cliente</th>
-                                    <th>Descrição</th>
-                                    <th>Valor</th>
-                                    <th>Status</th>
-                                    <th>Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($recentTransactions as $transaction): ?>
-                                    <tr>
-                                        <td><?= formatDate($transaction['created_at'] ?? '') ?></td>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <div class="user-avatar-sm me-2">
-                                                    <?= strtoupper(substr($transaction['client_name'] ?? 'C', 0, 1)) ?>
-                                                </div>
-                                                <?= e($transaction['client_name'] ?? 'Cliente') ?>
-                                            </div>
-                                        </td>
-                                        <td><?= e($transaction['description'] ?? 'Pagamento de serviço') ?></td>
-                                        <td class="fw-bold text-success"><?= formatCurrency($transaction['amount'] ?? 0) ?></td>
-                                        <td>
-                                            <span class="badge bg-success">Pago</span>
-                                        </td>
-                                        <td>
-                                            <div class="btn-group btn-group-sm">
-                                                <button class="btn btn-outline-primary" title="Ver detalhes">
-                                                    <i class="fas fa-eye"></i>
-                                                </button>
-                                                <button class="btn btn-outline-secondary" title="Baixar recibo">
-                                                    <i class="fas fa-download"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                <?php else: ?>
-                    <div class="text-center text-muted py-5">
-                        <i class="fas fa-receipt fa-3x mb-3"></i>
-                        <h5>Nenhuma transação encontrada</h5>
-                        <p>Não há transações recentes para exibir.</p>
-                    </div>
-                <?php endif; ?>
-            </div>
-        </div>
-    </div>
-</div>
+<script>
+// Global variables
+let currentExportSettings = {};
+
+// Card management functions
+function openExportCard() {
+    document.getElementById('exportCardOverlay').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeCard(overlayId) {
+    document.getElementById(overlayId).style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+// Export form handling
+document.addEventListener('DOMContentLoaded', function() {
+    // Period selection handler
+    const periodSelect = document.getElementById('export_period');
+    const customPeriodGroup = document.querySelector('.custom-period');
+    
+    if (periodSelect) {
+        periodSelect.addEventListener('change', function() {
+            if (this.value === 'custom') {
+                customPeriodGroup.style.display = 'block';
+            } else {
+                customPeriodGroup.style.display = 'none';
+            }
+        });
+    }
+    
+    // Year filter functionality
+    const yearFilter = document.getElementById('yearFilter');
+    if (yearFilter) {
+        yearFilter.addEventListener('change', function() {
+            window.location.href = window.location.pathname + '?year=' + this.value;
+        });
+    }
+    
+    // Period buttons functionality
+    const periodButtons = document.querySelectorAll('.period-btn');
+    periodButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            periodButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            
+            console.log('Period changed to:', this.dataset.period);
+            // Here you would update the chart data
+        });
+    });
+});
+
+// Form submission handlers
+async function handleExportSubmit(event) {
+    event.preventDefault();
+    
+    const formData = new FormData(event.target);
+    
+    try {
+        // Show loading state
+        const submitBtn = document.querySelector('#exportFinanceForm + .card-footer .submit-btn');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Exportando...';
+        submitBtn.disabled = true;
+        
+        // Simulate export process
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        // Reset button
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+        
+        closeCard('exportCardOverlay');
+        
+        // Show success message
+        alert('Exportação concluída com sucesso!');
+        
+    } catch (error) {
+        alert('Erro durante a exportação');
+    }
+}
+
+// Transaction actions
+function openTransactionView(transactionId) {
+    console.log('Opening transaction view:', transactionId);
+    // Implementation for viewing transaction details
+}
+
+function downloadReceipt(transactionId) {
+    console.log('Downloading receipt for transaction:', transactionId);
+    // Implementation for downloading receipt
+}
+
+function openTransactionDetails() {
+    console.log('Opening all transactions');
+    // Implementation for showing all transactions
+}
+
+// Close cards when clicking outside
+document.addEventListener('click', function(event) {
+    if (event.target.classList.contains('card-overlay')) {
+        const overlayId = event.target.id;
+        closeCard(overlayId);
+    }
+});
+
+// Close cards with Escape key
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        const openCards = ['exportCardOverlay'];
+        openCards.forEach(cardId => {
+            const card = document.getElementById(cardId);
+            if (card.style.display === 'flex') {
+                closeCard(cardId);
+            }
+        });
+    }
+});
+</script>
+
+<link rel="stylesheet" href="/css/global-design-system.css">
 
 <style>
-.stat-card {
-    background: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    border: 1px solid #e2e8f0;
-    transition: all 0.3s ease;
-    height: 100%;
+/* Finances specific overrides */
+.page-icon:before {
+    content: "\f1fe"; /* fa-chart-area */
 }
 
-.stat-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+/* Controls Section */
+.controls-section {
+    margin-bottom: 2rem;
 }
 
-.stat-card-body {
-    padding: 1.5rem;
-}
-
-.stat-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
+.controls-container {
     display: flex;
-    align-items: center;
     justify-content: center;
-    color: white;
-    font-size: 1.25rem;
 }
 
-.bg-gradient-success {
-    background: linear-gradient(135deg, #10b981, #059669);
-}
-
-.bg-gradient-primary {
-    background: linear-gradient(135deg, #3b82f6, #1e40af);
-}
-
-.bg-gradient-warning {
-    background: linear-gradient(135deg, #f59e0b, #d97706);
-}
-
-.bg-gradient-info {
-    background: linear-gradient(135deg, #06b6d4, #0891b2);
-}
-
-.stat-value {
-    font-size: 1.75rem;
-    font-weight: 700;
-    margin: 0;
-    color: #1f2937;
-}
-
-.stat-label {
-    color: #6b7280;
-    font-size: 0.875rem;
-    margin: 0.25rem 0 0.5rem 0;
-    font-weight: 500;
-}
-
-.stat-change {
-    font-size: 0.8125rem;
-    font-weight: 600;
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.5rem;
-}
-
-.stat-change.positive {
-    background: rgba(16, 185, 129, 0.1);
-    color: #059669;
-}
-
-.chart-card {
-    background: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    border: 1px solid #e2e8f0;
-    height: 100%;
-}
-
-.chart-header {
-    padding: 1.5rem 1.5rem 0;
-    border-bottom: 1px solid #e2e8f0;
-    margin-bottom: 1.5rem;
+.control-group {
     display: flex;
-    justify-content: between;
     align-items: center;
+    gap: 1rem;
 }
 
-.chart-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: #1f2937;
-    margin: 0;
+.control-select {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background: var(--card-background);
+    color: var(--text-primary);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
-.chart-container {
-    padding: 0 1.5rem 1.5rem;
-    height: 300px;
+.control-select:hover,
+.control-select:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.1);
+}
+
+.export-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: var(--gradient-primary);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.export-button:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-hover);
+}
+
+/* Stats Section - Override for financial stats */
+.stat-icon-success { background: var(--gradient-success); }
+.stat-icon-primary { background: var(--gradient-primary); }
+.stat-icon-warning { background: var(--gradient-warning); }
+.stat-icon-info { background: var(--gradient-info); }
+
+/* Chart Controls */
+.chart-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.period-buttons {
+    display: flex;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.period-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    background: var(--card-background);
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.period-btn:not(:last-child) {
+    border-right: 1px solid var(--border-color);
+}
+
+.period-btn:hover {
+    background: rgba(var(--primary-rgb), 0.05);
+    color: var(--primary-color);
+}
+
+.period-btn.active {
+    background: var(--primary-color);
+    color: white;
+}
+
+/* Top Clients List */
+.top-clients-list {
+    max-height: 400px;
+    overflow-y: auto;
 }
 
 .client-item {
@@ -331,111 +567,244 @@
     align-items: center;
     justify-content: space-between;
     padding: 1rem;
-    border-bottom: 1px solid #f3f4f6;
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.2s ease;
 }
 
 .client-item:last-child {
     border-bottom: none;
 }
 
+.client-item:hover {
+    background: rgba(var(--primary-rgb), 0.02);
+}
+
 .client-info {
     display: flex;
     align-items: center;
     gap: 0.75rem;
+    flex: 1;
 }
 
 .client-avatar {
-    width: 36px;
-    height: 36px;
-    background: linear-gradient(135deg, #3b82f6, #1e40af);
+    width: 40px;
+    height: 40px;
+    background: var(--gradient-primary);
     color: white;
-    border-radius: 8px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 600;
     font-size: 0.875rem;
+    flex-shrink: 0;
 }
 
-.client-details h6 {
-    margin: 0;
+.client-details {
+    flex: 1;
+}
+
+.client-name {
     font-size: 0.875rem;
     font-weight: 600;
-    color: #1f2937;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
 }
 
-.client-details p {
-    margin: 0;
+.client-amount {
     font-size: 0.75rem;
-    color: #059669;
+    color: var(--color-success);
     font-weight: 600;
 }
 
 .client-rank {
     font-size: 0.875rem;
     font-weight: 600;
-    color: #6b7280;
+    color: var(--text-muted);
+    min-width: 2rem;
+    text-align: right;
+}
+
+/* Table specific styles */
+.client-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.client-mini-avatar {
+    width: 32px;
+    height: 32px;
+    background: var(--gradient-primary);
+    color: white;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.75rem;
+    flex-shrink: 0;
+}
+
+.client-mini-name {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.amount-value {
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.amount-value.success {
+    color: var(--color-success);
+}
+
+/* Status badges */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.status-badge.success {
+    background: rgba(var(--success-rgb), 0.1);
+    color: var(--color-success);
+}
+
+/* Export card specific styles */
+.export-card {
+    max-width: 600px;
+}
+
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.checkbox-item input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--primary-color);
+}
+
+.checkbox-item span {
+    font-size: 0.875rem;
+    color: var(--text-primary);
+}
+
+/* Table Actions */
+.table-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.table-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.table-title i {
+    width: 40px;
+    height: 40px;
+    background: var(--gradient-primary);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1rem;
+}
+
+.table-title h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.table-action-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.table-action-button:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .period-buttons {
+        flex-wrap: wrap;
+    }
 }
 
 @media (max-width: 768px) {
-    .page-header {
+    .controls-container {
+        justify-content: stretch;
+    }
+    
+    .control-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .export-button {
+        justify-content: center;
+    }
+    
+    .table-header {
         flex-direction: column;
         align-items: stretch;
         gap: 1rem;
     }
     
-    .page-actions {
-        display: flex;
-        gap: 0.5rem;
+    .client-item {
+        padding: 0.75rem;
     }
     
-    .stat-card {
-        margin-bottom: 1rem;
+    .client-avatar {
+        width: 36px;
+        height: 36px;
+        font-size: 0.8125rem;
     }
     
-    .chart-card {
-        margin-bottom: 1rem;
-    }
-    
-    .chart-container {
-        height: 250px;
+    .client-mini-avatar {
+        width: 28px;
+        height: 28px;
+        font-size: 0.7rem;
     }
 }
 </style>
-
-<script>
-// Finance dashboard functionality
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('Finance dashboard loaded');
-    
-    // Year filter functionality
-    const yearFilter = document.getElementById('yearFilter');
-    if (yearFilter) {
-        yearFilter.addEventListener('change', function() {
-            // Reload page with new year parameter
-            window.location.href = window.location.pathname + '?year=' + this.value;
-        });
-    }
-    
-    // Period buttons functionality
-    const periodButtons = document.querySelectorAll('[data-period]');
-    periodButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            // Remove active class from all buttons
-            periodButtons.forEach(btn => btn.classList.remove('active'));
-            // Add active class to clicked button
-            this.classList.add('active');
-            
-            // Here you would typically update the chart data
-            console.log('Period changed to:', this.dataset.period);
-        });
-    });
-});
-
-// Export functionality
-function exportFinanceData() {
-    // Implementation for exporting finance data
-    console.log('Exporting finance data...');
-    alert('Funcionalidade de exportação será implementada em breve.');
-}
-</script>
