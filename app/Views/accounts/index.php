@@ -744,9 +744,9 @@
     background: white;
     border-radius: 16px;
     box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
-    max-width: 900px;
+    max-width: 800px;
     width: 100%;
-    max-height: 90vh;
+    max-height: 85vh;
     overflow: hidden;
     display: none;
     animation: slideInScale 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -853,7 +853,7 @@
 /* Card Body */
 .card-body {
     padding: 1.5rem;
-    max-height: 60vh;
+    max-height: 55vh;
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: #d1d5db transparent;
@@ -1902,6 +1902,432 @@ input:checked + .toggle-slider:before {
     .strength-text-mini {
         text-align: left;
         min-width: auto;
+    }
+}
+
+/* Layout específico para modal de edição */
+.form-row-full {
+    width: 100%;
+}
+
+.form-textarea.compact {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: white;
+    transition: all 0.2s ease;
+    resize: vertical;
+    min-height: 2.5rem;
+}
+
+.form-textarea.compact:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    outline: none;
+}
+
+/* Toggle switch compacto */
+.status-toggle-compact {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.toggle-switch-mini {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+}
+
+.toggle-switch-mini input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider-mini {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.3s;
+    border-radius: 24px;
+}
+
+.toggle-slider-mini:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.3s;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-switch-mini input:checked + .toggle-slider-mini {
+    background-color: #3b82f6;
+}
+
+.toggle-switch-mini input:checked + .toggle-slider-mini:before {
+    transform: translateX(20px);
+}
+
+.toggle-label-mini {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: #374151;
+}
+
+/* =====================================
+   MODAL DE VISUALIZAÇÃO MODERNIZADO
+   ===================================== */
+
+/* Header do perfil moderno */
+.modern-profile-header {
+    margin: -1.5rem -1.5rem 1.5rem -1.5rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 1.5rem 1.5rem 1rem 1.5rem;
+    border-radius: 0 0 20px 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.modern-profile-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    z-index: 1;
+}
+
+.profile-banner {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.profile-avatar-container {
+    position: relative;
+}
+
+.profile-avatar-large {
+    width: 64px;
+    height: 64px;
+    background: linear-gradient(135deg, #ffffff, #f8fafc);
+    color: #667eea;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.5rem;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-avatar-large img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 17px;
+}
+
+.avatar-status-indicator {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    width: 20px;
+    height: 20px;
+    background: #10b981;
+    border: 3px solid white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.avatar-status-indicator i {
+    font-size: 8px;
+    color: white;
+}
+
+.avatar-status-indicator.inactive {
+    background: #6b7280;
+}
+
+.avatar-status-indicator.pending {
+    background: #f59e0b;
+}
+
+.profile-main-info {
+    flex: 1;
+    color: white;
+}
+
+.profile-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0 0 0.25rem 0;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.profile-email {
+    font-size: 0.9375rem;
+    margin: 0 0 1rem 0;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 400;
+}
+
+.profile-badges {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.status-badge,
+.account-type-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 0.375rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: white;
+}
+
+.status-badge.active {
+    background: rgba(16, 185, 129, 0.2);
+    border-color: rgba(16, 185, 129, 0.3);
+}
+
+.status-badge.inactive {
+    background: rgba(107, 114, 128, 0.2);
+    border-color: rgba(107, 114, 128, 0.3);
+}
+
+.status-badge.pending {
+    background: rgba(245, 158, 11, 0.2);
+    border-color: rgba(245, 158, 11, 0.3);
+}
+
+/* Grid moderno de informações */
+.modern-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.info-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.info-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.info-card.activity-card {
+    grid-column: 1 / -1;
+}
+
+.info-card-header {
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.info-card-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.info-card-icon.personal {
+    background: linear-gradient(135deg, #3b82f6, #1e40af);
+}
+
+.info-card-icon.account {
+    background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.info-card-icon.activity {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.info-card-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+}
+
+.info-card-content {
+    padding: 1rem;
+}
+
+.info-row {
+    margin-bottom: 0.75rem;
+}
+
+.info-row:last-child {
+    margin-bottom: 0;
+}
+
+.info-item-modern {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+
+.info-icon {
+    width: 20px;
+    height: 20px;
+    color: #6b7280;
+    font-size: 0.875rem;
+    margin-top: 0.125rem;
+    flex-shrink: 0;
+}
+
+.info-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.info-label-modern {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    margin-bottom: 0.25rem;
+}
+
+.info-value-modern {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: #1f2937;
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+.info-value-modern.email-link {
+    color: #3b82f6;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.info-value-modern.email-link:hover {
+    color: #1e40af;
+    text-decoration: underline;
+}
+
+.info-value-modern.username-value {
+    font-family: 'Courier New', monospace;
+    background: #f1f5f9;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .modern-info-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .profile-banner {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+
+    .profile-badges {
+        justify-content: center;
+    }
+
+    .profile-avatar-large {
+        width: 70px;
+        height: 70px;
+        font-size: 1.5rem;
+    }
+
+    .profile-name {
+        font-size: 1.25rem;
+    }
+
+    .modern-profile-header {
+        margin: -1.5rem -1rem 1.5rem -1rem;
+        padding: 1.5rem 1rem;
+    }
+
+    .info-card-content {
+        padding: 1rem;
+    }
+
+    .info-item-modern {
+        gap: 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .info-card-header {
+        padding: 0.75rem 1rem;
+    }
+
+    .info-card-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 0.875rem;
+    }
+
+    .info-card-title {
+        font-size: 0.875rem;
+    }
+
+    .status-badge,
+    .account-type-badge {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
     }
 }
 
@@ -3530,86 +3956,153 @@ input:checked + .toggle-slider:before {
         </div>
         
         <div class="card-body">
-            <!-- Profile Header -->
-            <div class="admin-profile-header">
-                <div class="profile-avatar-large">
-                    <span id="viewAdminInitials">JS</span>
-                </div>
-                <div class="profile-info">
-                    <h4 class="profile-name" id="viewAdminName">Nome do Administrador</h4>
-                    <p class="profile-role" id="viewAdminRole">Administrador</p>
-                    <div class="profile-status" id="viewAdminStatus">
-                        <div class="status-indicator"></div>
-                        <span>Status</span>
+            <!-- Modern Profile Header -->
+            <div class="modern-profile-header">
+                <div class="profile-banner">
+                    <div class="profile-avatar-container">
+                        <div class="profile-avatar-large" id="viewAdminAvatar">
+                            <img id="viewAdminImage" src="" alt="Avatar" style="display: none;">
+                            <span id="viewAdminInitials">JS</span>
+                        </div>
+                        <div class="avatar-status-indicator" id="viewAvatarStatus">
+                            <i class="fas fa-circle"></i>
+                        </div>
+                    </div>
+                    <div class="profile-main-info">
+                        <h4 class="profile-name" id="viewAdminName">Nome do Administrador</h4>
+                        <p class="profile-email" id="viewAdminEmailHeader">email@exemplo.com</p>
+                        <div class="profile-badges">
+                            <div class="status-badge" id="viewStatusBadge">
+                                <i class="fas fa-circle"></i>
+                                <span id="viewStatusText">Ativo</span>
+                            </div>
+                            <div class="account-type-badge" id="viewAccountTypeBadge">
+                                <i class="fas fa-user-shield"></i>
+                                <span id="viewAccountTypeText">Administrador</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            
-            <!-- Info Columns -->
-            <div class="info-columns">
-                <!-- Coluna Esquerda -->
-                <div class="info-column">
-                    <div class="info-section">
-                        <h5 class="info-section-title">
+
+            <!-- Modern Info Grid -->
+            <div class="modern-info-grid">
+                <!-- Card Informações Pessoais -->
+                <div class="info-card">
+                    <div class="info-card-header">
+                        <div class="info-card-icon personal">
                             <i class="fas fa-user"></i>
-                            Informações Pessoais
-                        </h5>
-                        
-                        <div class="info-item">
-                            <label class="info-label">Nome Completo</label>
-                            <div class="info-value" id="viewFullName">-</div>
                         </div>
-                        
-                        <div class="info-item">
-                            <label class="info-label">Endereço de Email</label>
-                            <div class="info-value email-value" id="viewEmail">-</div>
+                        <h5 class="info-card-title">Informações Pessoais</h5>
+                    </div>
+                    <div class="info-card-content">
+                        <div class="info-row">
+                            <div class="info-item-modern">
+                                <i class="fas fa-id-card info-icon"></i>
+                                <div class="info-content">
+                                    <label class="info-label-modern">Nome Completo</label>
+                                    <div class="info-value-modern" id="viewFullName">-</div>
+                                </div>
+                            </div>
                         </div>
-                        
-                        <div class="info-item">
-                            <label class="info-label">Contacto Telefónico</label>
-                            <div class="info-value" id="viewContact">Não informado</div>
+                        <div class="info-row">
+                            <div class="info-item-modern">
+                                <i class="fas fa-envelope info-icon"></i>
+                                <div class="info-content">
+                                    <label class="info-label-modern">Email</label>
+                                    <div class="info-value-modern email-link" id="viewEmail">-</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-item-modern">
+                                <i class="fas fa-phone info-icon"></i>
+                                <div class="info-content">
+                                    <label class="info-label-modern">Contacto</label>
+                                    <div class="info-value-modern" id="viewContact">Não informado</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                
-                <!-- Coluna Direita -->
-                <div class="info-column">
-                    <div class="info-section">
-                        <h5 class="info-section-title">
+
+                <!-- Card Informações da Conta -->
+                <div class="info-card">
+                    <div class="info-card-header">
+                        <div class="info-card-icon account">
                             <i class="fas fa-cogs"></i>
-                            Informações da Conta
-                        </h5>
-                        
-                        <div class="info-item">
-                            <label class="info-label">Nome de Usuário</label>
-                            <div class="info-value username-value" id="viewUsername">-</div>
                         </div>
-                        
-                        <div class="info-item">
-                            <label class="info-label">Data de Criação</label>
-                            <div class="info-value" id="viewCreatedAt">-</div>
+                        <h5 class="info-card-title">Informações da Conta</h5>
+                    </div>
+                    <div class="info-card-content">
+                        <div class="info-row">
+                            <div class="info-item-modern">
+                                <i class="fas fa-fingerprint info-icon"></i>
+                                <div class="info-content">
+                                    <label class="info-label-modern">ID do Sistema</label>
+                                    <div class="info-value-modern" id="viewAdminId">-</div>
+                                </div>
+                            </div>
                         </div>
-                        
-                        <div class="info-item">
-                            <label class="info-label">Última Atualização</label>
-                            <div class="info-value" id="viewUpdatedAt">-</div>
+                        <div class="info-row">
+                            <div class="info-item-modern">
+                                <i class="fas fa-user-circle info-icon"></i>
+                                <div class="info-content">
+                                    <label class="info-label-modern">Nome de Usuário</label>
+                                    <div class="info-value-modern username-value" id="viewUsername">-</div>
+                                </div>
+                            </div>
                         </div>
-                        
-                        <div class="info-item">
-                            <label class="info-label">Último Acesso</label>
-                            <div class="info-value" id="viewLastLogin">Nunca acessou</div>
+                        <div class="info-row">
+                            <div class="info-item-modern">
+                                <i class="fas fa-building info-icon"></i>
+                                <div class="info-content">
+                                    <label class="info-label-modern">Tipo de Conta</label>
+                                    <div class="info-value-modern" id="viewAccountTypeDetail">-</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            
-            <!-- Notas -->
-            <div class="info-section full-width">
-                <h5 class="info-section-title">
-                    <i class="fas fa-sticky-note"></i>
-                    Notas Adicionais
-                </h5>
-                <div class="notes-content" id="viewNotes">Nenhuma nota disponível.</div>
+
+                <!-- Card Atividade -->
+                <div class="info-card activity-card">
+                    <div class="info-card-header">
+                        <div class="info-card-icon activity">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h5 class="info-card-title">Atividade e Histórico</h5>
+                    </div>
+                    <div class="info-card-content">
+                        <div class="info-row">
+                            <div class="info-item-modern">
+                                <i class="fas fa-calendar-plus info-icon"></i>
+                                <div class="info-content">
+                                    <label class="info-label-modern">Criado em</label>
+                                    <div class="info-value-modern" id="viewCreatedAt">-</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-item-modern">
+                                <i class="fas fa-calendar-check info-icon"></i>
+                                <div class="info-content">
+                                    <label class="info-label-modern">Última Atualização</label>
+                                    <div class="info-value-modern" id="viewUpdatedAt">-</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-item-modern">
+                                <i class="fas fa-sign-in-alt info-icon"></i>
+                                <div class="info-content">
+                                    <label class="info-label-modern">Último Acesso</label>
+                                    <div class="info-value-modern" id="viewLastLogin">Nunca acessou</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         
@@ -3636,7 +4129,7 @@ input:checked + .toggle-slider:before {
                 </div>
                 <div class="card-title-group">
                     <h3 class="card-title">Editar Administrador</h3>
-                    <p class="card-subtitle">Atualize as informações do administrador</p>
+                    <p class="card-subtitle">Atualize as informações e configurações da conta</p>
                 </div>
             </div>
             <button class="card-close-btn" onclick="closeCard()">
@@ -3650,104 +4143,210 @@ input:checked + .toggle-slider:before {
                 <?= methodField('PUT') ?>
                 <input type="hidden" name="admin_id" id="editAdminId">
                 
-                <!-- Campos organizados em duas colunas -->
-                <div class="form-columns">
-                    <!-- Coluna Esquerda -->
-                    <div class="form-column left-column">
-                        <div class="form-section">
-                            <h4 class="section-title">
-                                <i class="fas fa-user"></i>
-                                Informações Pessoais
-                            </h4>
-                            
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-signature"></i>
-                                    Nome Completo *
-                                </label>
-                                <input type="text" name="name" id="editName" class="form-input" 
-                                       placeholder="Ex: João Silva Santos" required>
-                                <small class="form-hint">Nome que será exibido no sistema</small>
+                <!-- Layout compacto otimizado para edição -->
+                <div class="compact-form-layout">
+                    <!-- Linha 1: Informações principais em grid -->
+                    <div class="form-row-grid">
+                        <div class="form-group compact">
+                            <label class="form-label compact">
+                                <i class="fas fa-signature"></i>Nome Completo *
+                            </label>
+                            <input type="text" name="name" id="editName" class="form-input compact"
+                                   placeholder="Ex: João Silva Santos" required>
+                        </div>
+
+                        <div class="form-group compact">
+                            <label class="form-label compact">
+                                <i class="fas fa-envelope"></i>Email *
+                            </label>
+                            <input type="email" name="email" id="editEmail" class="form-input compact"
+                                   placeholder="admin@empresa.com" required>
+                        </div>
+
+                        <div class="form-group compact">
+                            <label class="form-label compact">
+                                <i class="fas fa-phone"></i>Contacto
+                            </label>
+                            <input type="tel" name="contact" id="editContact" class="form-input compact"
+                                   placeholder="+244 912 345 678">
+                        </div>
+                    </div>
+
+                    <!-- Linha 2: Senha com validação compacta -->
+                    <div class="form-row-password">
+                        <div class="form-group compact">
+                            <label class="form-label compact">
+                                <i class="fas fa-lock"></i>Nova Senha (opcional)
+                            </label>
+                            <div class="password-input-wrapper">
+                                <input type="password" name="password" id="editPassword" class="form-input compact password-input"
+                                       placeholder="Digite uma nova senha (deixe vazio para manter atual)" minlength="8">
+                                <button type="button" class="password-toggle-btn compact" onclick="togglePasswordVisibility('editPassword')">
+                                    <i class="fas fa-eye" id="editPasswordToggleIcon"></i>
+                                </button>
                             </div>
-                            
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-envelope"></i>
-                                    Endereço de Email *
-                                </label>
-                                <input type="email" name="email" id="editEmail" class="form-input" 
-                                       placeholder="admin@empresa.com" required>
-                                <small class="form-hint">Email será usado para login</small>
+
+                            <!-- Indicador compacto de força da senha -->
+                            <div class="password-strength-compact">
+                                <div class="strength-bar-mini">
+                                    <div class="strength-fill" id="editPasswordStrengthFill"></div>
+                                </div>
+                                <span class="strength-text-mini" id="editPasswordStrengthText">Força da senha</span>
                             </div>
-                            
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-phone"></i>
-                                    Contacto Telefónico
-                                </label>
-                                <input type="tel" name="contact" id="editContact" class="form-input" 
-                                       placeholder="+351 912 345 678">
-                                <small class="form-hint">Formato: +351 912 345 678</small>
+
+                            <!-- Requisitos compactos (ocultos por padrão) -->
+                            <div class="password-requirements-compact" id="editPasswordRequirements">
+                                <div class="requirements-grid">
+                                    <div class="requirement compact" id="edit-req-length">
+                                        <i class="requirement-icon-mini"></i><span>8+ chars</span>
+                                    </div>
+                                    <div class="requirement compact" id="edit-req-uppercase">
+                                        <i class="requirement-icon-mini"></i><span>A-Z</span>
+                                    </div>
+                                    <div class="requirement compact" id="edit-req-lowercase">
+                                        <i class="requirement-icon-mini"></i><span>a-z</span>
+                                    </div>
+                                    <div class="requirement compact" id="edit-req-number">
+                                        <i class="requirement-icon-mini"></i><span>0-9</span>
+                                    </div>
+                                    <div class="requirement compact" id="edit-req-special">
+                                        <i class="requirement-icon-mini"></i><span>!@#</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Coluna Direita -->
-                    <div class="form-column right-column">
-                        <div class="form-section">
-                            <h4 class="section-title">
-                                <i class="fas fa-cogs"></i>
-                                Configurações da Conta
-                            </h4>
-                            
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-user-circle"></i>
-                                    Nome de Usuário *
-                                </label>
-                                <input type="text" name="username" id="editUsername" class="form-input" 
-                                       placeholder="joao.silva" required>
-                                <small class="form-hint">Usado para identificação interna</small>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-user-shield"></i>
-                                    Função/Papel
-                                </label>
-                                <select name="role_id" id="editRole" class="form-select">
-                                    <option value="">Selecionar função...</option>
-                                    <option value="1">Super Administrador</option>
-                                    <option value="2">Administrador</option>
-                                    <option value="3">Gestor</option>
-                                    <option value="4">Operador</option>
-                                </select>
-                                <small class="form-hint">Define as permissões do usuário</small>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-toggle-on"></i>
-                                    Status da Conta
-                                </label>
-                                <div class="status-toggle">
-                                    <input type="hidden" name="state" value="INACTIVE">
-                                    <label class="toggle-switch">
-                                        <input type="checkbox" name="is_active" id="editIsActive" value="1">
-                                        <span class="toggle-slider"></span>
-                                    </label>
-                                    <span class="toggle-label">Conta Ativa</span>
+
+                    <!-- Linha 3: Configurações em linha horizontal -->
+                    <div class="form-row-configs">
+                        <div class="form-group compact half-width">
+                            <label class="form-label compact">
+                                <i class="fas fa-building"></i>Tipo de Conta *
+                            </label>
+                            <select name="accountTypeId" id="editAccountTypeId" class="form-select compact" required>
+                                <option value="">Selecionar...</option>
+                                <?php if (!empty($accountTypes)): ?>
+                                    <?php foreach ($accountTypes as $type): ?>
+                                        <option value="<?= $type['id'] ?>">
+                                            <?= e($type['type']) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <option value="1">INDIVIDUAL</option>
+                                    <option value="2">CORPORATE</option>
+                                <?php endif; ?>
+                            </select>
+                        </div>
+
+                        <div class="form-group compact half-width">
+                            <label class="form-label compact">
+                                <i class="fas fa-toggle-on"></i>Estado *
+                            </label>
+                            <select name="stateId" id="editStateId" class="form-select compact" required>
+                                <option value="">Selecionar...</option>
+                                <?php if (!empty($states)): ?>
+                                    <?php foreach ($states as $state): ?>
+                                        <option value="<?= $state['id'] ?>">
+                                            <?= e($state['state']) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <option value="1">ACTIVE</option>
+                                    <option value="2">INACTIVE</option>
+                                    <option value="3">PENDING</option>
+                                    <option value="4">ELIMINATED</option>
+                                <?php endif; ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Linha 4: Imagem opcional (colapsível) -->
+                    <div class="form-row-optional">
+                        <div class="optional-section">
+                            <button type="button" class="optional-toggle" onclick="toggleOptionalFieldsEdit()">
+                                <i class="fas fa-chevron-right" id="optionalToggleIconEdit"></i>
+                                <span>Configurações de Imagem</span>
+                            </button>
+                            <div class="optional-content" id="optionalFieldsEdit" style="display: none;">
+                                <div class="image-upload-section">
+                                    <div class="upload-options-header">
+                                        <h5 class="upload-section-title">
+                                            <i class="fas fa-image"></i>
+                                            Imagem do Perfil
+                                        </h5>
+                                        <div class="upload-method-toggle">
+                                            <button type="button" class="method-btn active" data-method="url" onclick="switchUploadMethodEdit('url')">
+                                                <i class="fas fa-link"></i>URL
+                                            </button>
+                                            <button type="button" class="method-btn" data-method="file" onclick="switchUploadMethodEdit('file')">
+                                                <i class="fas fa-upload"></i>Upload
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Método URL -->
+                                    <div class="upload-method-content" id="urlMethodEdit">
+                                        <div class="form-group compact">
+                                            <label class="form-label compact">
+                                                <i class="fas fa-link"></i>URL da Imagem
+                                            </label>
+                                            <div class="url-input-wrapper">
+                                                <input type="url" name="img" id="editImageUrl" class="form-input compact"
+                                                       placeholder="https://exemplo.com/imagem.jpg"
+                                                       onchange="previewImageFromUrlEdit(this.value)">
+                                                <button type="button" class="url-preview-btn" onclick="previewImageFromUrlEdit(document.getElementById('editImageUrl').value)">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </div>
+                                            <small class="form-hint compact">Cole a URL direta da imagem</small>
+                                        </div>
+                                    </div>
+
+                                    <!-- Método Upload -->
+                                    <div class="upload-method-content" id="fileMethodEdit" style="display: none;">
+                                        <div class="form-group compact">
+                                            <label class="form-label compact">
+                                                <i class="fas fa-upload"></i>Selecionar Arquivo
+                                            </label>
+                                            <div class="file-upload-area" onclick="document.getElementById('editImageFile').click()">
+                                                <input type="file" id="editImageFile" name="imageFile" accept="image/*"
+                                                       style="display: none;" onchange="handleFileUploadEdit(this)">
+                                                <div class="upload-placeholder" id="uploadPlaceholderEdit">
+                                                    <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                                                    <span class="upload-text">Clique para selecionar arquivo</span>
+                                                    <small class="upload-hint">JPG, PNG, GIF até 5MB</small>
+                                                </div>
+                                                <div class="upload-preview" id="uploadPreviewEdit" style="display: none;">
+                                                    <img id="previewImageEdit" src="" alt="Preview">
+                                                    <div class="preview-overlay">
+                                                        <button type="button" class="change-file-btn" onclick="document.getElementById('editImageFile').click()">
+                                                            <i class="fas fa-edit"></i>Alterar
+                                                        </button>
+                                                        <button type="button" class="remove-file-btn" onclick="removeFileUploadEdit()">
+                                                            <i class="fas fa-trash"></i>Remover
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Preview Global -->
+                                    <div class="image-preview-section" id="imagePreviewSectionEdit" style="display: none;">
+                                        <label class="form-label compact">
+                                            <i class="fas fa-eye"></i>Preview
+                                        </label>
+                                        <div class="global-image-preview">
+                                            <img id="globalPreviewImageEdit" src="" alt="Preview da imagem">
+                                            <div class="preview-info">
+                                                <span class="preview-status">✅ Imagem carregada</span>
+                                                <button type="button" class="clear-preview-btn" onclick="clearImagePreviewEdit()">
+                                                    <i class="fas fa-times"></i>Limpar
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <small class="form-hint">Administradores ativos podem fazer login</small>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-sticky-note"></i>
-                                    Notas Adicionais
-                                </label>
-                                <textarea name="notes" id="editNotes" class="form-textarea" rows="3" 
-                                          placeholder="Informações adicionais sobre este administrador..."></textarea>
                             </div>
                         </div>
                     </div>
@@ -3926,33 +4525,94 @@ function openViewCard(id) {
 }
 
 function populateViewCard(admin) {
-    // Avatar e informações principais
-    document.getElementById('viewAdminInitials').textContent = getInitials(admin.name || admin.email);
-    document.getElementById('viewAdminName').textContent = admin.name || 'Nome não informado';
-    document.getElementById('viewAdminRole').textContent = admin.role_name || 'Administrador';
-    
-    // Status
-    const statusElement = document.getElementById('viewAdminStatus');
-    const isActive = (admin.state || admin.is_active) === 'ACTIVE' || admin.is_active === true || admin.is_active === 1;
-    statusElement.className = `profile-status ${isActive ? 'active' : 'inactive'}`;
-    statusElement.innerHTML = `
-        <div class="status-indicator"></div>
-        <span>${isActive ? 'Ativo' : 'Inativo'}</span>
-    `;
-    
-    // Informações pessoais
-    document.getElementById('viewFullName').textContent = admin.name || 'Não informado';
-    document.getElementById('viewEmail').textContent = admin.email || 'Não informado';
-    document.getElementById('viewContact').textContent = admin.contact || 'Não informado';
-    
-    // Informações da conta
-    document.getElementById('viewUsername').textContent = admin.username || 'Não informado';
-    document.getElementById('viewCreatedAt').textContent = formatDate(admin.createdAt) || 'Não disponível';
-    document.getElementById('viewUpdatedAt').textContent = formatDate(admin.updatedAt) || 'Não disponível';
-    document.getElementById('viewLastLogin').textContent = admin.last_login ? formatDate(admin.last_login) : 'Nunca acessou';
-    
-    // Notas
-    document.getElementById('viewNotes').textContent = admin.notes || 'Nenhuma nota disponível.';
+    try {
+        // Header principal com avatar e informações
+        const avatarElement = document.getElementById('viewAdminAvatar');
+        const imageElement = document.getElementById('viewAdminImage');
+        const initialsElement = document.getElementById('viewAdminInitials');
+
+        // Configurar avatar
+        if (imageElement && initialsElement) {
+            if (admin.image_url) {
+                imageElement.src = admin.image_url;
+                imageElement.style.display = 'block';
+                initialsElement.style.display = 'none';
+            } else {
+                imageElement.style.display = 'none';
+                initialsElement.style.display = 'flex';
+                initialsElement.textContent = getInitials(admin.name || admin.email);
+            }
+        }
+
+        // Nome e email no header
+        const nameElement = document.getElementById('viewAdminName');
+        const emailHeaderElement = document.getElementById('viewAdminEmailHeader');
+
+        if (nameElement) nameElement.textContent = admin.name || 'Nome não informado';
+        if (emailHeaderElement) emailHeaderElement.textContent = admin.email || 'Email não informado';
+
+        // Status badge no header
+        const isActive = (admin.state || admin.is_active) === 'ACTIVE' || admin.is_active === true || admin.is_active === 1;
+        const statusBadge = document.getElementById('viewStatusBadge');
+        const statusText = document.getElementById('viewStatusText');
+        const avatarStatus = document.getElementById('viewAvatarStatus');
+
+        if (statusBadge && statusText && avatarStatus) {
+            if (isActive) {
+                statusBadge.className = 'status-badge active';
+                statusText.textContent = 'Ativo';
+                avatarStatus.className = 'avatar-status-indicator active';
+            } else {
+                statusBadge.className = 'status-badge inactive';
+                statusText.textContent = 'Inativo';
+                avatarStatus.className = 'avatar-status-indicator inactive';
+            }
+        }
+
+        // Account type badge no header
+        const accountTypeBadge = document.getElementById('viewAccountTypeBadge');
+        if (accountTypeBadge) {
+            accountTypeBadge.innerHTML = `
+                <i class="fas fa-shield-alt"></i>
+                <span>${admin.role_name || 'Administrador'}</span>
+            `;
+        }
+
+        // Informações pessoais nos cards
+        const fullNameElement = document.getElementById('viewFullName');
+        const emailElement = document.getElementById('viewEmail');
+        const contactElement = document.getElementById('viewContact');
+
+        if (fullNameElement) fullNameElement.textContent = admin.name || 'Não informado';
+        if (emailElement) emailElement.textContent = admin.email || 'Não informado';
+        if (contactElement) contactElement.textContent = admin.contact || 'Não informado';
+
+        // Informações da conta
+        const usernameElement = document.getElementById('viewUsername');
+        const createdAtElement = document.getElementById('viewCreatedAt');
+        const updatedAtElement = document.getElementById('viewUpdatedAt');
+        const lastLoginElement = document.getElementById('viewLastLogin');
+
+        if (usernameElement) usernameElement.textContent = admin.username || 'Não informado';
+        if (createdAtElement) createdAtElement.textContent = formatDate(admin.createdAt) || 'Não disponível';
+        if (updatedAtElement) updatedAtElement.textContent = formatDate(admin.updatedAt) || 'Não disponível';
+        if (lastLoginElement) lastLoginElement.textContent = admin.last_login ? formatDate(admin.last_login) : 'Nunca acessou';
+
+        // ID do administrador
+        const idElement = document.getElementById('viewAdminId');
+        if (idElement) {
+            idElement.textContent = admin.id || 'N/A';
+        }
+
+        // Account type detail
+        const accountTypeDetailElement = document.getElementById('viewAccountTypeDetail');
+        if (accountTypeDetailElement) {
+            accountTypeDetailElement.textContent = admin.role_name || 'Administrador';
+        }
+
+    } catch (error) {
+        console.error('Error in populateViewCard:', error);
+    }
 }
 
 // 3. EDITAR ADMINISTRADOR
@@ -3974,17 +4634,25 @@ function openEditCardFromView() {
 }
 
 function populateEditCard(admin) {
+    // Preencher ID do admin
     document.getElementById('editAdminId').value = admin.id;
-    document.getElementById('editName').value = admin.name || '';
-    document.getElementById('editEmail').value = admin.email || '';
-    document.getElementById('editContact').value = admin.contact || '';
-    document.getElementById('editUsername').value = admin.username || '';
-    document.getElementById('editRole').value = admin.role_id || '2';
-    
-    const isActive = (admin.state || admin.is_active) === 'ACTIVE' || admin.is_active === true || admin.is_active === 1;
-    document.getElementById('editIsActive').checked = isActive;
-    
-    document.getElementById('editNotes').value = admin.notes || '';
+
+    // Usar a nova função de carregamento de dados
+    loadEditAdminData(admin);
+
+    // Resetar campos opcionais de imagem
+    hideGlobalPreviewEdit();
+    const optionalFields = document.getElementById('optionalFieldsEdit');
+    if (optionalFields) {
+        optionalFields.style.display = 'none';
+        const toggleIcon = document.getElementById('optionalToggleIconEdit');
+        if (toggleIcon) {
+            toggleIcon.style.transform = 'rotate(0deg)';
+        }
+    }
+
+    // Garantir que o método URL está ativo por padrão
+    switchUploadMethodEdit('url');
 }
 
 // 4. ELIMINAR ADMINISTRADOR
@@ -4001,17 +4669,17 @@ function openDeleteCard(id, name) {
 function showCard(cardId) {
     const overlay = document.getElementById('cardOverlay');
     const cards = document.querySelectorAll('.admin-card');
-    
+
     // Ocultar todos os cards
     cards.forEach(card => card.classList.remove('active'));
-    
+
     // Mostrar o card específico
     document.getElementById(cardId).classList.add('active');
     overlay.classList.add('active');
-    
+
     // Prevenir scroll do body
     document.body.style.overflow = 'hidden';
-    
+
     // Focus no primeiro input do card
     setTimeout(() => {
         const firstInput = document.querySelector(`#${cardId} input, #${cardId} select, #${cardId} textarea`);
@@ -4629,6 +5297,342 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ===========================================
+// SISTEMA DE UPLOAD DUPLO DE IMAGEM - MODAL EDIÇÃO
+// ===========================================
+
+// Função para alternar campos opcionais do modal de edição
+function toggleOptionalFieldsEdit() {
+    const optionalFields = document.getElementById('optionalFieldsEdit');
+    const toggleIcon = document.getElementById('optionalToggleIconEdit');
+    const toggleBtn = optionalFields.parentNode.querySelector('.optional-toggle');
+
+    if (optionalFields.style.display === 'none') {
+        optionalFields.style.display = 'block';
+        toggleIcon.style.transform = 'rotate(90deg)';
+        toggleBtn.classList.add('expanded');
+    } else {
+        optionalFields.style.display = 'none';
+        toggleIcon.style.transform = 'rotate(0deg)';
+        toggleBtn.classList.remove('expanded');
+    }
+}
+
+// Alternar entre métodos de upload - Modal Edição
+function switchUploadMethodEdit(method) {
+    const urlMethod = document.getElementById('urlMethodEdit');
+    const fileMethod = document.getElementById('fileMethodEdit');
+    const urlBtn = document.querySelector('#optionalFieldsEdit [data-method="url"]');
+    const fileBtn = document.querySelector('#optionalFieldsEdit [data-method="file"]');
+
+    // Reset active states
+    urlBtn.classList.remove('active');
+    fileBtn.classList.remove('active');
+
+    // Hide both methods
+    urlMethod.style.display = 'none';
+    fileMethod.style.display = 'none';
+
+    // Show selected method
+    if (method === 'url') {
+        urlMethod.style.display = 'block';
+        urlBtn.classList.add('active');
+        // Clear file input when switching to URL
+        const fileInput = document.getElementById('editImageFile');
+        if (fileInput) fileInput.value = '';
+        hideFilePreviewEdit();
+    } else {
+        fileMethod.style.display = 'block';
+        fileBtn.classList.add('active');
+        // Clear URL input when switching to file
+        const urlInput = document.getElementById('editImageUrl');
+        if (urlInput) urlInput.value = '';
+        hideGlobalPreviewEdit();
+    }
+}
+
+// Preview de imagem via URL - Modal Edição
+function previewImageFromUrlEdit(url) {
+    if (!url || url.trim() === '') {
+        hideGlobalPreviewEdit();
+        return;
+    }
+
+    // Validar se é uma URL válida de imagem
+    const imageExtensions = /\.(jpg|jpeg|png|gif|webp|svg|bmp)(\?.*)?$/i;
+    if (!imageExtensions.test(url)) {
+        showImageErrorEdit('URL deve apontar para uma imagem válida (JPG, PNG, GIF, etc.)');
+        return;
+    }
+
+    const globalPreview = document.getElementById('globalPreviewImageEdit');
+    const previewSection = document.getElementById('imagePreviewSectionEdit');
+    const statusText = previewSection.querySelector('.preview-status');
+
+    // Mostrar loading
+    statusText.textContent = '⏳ Carregando imagem...';
+    statusText.style.color = '#f59e0b';
+    previewSection.style.display = 'block';
+
+    // Carregar imagem
+    const img = new Image();
+    img.onload = function() {
+        globalPreview.src = url;
+        statusText.textContent = '✅ Imagem URL carregada';
+        statusText.style.color = '#10b981';
+    };
+    img.onerror = function() {
+        hideGlobalPreviewEdit();
+        showImageErrorEdit('Não foi possível carregar a imagem da URL fornecida');
+    };
+    img.src = url;
+}
+
+// Manipular upload de arquivo - Modal Edição
+function handleFileUploadEdit(input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    // Validar tipo de arquivo
+    if (!file.type.startsWith('image/')) {
+        showImageErrorEdit('Por favor, selecione apenas arquivos de imagem');
+        input.value = '';
+        return;
+    }
+
+    // Validar tamanho (5MB max)
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxSize) {
+        showImageErrorEdit('Arquivo muito grande. Tamanho máximo: 5MB');
+        input.value = '';
+        return;
+    }
+
+    // Mostrar preview do arquivo
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        showFilePreviewEdit(e.target.result, file.name);
+        showGlobalPreviewEdit(e.target.result, 'upload');
+    };
+    reader.readAsDataURL(file);
+}
+
+// Mostrar preview do arquivo na área de upload - Modal Edição
+function showFilePreviewEdit(src, filename) {
+    const placeholder = document.getElementById('uploadPlaceholderEdit');
+    const preview = document.getElementById('uploadPreviewEdit');
+    const previewImg = document.getElementById('previewImageEdit');
+
+    placeholder.style.display = 'none';
+    preview.style.display = 'flex';
+    previewImg.src = src;
+    previewImg.alt = filename;
+}
+
+// Ocultar preview do arquivo - Modal Edição
+function hideFilePreviewEdit() {
+    const placeholder = document.getElementById('uploadPlaceholderEdit');
+    const preview = document.getElementById('uploadPreviewEdit');
+
+    placeholder.style.display = 'flex';
+    preview.style.display = 'none';
+}
+
+// Remover arquivo selecionado - Modal Edição
+function removeFileUploadEdit() {
+    const fileInput = document.getElementById('editImageFile');
+    fileInput.value = '';
+    hideFilePreviewEdit();
+    hideGlobalPreviewEdit();
+}
+
+// Mostrar preview global - Modal Edição
+function showGlobalPreviewEdit(src, type) {
+    const globalPreview = document.getElementById('globalPreviewImageEdit');
+    const previewSection = document.getElementById('imagePreviewSectionEdit');
+    const statusText = previewSection.querySelector('.preview-status');
+
+    globalPreview.src = src;
+    previewSection.style.display = 'block';
+
+    if (type === 'upload') {
+        statusText.textContent = '✅ Arquivo carregado';
+    } else {
+        statusText.textContent = '✅ Imagem URL carregada';
+    }
+    statusText.style.color = '#10b981';
+}
+
+// Ocultar preview global - Modal Edição
+function hideGlobalPreviewEdit() {
+    const previewSection = document.getElementById('imagePreviewSectionEdit');
+    previewSection.style.display = 'none';
+}
+
+// Limpar preview global - Modal Edição
+function clearImagePreviewEdit() {
+    // Determinar qual método está ativo
+    const urlMethod = document.getElementById('urlMethodEdit');
+    const fileMethod = document.getElementById('fileMethodEdit');
+
+    if (urlMethod.style.display !== 'none') {
+        // Método URL ativo
+        const urlInput = document.getElementById('editImageUrl');
+        urlInput.value = '';
+    } else {
+        // Método arquivo ativo
+        removeFileUploadEdit();
+    }
+
+    hideGlobalPreviewEdit();
+}
+
+// Mostrar erro de imagem - Modal Edição
+function showImageErrorEdit(message) {
+    // Criar ou atualizar notificação de erro
+    let errorDiv = document.getElementById('imageErrorEdit');
+    if (!errorDiv) {
+        errorDiv = document.createElement('div');
+        errorDiv.id = 'imageErrorEdit';
+        errorDiv.style.cssText = `
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 0.75rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        `;
+        errorDiv.innerHTML = `<i class="fas fa-exclamation-triangle"></i><span></span>`;
+
+        // Inserir após o campo ativo
+        const activeMethod = document.querySelector('#optionalFieldsEdit .upload-method-content[style*="block"]') ||
+                           document.getElementById('urlMethodEdit');
+        activeMethod.appendChild(errorDiv);
+    }
+
+    errorDiv.querySelector('span').textContent = message;
+    errorDiv.style.display = 'flex';
+
+    // Auto-remover após 5 segundos
+    setTimeout(() => {
+        if (errorDiv.parentNode) {
+            errorDiv.parentNode.removeChild(errorDiv);
+        }
+    }, 5000);
+}
+
+// Configurar dados existentes no modal de edição
+function loadEditAdminData(adminData) {
+    // Carregar dados básicos conforme endpoint PUT /admins/{id}
+    if (adminData.name) document.getElementById('editName').value = adminData.name;
+    if (adminData.email) document.getElementById('editEmail').value = adminData.email;
+    if (adminData.contact) document.getElementById('editContact').value = adminData.contact;
+
+    // Campos específicos do endpoint
+    if (adminData.accountTypeId || adminData.account_type_id) {
+        const accountTypeId = adminData.accountTypeId || adminData.account_type_id;
+        const accountTypeSelect = document.getElementById('editAccountTypeId');
+        if (accountTypeSelect) accountTypeSelect.value = accountTypeId;
+    }
+
+    if (adminData.stateId || adminData.state_id) {
+        const stateId = adminData.stateId || adminData.state_id;
+        const stateSelect = document.getElementById('editStateId');
+        if (stateSelect) stateSelect.value = stateId;
+    }
+
+    // Campo de senha opcional - deixar vazio (usuário preenche apenas se quiser alterar)
+    const passwordInput = document.getElementById('editPassword');
+    if (passwordInput) {
+        passwordInput.value = '';
+    }
+
+    // Resetar indicador de senha
+    resetPasswordStrength('editPassword');
+
+    // Carregar imagem existente se houver
+    if (adminData.img && adminData.img.trim() !== '') {
+        const imageUrl = adminData.img;
+        const urlInput = document.getElementById('editImageUrl');
+        if (urlInput) {
+            urlInput.value = imageUrl;
+            previewImageFromUrlEdit(imageUrl);
+        }
+    }
+}
+
+// Adicionar evento de validação de senha para o modal de edição
+document.addEventListener('DOMContentLoaded', function() {
+    const editPasswordInput = document.getElementById('editPassword');
+    if (editPasswordInput) {
+        editPasswordInput.addEventListener('input', function() {
+            updatePasswordStrengthEdit(this.value);
+        });
+    }
+});
+
+// Função específica para validação de senha no modal de edição
+function updatePasswordStrengthEdit(password) {
+    // Campo opcional - se vazio, não mostrar validação
+    if (password.length === 0) {
+        const strengthFill = document.getElementById('editPasswordStrengthFill');
+        const strengthText = document.getElementById('editPasswordStrengthText');
+        const requirementsContainer = document.getElementById('editPasswordRequirements');
+
+        if (strengthFill) strengthFill.className = 'strength-fill';
+        if (strengthText) {
+            strengthText.textContent = 'Força da senha';
+            strengthText.className = 'strength-text-mini';
+        }
+        if (requirementsContainer) requirementsContainer.classList.remove('show');
+        return;
+    }
+
+    // Usar função existente adaptada
+    const result = checkPasswordStrength(password);
+
+    // Atualizar barra de força
+    const strengthFill = document.getElementById('editPasswordStrengthFill');
+    if (strengthFill) strengthFill.className = `strength-fill ${result.strength}`;
+
+    // Atualizar texto de força (versão compacta)
+    const strengthText = document.getElementById('editPasswordStrengthText');
+    if (strengthText) {
+        const compactTexts = {
+            weak: 'Fraca',
+            fair: 'Razoável',
+            good: 'Boa',
+            strong: 'Forte'
+        };
+        strengthText.textContent = compactTexts[result.strength];
+        strengthText.className = `strength-text-mini ${result.strength}`;
+    }
+
+    // Mostrar requisitos
+    const requirementsContainer = document.getElementById('editPasswordRequirements');
+    if (requirementsContainer) requirementsContainer.classList.add('show');
+
+    // Atualizar requisitos individuais
+    const reqElements = {
+        'edit-req-length': result.requirements.length,
+        'edit-req-uppercase': result.requirements.uppercase,
+        'edit-req-lowercase': result.requirements.lowercase,
+        'edit-req-number': result.requirements.number,
+        'edit-req-special': result.requirements.special
+    };
+
+    for (const [reqId, isValid] of Object.entries(reqElements)) {
+        const reqElement = document.getElementById(reqId);
+        if (reqElement) {
+            reqElement.className = `requirement compact ${isValid ? 'valid' : 'invalid'}`;
+        }
+    }
+}
+
+// ===========================================
 // FUNÇÕES DE PAGINAÇÃO
 // ===========================================
 
@@ -4863,13 +5867,30 @@ document.addEventListener('DOMContentLoaded', function() {
     // Submissão do formulário de edição
     document.getElementById('editAdminForm').addEventListener('submit', async function(e) {
         e.preventDefault();
-        
+
+        // Validar senha apenas se foi preenchida (campo opcional)
+        const passwordInput = document.getElementById('editPassword');
+        if (passwordInput.value && passwordInput.value.trim() !== '') {
+            // Se senha foi preenchida, validar força
+            const passwordStrength = checkPasswordStrength(passwordInput.value);
+            if (passwordStrength.validCount < 4) {
+                showAlert('Se alterar a senha, ela deve atender a pelo menos 4 dos 5 requisitos de segurança', 'warning');
+                passwordInput.focus();
+                return;
+            }
+        }
+
         const formData = new FormData(this);
         const id = formData.get('admin_id');
-        
+
+        // Se senha estiver vazia, remover do FormData para não enviar
+        if (!passwordInput.value || passwordInput.value.trim() === '') {
+            formData.delete('password');
+        }
+
         try {
             showLoading('Salvando alterações...');
-            
+
             const response = await fetch(`<?= url('/accounts') ?>/${id}`, {
                 method: 'POST',
                 body: formData,
@@ -4877,16 +5898,20 @@ document.addEventListener('DOMContentLoaded', function() {
                     'X-Requested-With': 'XMLHttpRequest'
                 }
             });
-            
+
             hideLoading();
-            
+
             if (response.ok) {
                 closeCard();
                 showAlert('Administrador atualizado com sucesso!', 'success');
                 setTimeout(() => window.location.reload(), 1000);
             } else {
                 const errorData = await response.json().catch(() => ({}));
-                showAlert(errorData.message || 'Erro ao atualizar administrador', 'danger');
+                if (errorData.fieldErrors && errorData.fieldErrors.password) {
+                    showAlert('Erro na senha: ' + errorData.fieldErrors.password, 'danger');
+                } else {
+                    showAlert(errorData.message || 'Erro ao atualizar administrador', 'danger');
+                }
             }
         } catch (error) {
             hideLoading();
