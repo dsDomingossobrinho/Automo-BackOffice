@@ -35,7 +35,7 @@ class AccountController extends Controller
         
         $params = [
             'page' => max(0, $page - 1), // Backend uses 0-based pagination
-            'size' => 15,
+            'size' => 6,
             'sortBy' => 'createdAt',
             'sortDirection' => 'DESC'
         ];
@@ -651,7 +651,7 @@ class AccountController extends Controller
         
         $params = [
             'page' => max(0, $page - 1), // Backend uses 0-based pagination
-            'size' => 15,
+            'size' => 6,
             'sortBy' => 'createdAt',
             'sortDirection' => 'DESC'
         ];

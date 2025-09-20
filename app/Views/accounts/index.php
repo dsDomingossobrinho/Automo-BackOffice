@@ -161,8 +161,8 @@
 .filters-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-    margin-bottom: 1.5rem;
+    gap: 1rem;
+    margin-bottom: 1rem;
 }
 
 .filter-group {
@@ -186,7 +186,7 @@
 
 .filter-input, .filter-select {
     width: 100%;
-    padding: 0.75rem 1rem;
+    padding: 0.625rem 0.875rem;
     border: 1px solid #d1d5db;
     border-radius: 8px;
     font-size: 0.9375rem;
@@ -230,7 +230,7 @@
     color: white;
     border: none;
     border-radius: 8px;
-    padding: 0.75rem 1.5rem;
+    padding: 0.625rem 1.25rem;
     font-weight: 500;
     display: flex;
     align-items: center;
@@ -249,7 +249,7 @@
     color: #374151;
     border: 1px solid #d1d5db;
     border-radius: 8px;
-    padding: 0.75rem 1.5rem;
+    padding: 0.625rem 1.25rem;
     text-decoration: none;
     display: flex;
     align-items: center;
@@ -286,7 +286,7 @@
 .table-header {
     background: #f8fafc;
     border-bottom: 1px solid #e2e8f0;
-    padding: 1.5rem;
+    padding: 1rem 1.25rem;
 }
 
 .table-header-content {
@@ -296,7 +296,7 @@
 }
 
 .table-title {
-    font-size: 1.25rem;
+    font-size: 1.125rem;
     font-weight: 600;
     color: #1f2937;
     margin: 0;
@@ -330,7 +330,7 @@
 .admin-table th,
 .admin-table td {
     text-align: left;
-    padding: 1rem;
+    padding: 0.75rem;
     border-bottom: 1px solid #f3f4f6;
 }
 
@@ -354,12 +354,12 @@
 .admin-user-info {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.625rem;
 }
 
 .admin-avatar {
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
     background: linear-gradient(135deg, #3b82f6, #1e40af);
     color: white;
     border-radius: 8px;
@@ -367,7 +367,7 @@
     align-items: center;
     justify-content: center;
     font-weight: 600;
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
 }
 
 .admin-details {
@@ -474,13 +474,13 @@
 .action-btn {
     border: none;
     border-radius: 6px;
-    padding: 0.5rem 0.75rem;
-    font-size: 0.875rem;
+    padding: 0.4375rem 0.625rem;
+    font-size: 0.8125rem;
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
-    gap: 0.375rem;
+    gap: 0.25rem;
 }
 
 .view-btn {
@@ -651,7 +651,7 @@
 .card-header {
     background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
     border-bottom: 1px solid #e2e8f0;
-    padding: 2rem;
+    padding: 1.5rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -671,18 +671,18 @@
 .card-header-content {
     display: flex;
     align-items: center;
-    gap: 1.5rem;
+    gap: 1rem;
 }
 
 .card-icon {
-    width: 60px;
-    height: 60px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
@@ -698,7 +698,7 @@
 }
 
 .card-title {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     font-weight: 700;
     color: #1f2937;
     margin: 0;
@@ -731,7 +731,7 @@
 
 /* Card Body */
 .card-body {
-    padding: 2rem;
+    padding: 1.5rem;
     max-height: 60vh;
     overflow-y: auto;
     scrollbar-width: thin;
@@ -1079,6 +1079,586 @@ input:checked + .toggle-slider:before {
 
 .requirement span {
     transition: all 0.3s ease;
+}
+
+/* =====================================
+   PAGINAÇÃO MODERNIZADA
+   ===================================== */
+
+.pagination-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 0;
+    margin-top: 1rem;
+    border-top: 1px solid #e2e8f0;
+    background: #f8fafc;
+    border-radius: 0 0 16px 16px;
+}
+
+.pagination-info {
+    display: flex;
+    align-items: center;
+}
+
+.pagination-text {
+    font-size: 0.875rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.pagination-numbers {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin: 0 0.75rem;
+}
+
+.pagination-btn {
+    min-width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e2e8f0;
+    background: white;
+    color: #64748b;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 0 0.75rem;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #3b82f6, #1e40af);
+    color: white;
+    border-color: #3b82f6;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+}
+
+.pagination-btn.active {
+    background: linear-gradient(135deg, #3b82f6, #1e40af);
+    color: white;
+    border-color: #3b82f6;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.25);
+}
+
+.pagination-btn:disabled {
+    background: #f1f5f9;
+    color: #cbd5e1;
+    border-color: #e2e8f0;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.pagination-ellipsis {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    color: #94a3b8;
+    font-weight: 500;
+    font-size: 0.875rem;
+}
+
+/* Responsividade da Paginação */
+@media (max-width: 768px) {
+    .pagination-container {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .pagination-info {
+        order: 2;
+    }
+
+    .pagination-controls {
+        order: 1;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .pagination-numbers {
+        margin: 0 0.5rem;
+    }
+
+    .pagination-btn {
+        min-width: 36px;
+        height: 36px;
+        font-size: 0.8125rem;
+    }
+
+    .pagination-text {
+        font-size: 0.8125rem;
+        text-align: center;
+    }
+}
+
+/* =====================================
+   DASHBOARD HEADER MODERNIZADO
+   ===================================== */
+
+.admin-dashboard-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    margin: -2rem -2rem 2rem -2rem;
+    padding: 2rem 2rem 1.5rem 2rem;
+    border-radius: 0 0 20px 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.admin-dashboard-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/></svg>');
+    opacity: 0.3;
+}
+
+.dashboard-title-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 2;
+}
+
+.title-content {
+    flex: 1;
+}
+
+.dashboard-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: white;
+    margin: 0 0 0.5rem 0;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.title-icon-wrapper {
+    width: 48px;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.title-icon-wrapper i {
+    font-size: 1.25rem;
+    color: white;
+}
+
+.dashboard-subtitle {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0;
+    font-weight: 400;
+    line-height: 1.5;
+}
+
+/* Botão de Ação Principal */
+.dashboard-action {
+    position: relative;
+}
+
+.primary-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.95);
+    color: #4f46e5;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.primary-action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    background: white;
+}
+
+.action-btn-icon {
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.875rem;
+}
+
+.action-btn-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: radial-gradient(circle, rgba(79, 70, 229, 0.3) 0%, transparent 70%);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    transform: translate(-50%, -50%);
+    z-index: -1;
+}
+
+.primary-action-btn:hover .action-btn-glow {
+    width: 200px;
+    height: 200px;
+}
+
+/* Cards de Estatísticas */
+.stats-dashboard {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    position: relative;
+    z-index: 2;
+}
+
+.stat-card-modern {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 18px;
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.stat-card-modern:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.stat-card-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    position: relative;
+    z-index: 2;
+}
+
+.stat-icon-circle {
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    color: white;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.total-stat .stat-icon-circle {
+    background: linear-gradient(135deg, #3b82f6, #1e40af);
+}
+
+.active-stat .stat-icon-circle {
+    background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.inactive-stat .stat-icon-circle {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.recent-stat .stat-icon-circle {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+}
+
+.stat-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.stat-value {
+    font-size: 1.875rem;
+    font-weight: 800;
+    color: #1f2937;
+    margin: 0 0 0.375rem 0;
+    line-height: 1;
+}
+
+.stat-description {
+    font-size: 0.9375rem;
+    color: #6b7280;
+    margin: 0 0 0.5rem 0;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+.stat-trend {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    padding: 0.375rem 0.75rem;
+    border-radius: 8px;
+}
+
+.stat-trend.positive {
+    background: rgba(16, 185, 129, 0.1);
+    color: #059669;
+}
+
+.stat-trend.neutral {
+    background: rgba(107, 114, 128, 0.1);
+    color: #6b7280;
+}
+
+.stat-trend i {
+    font-size: 0.75rem;
+}
+
+.stat-card-bg {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    opacity: 0.05;
+    background-size: cover;
+    background-position: center;
+    border-radius: 20px;
+}
+
+/* Responsividade do Dashboard */
+@media (max-width: 1024px) {
+    .stats-dashboard {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .admin-dashboard-header {
+        margin: -1.5rem -1.5rem 2rem -1.5rem;
+        padding: 2rem 1.5rem;
+        border-radius: 0 0 20px 20px;
+    }
+
+    .dashboard-title-section {
+        flex-direction: column;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .dashboard-title {
+        font-size: 1.875rem;
+        gap: 0.75rem;
+    }
+
+    .title-icon-wrapper {
+        width: 50px;
+        height: 50px;
+    }
+
+    .title-icon-wrapper i {
+        font-size: 1.5rem;
+    }
+
+    .dashboard-subtitle {
+        font-size: 1rem;
+    }
+
+    .primary-action-btn {
+        padding: 0.875rem 1.5rem;
+        font-size: 0.9375rem;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .stats-dashboard {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .stat-card-modern {
+        padding: 1.5rem;
+    }
+
+    .stat-card-content {
+        gap: 1rem;
+    }
+
+    .stat-icon-circle {
+        width: 56px;
+        height: 56px;
+        font-size: 1.25rem;
+    }
+
+    .stat-value {
+        font-size: 1.875rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .admin-dashboard-header {
+        margin: -1rem -1rem 1.5rem -1rem;
+        padding: 1.5rem 1rem;
+    }
+
+    .dashboard-title {
+        font-size: 1.5rem;
+    }
+
+    .stat-card-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+
+    .stat-icon-circle {
+        align-self: center;
+    }
+}
+
+/* =====================================
+   ANIMAÇÕES E MICRO-INTERAÇÕES
+   ===================================== */
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes glow {
+    0%, 100% {
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+    50% {
+        box-shadow: 0 8px 30px rgba(79, 70, 229, 0.3);
+    }
+}
+
+/* Aplicar animações */
+.dashboard-title {
+    animation: slideInLeft 0.8s ease;
+}
+
+.dashboard-subtitle {
+    animation: slideInLeft 0.8s ease 0.2s both;
+}
+
+.primary-action-btn {
+    animation: fadeInUp 0.8s ease 0.4s both;
+}
+
+.stat-card-modern:nth-child(1) {
+    animation: fadeInUp 0.8s ease 0.6s both;
+}
+
+.stat-card-modern:nth-child(2) {
+    animation: fadeInUp 0.8s ease 0.7s both;
+}
+
+.stat-card-modern:nth-child(3) {
+    animation: fadeInUp 0.8s ease 0.8s both;
+}
+
+.stat-card-modern:nth-child(4) {
+    animation: fadeInUp 0.8s ease 0.9s both;
+}
+
+/* Hover effects especiais */
+.stat-card-modern:hover .stat-icon-circle {
+    animation: pulse 2s infinite;
+}
+
+.primary-action-btn:focus {
+    animation: glow 2s infinite;
+    outline: none;
+}
+
+/* Efeito de partículas no hover dos cards */
+.stat-card-modern::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.1) 50%, transparent 60%);
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+    border-radius: 20px;
+}
+
+.stat-card-modern:hover::after {
+    transform: translateX(100%);
+}
+
+/* Melhor feedback visual para números */
+.stat-value {
+    transition: all 0.3s ease;
+}
+
+.stat-card-modern:hover .stat-value {
+    transform: scale(1.05);
+    color: #4f46e5;
 }
 
 /* View Card Specific */
@@ -1493,44 +2073,127 @@ input:checked + .toggle-slider:before {
 }
 </style>
 
-<!-- 1. TÍTULO DA PÁGINA - ISOLADO -->
-<div class="page-title-section">
-    <div class="page-title-container">
-        <h1 class="main-page-title">
-            <i class="fas fa-users-cog page-icon"></i>
-            Administradores
-        </h1>
-        <p class="main-page-subtitle">Gerencie os administradores do sistema com segurança e eficiência</p>
-    </div>
-</div>
+<!-- SEÇÃO SUPERIOR MODERNIZADA -->
+<div class="admin-dashboard-header">
+    <!-- 1. CABEÇALHO PRINCIPAL -->
+    <div class="dashboard-title-section">
+        <div class="title-content">
+            <h1 class="dashboard-title">
+                <div class="title-icon-wrapper">
+                    <i class="fas fa-users-cog"></i>
+                </div>
+                <span>Administradores</span>
+            </h1>
+            <p class="dashboard-subtitle">Gerencie os administradores do sistema com segurança e eficiência</p>
+        </div>
 
-<!-- 2. BOTÃO ADICIONAR ADMINISTRADOR - DESTAQUE -->
-<div class="add-admin-section">
-    <div class="add-admin-container">
-        <button class="btn-add-administrator" onclick="openCreateCard()">
-            <div class="add-btn-icon">
-                <i class="fas fa-user-plus"></i>
+        <!-- Botão de Ação Principal -->
+        <div class="dashboard-action">
+            <button class="primary-action-btn" onclick="openCreateCard()">
+                <div class="action-btn-icon">
+                    <i class="fas fa-plus"></i>
+                </div>
+                <span>Adicionar Admin</span>
+                <div class="action-btn-glow"></div>
+            </button>
+        </div>
+    </div>
+
+    <!-- 2. CARDS DE ESTATÍSTICAS -->
+    <div class="stats-dashboard">
+        <div class="stat-card-modern total-stat">
+            <div class="stat-card-content">
+                <div class="stat-icon-circle">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-details">
+                    <h3 class="stat-value"><?= $pagination['total_elements'] ?? 0 ?></h3>
+                    <p class="stat-description">Total de Administradores</p>
+                    <span class="stat-trend positive">
+                        <i class="fas fa-arrow-up"></i>
+                        Sistema ativo
+                    </span>
+                </div>
             </div>
-            <div class="add-btn-content">
-                <span class="add-btn-title">Novo Administrador</span>
-                <span class="add-btn-subtitle">Criar nova conta de administrador</span>
+            <div class="stat-card-bg"></div>
+        </div>
+
+        <div class="stat-card-modern active-stat">
+            <div class="stat-card-content">
+                <div class="stat-icon-circle">
+                    <i class="fas fa-user-check"></i>
+                </div>
+                <div class="stat-details">
+                    <h3 class="stat-value">
+                        <?php
+                        $activeCount = 0;
+                        if (!empty($accounts)) {
+                            foreach ($accounts as $account) {
+                                if (($account['stateId'] ?? 0) == 1) $activeCount++;
+                            }
+                        }
+                        echo $activeCount;
+                        ?>
+                    </h3>
+                    <p class="stat-description">Administradores Ativos</p>
+                    <span class="stat-trend positive">
+                        <i class="fas fa-check-circle"></i>
+                        Online
+                    </span>
+                </div>
             </div>
-            <div class="add-btn-arrow">
-                <i class="fas fa-arrow-right"></i>
+            <div class="stat-card-bg"></div>
+        </div>
+
+        <div class="stat-card-modern inactive-stat">
+            <div class="stat-card-content">
+                <div class="stat-icon-circle">
+                    <i class="fas fa-user-times"></i>
+                </div>
+                <div class="stat-details">
+                    <h3 class="stat-value">
+                        <?php
+                        $inactiveCount = ($pagination['total_elements'] ?? 0) - $activeCount;
+                        echo $inactiveCount;
+                        ?>
+                    </h3>
+                    <p class="stat-description">Administradores Inativos</p>
+                    <span class="stat-trend neutral">
+                        <i class="fas fa-pause-circle"></i>
+                        Pausados
+                    </span>
+                </div>
             </div>
-        </button>
-        
-        <!-- Estatísticas em formato compacto -->
-        <div class="quick-stats">
-            <div class="stat-item">
-                <span class="stat-number"><?= count($accounts ?? []) ?></span>
-                <span class="stat-label">Total</span>
+            <div class="stat-card-bg"></div>
+        </div>
+
+        <div class="stat-card-modern recent-stat">
+            <div class="stat-card-content">
+                <div class="stat-icon-circle">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-details">
+                    <h3 class="stat-value">
+                        <?php
+                        $recentCount = 0;
+                        if (!empty($accounts)) {
+                            $oneWeekAgo = date('Y-m-d', strtotime('-7 days'));
+                            foreach ($accounts as $account) {
+                                $createdDate = date('Y-m-d', strtotime($account['createdAt'] ?? ''));
+                                if ($createdDate >= $oneWeekAgo) $recentCount++;
+                            }
+                        }
+                        echo $recentCount;
+                        ?>
+                    </h3>
+                    <p class="stat-description">Novos (últimos 7 dias)</p>
+                    <span class="stat-trend <?= $recentCount > 0 ? 'positive' : 'neutral' ?>">
+                        <i class="fas fa-calendar-plus"></i>
+                        Recente
+                    </span>
+                </div>
             </div>
-            <div class="stat-divider"></div>
-            <div class="stat-item">
-                <span class="stat-number"><?= count(array_filter($accounts ?? [], fn($acc) => ($acc['state'] ?? 'INACTIVE') === 'ACTIVE')) ?></span>
-                <span class="stat-label">Ativos</span>
-            </div>
+            <div class="stat-card-bg"></div>
         </div>
     </div>
 </div>
@@ -1788,11 +2451,82 @@ input:checked + .toggle-slider:before {
                 </table>
             </div>
 
-            <!-- Paginação -->
-            <?php if (!empty($pagination)): ?>
-                <div class="table-pagination">
-                    <div class="pagination-wrapper">
-                        <?= renderPagination($pagination, url('/accounts')) ?>
+            <!-- Paginação Modernizada -->
+            <?php if (!empty($pagination) && $pagination['total_pages'] > 1): ?>
+                <div class="pagination-container">
+                    <div class="pagination-info">
+                        <span class="pagination-text">
+                            Exibindo <?= (($pagination['current_page'] - 1) * $pagination['size']) + 1 ?>
+                            a <?= min($pagination['current_page'] * $pagination['size'], $pagination['total_elements']) ?>
+                            de <?= $pagination['total_elements'] ?> administradores
+                        </span>
+                    </div>
+
+                    <div class="pagination-controls">
+                        <!-- Botão Primeira Página -->
+                        <button class="pagination-btn"
+                                onclick="changePage(1)"
+                                <?= $pagination['current_page'] <= 1 ? 'disabled' : '' ?>
+                                title="Primeira página">
+                            <i class="fas fa-angle-double-left"></i>
+                        </button>
+
+                        <!-- Botão Página Anterior -->
+                        <button class="pagination-btn"
+                                onclick="changePage(<?= $pagination['current_page'] - 1 ?>)"
+                                <?= !$pagination['has_previous'] ? 'disabled' : '' ?>
+                                title="Página anterior">
+                            <i class="fas fa-angle-left"></i>
+                        </button>
+
+                        <!-- Números das Páginas -->
+                        <div class="pagination-numbers">
+                            <?php
+                            $start = max(1, $pagination['current_page'] - 2);
+                            $end = min($pagination['total_pages'], $pagination['current_page'] + 2);
+
+                            // Mostrar "..." se necessário no início
+                            if ($start > 1): ?>
+                                <button class="pagination-btn" onclick="changePage(1)">1</button>
+                                <?php if ($start > 2): ?>
+                                    <span class="pagination-ellipsis">...</span>
+                                <?php endif;
+                            endif;
+
+                            // Mostrar páginas ao redor da atual
+                            for ($i = $start; $i <= $end; $i++): ?>
+                                <button class="pagination-btn <?= $i == $pagination['current_page'] ? 'active' : '' ?>"
+                                        onclick="changePage(<?= $i ?>)">
+                                    <?= $i ?>
+                                </button>
+                            <?php endfor;
+
+                            // Mostrar "..." se necessário no final
+                            if ($end < $pagination['total_pages']):
+                                if ($end < $pagination['total_pages'] - 1): ?>
+                                    <span class="pagination-ellipsis">...</span>
+                                <?php endif; ?>
+                                <button class="pagination-btn" onclick="changePage(<?= $pagination['total_pages'] ?>)">
+                                    <?= $pagination['total_pages'] ?>
+                                </button>
+                            <?php endif; ?>
+                        </div>
+
+                        <!-- Botão Próxima Página -->
+                        <button class="pagination-btn"
+                                onclick="changePage(<?= $pagination['current_page'] + 1 ?>)"
+                                <?= !$pagination['has_next'] ? 'disabled' : '' ?>
+                                title="Próxima página">
+                            <i class="fas fa-angle-right"></i>
+                        </button>
+
+                        <!-- Botão Última Página -->
+                        <button class="pagination-btn"
+                                onclick="changePage(<?= $pagination['total_pages'] ?>)"
+                                <?= $pagination['current_page'] >= $pagination['total_pages'] ? 'disabled' : '' ?>
+                                title="Última página">
+                            <i class="fas fa-angle-double-right"></i>
+                        </button>
                     </div>
                 </div>
             <?php endif; ?>
@@ -2839,8 +3573,40 @@ function updatePasswordStrength(inputId) {
 }
 
 // ===========================================
-// OUTRAS FUNÇÕES DA PÁGINA
+// FUNÇÕES DE PAGINAÇÃO
 // ===========================================
+
+function changePage(page) {
+    if (page < 1) return;
+
+    // Obter parâmetros atuais da URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentSearch = urlParams.get('search') || '';
+    const currentStatus = urlParams.get('status') || '';
+
+    // Construir nova URL com a página solicitada
+    const newUrl = new URL(window.location.href);
+    newUrl.searchParams.set('page', page);
+
+    if (currentSearch) {
+        newUrl.searchParams.set('search', currentSearch);
+    }
+
+    if (currentStatus) {
+        newUrl.searchParams.set('status', currentStatus);
+    }
+
+    // Navegar para a nova URL
+    window.location.href = newUrl.toString();
+}
+
+function goToPage(page) {
+    changePage(page);
+}
+
+// ===========================================
+// OUTRAS FUNÇÕES DA PÁGINA
+// ==========================================="
 
 function exportData(type) {
     const params = new URLSearchParams(window.location.search);
@@ -2883,8 +3649,39 @@ document.addEventListener('DOMContentLoaded', function() {
         searchInput.addEventListener('input', function() {
             clearTimeout(timeout);
             timeout = setTimeout(() => {
-                this.form.submit();
+                // Resetar para página 1 quando fazendo nova busca
+                const currentUrl = new URL(window.location.href);
+                const searchValue = this.value.trim();
+
+                if (searchValue !== '') {
+                    currentUrl.searchParams.set('search', searchValue);
+                    currentUrl.searchParams.set('page', '1'); // Reset para página 1
+                } else {
+                    currentUrl.searchParams.delete('search');
+                    currentUrl.searchParams.set('page', '1');
+                }
+
+                window.location.href = currentUrl.toString();
             }, 800);
+        });
+    }
+
+    // Filtro de status
+    const statusFilter = document.querySelector('select[name="status"]');
+    if (statusFilter) {
+        statusFilter.addEventListener('change', function() {
+            const currentUrl = new URL(window.location.href);
+            const statusValue = this.value;
+
+            if (statusValue !== '') {
+                currentUrl.searchParams.set('status', statusValue);
+            } else {
+                currentUrl.searchParams.delete('status');
+            }
+
+            // Reset para página 1 quando mudando filtro
+            currentUrl.searchParams.set('page', '1');
+            window.location.href = currentUrl.toString();
         });
     }
     
