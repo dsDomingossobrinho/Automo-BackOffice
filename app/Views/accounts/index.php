@@ -1343,16 +1343,17 @@ input:checked + .toggle-slider:before {
 /* Cards de Estatísticas */
 .stats-dashboard {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
     position: relative;
     z-index: 2;
+    margin-bottom: 1rem;
 }
 
 .stat-card-modern {
     background: rgba(255, 255, 255, 0.95);
-    border-radius: 18px;
-    padding: 1.5rem;
+    border-radius: 16px;
+    padding: 1rem;
     position: relative;
     overflow: hidden;
     backdrop-filter: blur(10px);
@@ -1369,19 +1370,19 @@ input:checked + .toggle-slider:before {
 .stat-card-content {
     display: flex;
     align-items: flex-start;
-    gap: 1rem;
+    gap: 0.75rem;
     position: relative;
     z-index: 2;
 }
 
 .stat-icon-circle {
-    width: 52px;
-    height: 52px;
-    border-radius: 16px;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.25rem;
+    font-size: 1rem;
     color: white;
     flex-shrink: 0;
     position: relative;
@@ -1403,23 +1404,27 @@ input:checked + .toggle-slider:before {
     background: linear-gradient(135deg, #8b5cf6, #7c3aed);
 }
 
+.eliminated-stat .stat-icon-circle {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
 .stat-details {
     flex: 1;
     min-width: 0;
 }
 
 .stat-value {
-    font-size: 1.875rem;
+    font-size: 1.5rem;
     font-weight: 800;
     color: #1f2937;
-    margin: 0 0 0.375rem 0;
+    margin: 0 0 0.25rem 0;
     line-height: 1;
 }
 
 .stat-description {
-    font-size: 0.9375rem;
+    font-size: 0.8125rem;
     color: #6b7280;
-    margin: 0 0 0.5rem 0;
+    margin: 0 0 0.375rem 0;
     font-weight: 500;
     line-height: 1.4;
 }
@@ -1427,11 +1432,11 @@ input:checked + .toggle-slider:before {
 .stat-trend {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    font-size: 0.875rem;
+    gap: 0.375rem;
+    font-size: 0.75rem;
     font-weight: 600;
-    padding: 0.375rem 0.75rem;
-    border-radius: 8px;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
 }
 
 .stat-trend.positive {
@@ -1458,6 +1463,57 @@ input:checked + .toggle-slider:before {
     background-size: cover;
     background-position: center;
     border-radius: 20px;
+}
+
+/* Estilos para mensagem de erro 403 */
+.stats-error-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.stats-error-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 16px;
+    padding: 1.5rem 2rem;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 4px 20px rgba(239, 68, 68, 0.1);
+}
+
+.error-icon {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.error-content {
+    flex: 1;
+}
+
+.error-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #dc2626;
+    margin: 0 0 0.25rem 0;
+}
+
+.error-message {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0;
+    line-height: 1.5;
 }
 
 /* Responsividade do Dashboard */
@@ -2100,102 +2156,90 @@ input:checked + .toggle-slider:before {
     </div>
 
     <!-- 2. CARDS DE ESTATÍSTICAS -->
-    <div class="stats-dashboard">
-        <div class="stat-card-modern total-stat">
-            <div class="stat-card-content">
-                <div class="stat-icon-circle">
-                    <i class="fas fa-users"></i>
+    <?php if (($stats['stats_error'] ?? null) === 'access_denied'): ?>
+        <!-- Mensagem de Acesso Negado -->
+        <div class="stats-error-container">
+            <div class="stats-error-card">
+                <div class="error-icon">
+                    <i class="fas fa-lock"></i>
                 </div>
-                <div class="stat-details">
-                    <h3 class="stat-value"><?= $pagination['total_elements'] ?? 0 ?></h3>
-                    <p class="stat-description">Total de Administradores</p>
-                    <span class="stat-trend positive">
-                        <i class="fas fa-arrow-up"></i>
-                        Sistema ativo
-                    </span>
+                <div class="error-content">
+                    <h3 class="error-title">Acesso Negado</h3>
+                    <p class="error-message">Apenas administradores podem acessar estatísticas detalhadas.</p>
                 </div>
             </div>
-            <div class="stat-card-bg"></div>
         </div>
+    <?php else: ?>
+        <div class="stats-dashboard">
+            <div class="stat-card-modern total-stat">
+                <div class="stat-card-content">
+                    <div class="stat-icon-circle">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3 class="stat-value"><?= $stats['total_admins'] ?? 0 ?></h3>
+                        <p class="stat-description">Total de Administradores</p>
+                        <span class="stat-trend positive">
+                            <i class="fas fa-arrow-up"></i>
+                            Sistema ativo
+                        </span>
+                    </div>
+                </div>
+                <div class="stat-card-bg"></div>
+            </div>
 
-        <div class="stat-card-modern active-stat">
-            <div class="stat-card-content">
-                <div class="stat-icon-circle">
-                    <i class="fas fa-user-check"></i>
+            <div class="stat-card-modern active-stat">
+                <div class="stat-card-content">
+                    <div class="stat-icon-circle">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3 class="stat-value"><?= $stats['active_admins'] ?? 0 ?></h3>
+                        <p class="stat-description">Administradores Ativos</p>
+                        <span class="stat-trend positive">
+                            <i class="fas fa-check-circle"></i>
+                            Online
+                        </span>
+                    </div>
                 </div>
-                <div class="stat-details">
-                    <h3 class="stat-value">
-                        <?php
-                        $activeCount = 0;
-                        if (!empty($accounts)) {
-                            foreach ($accounts as $account) {
-                                if (($account['stateId'] ?? 0) == 1) $activeCount++;
-                            }
-                        }
-                        echo $activeCount;
-                        ?>
-                    </h3>
-                    <p class="stat-description">Administradores Ativos</p>
-                    <span class="stat-trend positive">
-                        <i class="fas fa-check-circle"></i>
-                        Online
-                    </span>
-                </div>
+                <div class="stat-card-bg"></div>
             </div>
-            <div class="stat-card-bg"></div>
-        </div>
 
-        <div class="stat-card-modern inactive-stat">
-            <div class="stat-card-content">
-                <div class="stat-icon-circle">
-                    <i class="fas fa-user-times"></i>
+            <div class="stat-card-modern inactive-stat">
+                <div class="stat-card-content">
+                    <div class="stat-icon-circle">
+                        <i class="fas fa-user-times"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3 class="stat-value"><?= $stats['inactive_admins'] ?? 0 ?></h3>
+                        <p class="stat-description">Administradores Inativos</p>
+                        <span class="stat-trend neutral">
+                            <i class="fas fa-pause-circle"></i>
+                            Pausados
+                        </span>
+                    </div>
                 </div>
-                <div class="stat-details">
-                    <h3 class="stat-value">
-                        <?php
-                        $inactiveCount = ($pagination['total_elements'] ?? 0) - $activeCount;
-                        echo $inactiveCount;
-                        ?>
-                    </h3>
-                    <p class="stat-description">Administradores Inativos</p>
-                    <span class="stat-trend neutral">
-                        <i class="fas fa-pause-circle"></i>
-                        Pausados
-                    </span>
-                </div>
+                <div class="stat-card-bg"></div>
             </div>
-            <div class="stat-card-bg"></div>
-        </div>
 
-        <div class="stat-card-modern recent-stat">
-            <div class="stat-card-content">
-                <div class="stat-icon-circle">
-                    <i class="fas fa-clock"></i>
+            <div class="stat-card-modern eliminated-stat">
+                <div class="stat-card-content">
+                    <div class="stat-icon-circle">
+                        <i class="fas fa-user-slash"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3 class="stat-value"><?= $stats['eliminated_admins'] ?? 0 ?></h3>
+                        <p class="stat-description">Administradores Eliminados</p>
+                        <span class="stat-trend neutral">
+                            <i class="fas fa-trash-alt"></i>
+                            Removidos
+                        </span>
+                    </div>
                 </div>
-                <div class="stat-details">
-                    <h3 class="stat-value">
-                        <?php
-                        $recentCount = 0;
-                        if (!empty($accounts)) {
-                            $oneWeekAgo = date('Y-m-d', strtotime('-7 days'));
-                            foreach ($accounts as $account) {
-                                $createdDate = date('Y-m-d', strtotime($account['createdAt'] ?? ''));
-                                if ($createdDate >= $oneWeekAgo) $recentCount++;
-                            }
-                        }
-                        echo $recentCount;
-                        ?>
-                    </h3>
-                    <p class="stat-description">Novos (últimos 7 dias)</p>
-                    <span class="stat-trend <?= $recentCount > 0 ? 'positive' : 'neutral' ?>">
-                        <i class="fas fa-calendar-plus"></i>
-                        Recente
-                    </span>
-                </div>
+                <div class="stat-card-bg"></div>
             </div>
-            <div class="stat-card-bg"></div>
         </div>
-    </div>
+    <?php endif; ?>
 </div>
 
 <!-- 3. ÁREA DE FILTROS -->

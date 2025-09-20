@@ -69,11 +69,11 @@ class AccountController extends Controller
         try {
             // Use the correct admin endpoint with pagination
             $response = $this->apiClient->authenticatedRequest('GET', '/admins/paginated', $params);
-            
+
             if (DEBUG_MODE) {
                 error_log("ACCOUNTS: API Response from /admins/paginated: " . print_r($response, true));
             }
-            
+
             if ($response['success'] ?? false) {
                 // The PaginatedResponse is returned directly in response['data']
                 $paginatedData = $response['data'] ?? [];
@@ -86,24 +86,19 @@ class AccountController extends Controller
                     'has_next' => $paginatedData['hasNext'] ?? false,
                     'has_previous' => $paginatedData['hasPrevious'] ?? false
                 ];
-                
-                $stats = [
-                    'total_admins' => $pagination['total_elements'],
-                    'active_admins' => count(array_filter($accounts, fn($a) => ($a['state'] ?? '') === 'ACTIVE')),
-                    'inactive_admins' => count(array_filter($accounts, fn($a) => ($a['state'] ?? '') !== 'ACTIVE'))
-                ];
             } else {
                 $accounts = [];
                 $pagination = ['current_page' => 1, 'total_pages' => 1, 'total_elements' => 0, 'size' => 10];
-                $stats = ['total_admins' => 0, 'active_admins' => 0, 'inactive_admins' => 0];
                 $this->setFlash('errors', ['Erro ao carregar administradores: ' . ($response['message'] ?? 'Erro desconhecido')]);
             }
         } catch (Exception $e) {
             $accounts = [];
             $pagination = ['current_page' => 1, 'total_pages' => 1, 'total_elements' => 0, 'size' => 10];
-            $stats = ['total_admins' => 0, 'active_admins' => 0, 'inactive_admins' => 0];
             $this->setFlash('errors', ['Erro de conexão: ' . $e->getMessage()]);
         }
+
+        // Get statistics from specific endpoint
+        $stats = $this->getAdminStatistics();
 
         // Get auxiliary data for modals
         $accountTypes = $this->getAccountTypes();
@@ -745,6 +740,62 @@ class AccountController extends Controller
                     'stats' => ['total_admins' => 0, 'active_admins' => 0, 'inactive_admins' => 0]
                 ]
             ]);
+        }
+    }
+
+    /**
+     * Get admin statistics from backend API
+     */
+    private function getAdminStatistics()
+    {
+        try {
+            $response = $this->apiClient->authenticatedRequest('GET', '/admins/statistics', []);
+
+            if (DEBUG_MODE) {
+                error_log("STATISTICS: API Response from /admins/statistics: " . print_r($response, true));
+            }
+
+            if ($response['success'] ?? false) {
+                $data = $response['data'] ?? [];
+                return [
+                    'total_admins' => $data['totalAdmins'] ?? 0,
+                    'active_admins' => $data['activeAdmins'] ?? 0,
+                    'inactive_admins' => $data['inactiveAdmins'] ?? 0,
+                    'eliminated_admins' => $data['eliminatedAdmins'] ?? 0,
+                    'stats_error' => null
+                ];
+            } else {
+                // Check if it's a 403 error (access denied)
+                if (($response['status'] ?? 0) == 403) {
+                    return [
+                        'total_admins' => 0,
+                        'active_admins' => 0,
+                        'inactive_admins' => 0,
+                        'eliminated_admins' => 0,
+                        'stats_error' => 'access_denied'
+                    ];
+                }
+
+                return [
+                    'total_admins' => 0,
+                    'active_admins' => 0,
+                    'inactive_admins' => 0,
+                    'eliminated_admins' => 0,
+                    'stats_error' => 'api_error'
+                ];
+            }
+        } catch (Exception $e) {
+            if (DEBUG_MODE) {
+                error_log("STATISTICS: Exception occurred: " . $e->getMessage());
+            }
+
+            return [
+                'total_admins' => 0,
+                'active_admins' => 0,
+                'inactive_admins' => 0,
+                'eliminated_admins' => 0,
+                'stats_error' => 'connection_error'
+            ];
         }
     }
 }
