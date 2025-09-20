@@ -3252,6 +3252,288 @@ input:checked + .toggle-slider:before {
         padding: 1rem;
     }
 }
+
+/* =====================================
+   MODAL DE ELIMINAÇÃO MODERNIZADO
+   ===================================== */
+
+/* Header com tema de perigo */
+.danger-header {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    color: white;
+}
+
+.danger-header .card-icon {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.danger-header .card-title {
+    color: white;
+}
+
+.danger-header .card-subtitle {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Body do modal de delete compacto */
+.delete-body-compact {
+    text-align: center;
+    padding: 1.5rem;
+}
+
+/* Warning section compacta */
+.delete-warning-compact {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.warning-icon-compact {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.3);
+    flex-shrink: 0;
+}
+
+.warning-icon-compact i {
+    font-size: 1.5rem;
+    color: white;
+}
+
+.delete-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0;
+}
+
+/* Admin info compacta */
+.admin-info-compact {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+}
+
+.admin-avatar-compact {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #3b82f6, #1e40af);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.admin-text-compact {
+    text-align: left;
+    flex: 1;
+}
+
+.admin-text-compact h5 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 0.25rem 0;
+}
+
+.admin-text-compact span {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+/* Warning message compacta */
+.warning-message-compact {
+    background: rgba(220, 38, 38, 0.1);
+    border: 1px solid rgba(220, 38, 38, 0.2);
+    border-radius: 8px;
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.warning-message-compact p {
+    font-size: 0.875rem;
+    color: #dc2626;
+    margin: 0;
+}
+
+.warning-message-compact strong {
+    font-weight: 600;
+}
+
+/* Footer do modal de delete */
+.delete-footer {
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+}
+
+/* Botões de ação */
+.btn-safe-cancel {
+    background: white;
+    color: #6b7280;
+    border: 2px solid #d1d5db;
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    min-width: 120px;
+    justify-content: center;
+}
+
+.btn-safe-cancel:hover {
+    background: #f9fafb;
+    border-color: #9ca3af;
+    color: #374151;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.btn-danger-confirm {
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    color: white;
+    border: 2px solid #dc2626;
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    min-width: 120px;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+}
+
+.btn-danger-confirm:hover {
+    background: linear-gradient(135deg, #b91c1c, #991b1b);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+}
+
+.btn-danger-confirm:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+}
+
+/* Responsividade para mobile - versão compacta */
+@media (max-width: 768px) {
+    .delete-card-overlay .card {
+        width: 95%;
+        max-width: 400px;
+        max-height: 80vh;
+        margin: 10vh auto;
+    }
+
+    .delete-warning-compact {
+        margin-bottom: 1rem;
+    }
+
+    .admin-info-compact {
+        padding: 0.75rem;
+        margin-bottom: 0.75rem;
+        gap: 0.5rem;
+    }
+
+    .admin-avatar-compact {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+
+    .admin-text-compact {
+        text-align: left;
+    }
+}
+
+@media (max-width: 480px) {
+    .delete-card-overlay .card {
+        width: 98%;
+        max-height: 75vh;
+        margin: 12.5vh auto;
+    }
+
+    .delete-body-compact {
+        padding: 0.75rem;
+    }
+
+    .warning-icon-compact i {
+        font-size: 2.25rem;
+    }
+
+    .delete-title {
+        font-size: 1.125rem;
+    }
+
+    .admin-info-compact {
+        padding: 0.5rem;
+        gap: 0.5rem;
+    }
+
+    .admin-avatar-compact {
+        width: 36px;
+        height: 36px;
+        font-size: 0.9rem;
+    }
+
+    .warning-message-compact {
+        padding: 0.5rem;
+    }
+
+    .btn-safe-cancel,
+    .btn-danger-confirm {
+        width: 100%;
+        min-width: auto;
+        padding: 0.625rem;
+        font-size: 0.875rem;
+    }
+}
+
+/* Animações para notificações */
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
 </style>
 
 <!-- SEÇÃO SUPERIOR MODERNIZADA -->
@@ -4370,56 +4652,56 @@ input:checked + .toggle-slider:before {
     
     <!-- 4. CARD ELIMINAR ADMINISTRADOR -->
     <div id="deleteAdminCard" class="admin-card delete-card">
-        <div class="card-header">
+        <div class="card-header danger-header">
             <div class="card-header-content">
                 <div class="card-icon delete-icon">
-                    <i class="fas fa-trash-alt"></i>
+                    <i class="fas fa-exclamation-triangle"></i>
                 </div>
                 <div class="card-title-group">
-                    <h3 class="card-title">Eliminar Administrador</h3>
-                    <p class="card-subtitle">Esta ação não pode ser desfeita</p>
+                    <h3 class="card-title">Confirmar Eliminação</h3>
+                    <p class="card-subtitle">Esta ação é irreversível</p>
                 </div>
             </div>
             <button class="card-close-btn" onclick="closeCard()">
                 <i class="fas fa-times"></i>
             </button>
         </div>
-        
-        <div class="card-body">
-            <div class="delete-confirmation">
-                <div class="warning-icon">
+
+        <div class="card-body delete-body-compact">
+            <!-- Warning Icon -->
+            <div class="delete-warning-compact">
+                <div class="warning-icon-compact">
                     <i class="fas fa-exclamation-triangle"></i>
                 </div>
-                
-                <div class="confirmation-content">
-                    <h4 class="confirmation-title">Tem certeza que deseja eliminar este administrador?</h4>
-                    <p class="confirmation-text">
-                        Está prestes a eliminar permanentemente a conta do administrador 
-                        <strong id="deleteAdminName" class="highlight-name">Nome do Administrador</strong>.
-                    </p>
-                    
-                    <div class="consequences-list">
-                        <h5 class="consequences-title">O que acontecerá:</h5>
-                        <ul class="consequences">
-                            <li><i class="fas fa-times-circle"></i> A conta será removida permanentemente</li>
-                            <li><i class="fas fa-times-circle"></i> O administrador perderá acesso ao sistema</li>
-                            <li><i class="fas fa-times-circle"></i> Todas as sessões ativas serão encerradas</li>
-                            <li><i class="fas fa-info-circle"></i> Histórico de ações será mantido para auditoria</li>
-                        </ul>
-                    </div>
+                <h4 class="delete-title">Eliminar Administrador?</h4>
+            </div>
+
+            <!-- Admin Info Compact -->
+            <div class="admin-info-compact">
+                <div class="admin-avatar-compact">
+                    <span id="deleteAdminInitials">AD</span>
+                </div>
+                <div class="admin-text-compact">
+                    <h5 id="deleteAdminName">Nome do Administrador</h5>
+                    <span id="deleteAdminEmail">email@exemplo.com</span>
                 </div>
             </div>
+
+            <!-- Warning Message -->
+            <div class="warning-message-compact">
+                <p><strong>Atenção:</strong> Esta ação é permanente e não pode ser desfeita.</p>
+            </div>
         </div>
-        
-        <div class="card-footer">
+
+        <div class="card-footer delete-footer">
             <div class="footer-actions danger-actions">
-                <button type="button" class="btn-cancel safe-cancel" onclick="closeCard()">
-                    <i class="fas fa-shield-alt"></i>
-                    Manter Seguro
+                <button type="button" class="btn-safe-cancel" onclick="closeCard()">
+                    <i class="fas fa-arrow-left"></i>
+                    Cancelar
                 </button>
-                <button type="button" class="btn-delete-confirm" onclick="confirmDelete()">
+                <button type="button" class="btn-danger-confirm" onclick="confirmDelete()">
                     <i class="fas fa-trash-alt"></i>
-                    Sim, Eliminar Definitivamente
+                    Eliminar
                 </button>
             </div>
         </div>
@@ -4657,9 +4939,161 @@ function populateEditCard(admin) {
 
 // 4. ELIMINAR ADMINISTRADOR
 function openDeleteCard(id, name) {
-    currentAdminId = id;
-    document.getElementById('deleteAdminName').textContent = name || 'Administrador';
-    showCard('deleteAdminCard');
+    const admin = getAdminById(id);
+    if (admin) {
+        currentAdminId = id;
+
+        // Preencher informações do admin
+        document.getElementById('deleteAdminName').textContent = admin.name || 'Administrador';
+        document.getElementById('deleteAdminEmail').textContent = admin.email || 'Email não informado';
+        document.getElementById('deleteAdminInitials').textContent = getInitials(admin.name || admin.email);
+
+        showCard('deleteAdminCard');
+    }
+}
+
+async function confirmDelete() {
+    if (!currentAdminId) {
+        alert('ID do administrador não encontrado');
+        return;
+    }
+
+    try {
+        // Desabilitar botão para evitar cliques múltiplos
+        const deleteBtn = document.querySelector('.btn-danger-confirm');
+        const originalText = deleteBtn.innerHTML;
+        deleteBtn.disabled = true;
+        deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Eliminando...';
+
+        // Fazer requisição DELETE para o endpoint (proxy para DELETE /admins/{id})
+        const response = await fetch(`<?= url('/accounts') ?>/${currentAdminId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+            }
+        });
+
+        if (response.ok) {
+            // Sucesso - mostrar feedback e remover da lista
+            deleteBtn.innerHTML = '<i class="fas fa-check"></i> Eliminado!';
+            deleteBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+
+            // Remover o admin da lista no frontend imediatamente
+            removeAdminFromList(currentAdminId);
+
+            setTimeout(() => {
+                closeCard();
+                // Atualizar estatísticas e recarregar se necessário
+                window.location.reload();
+            }, 1500);
+        } else {
+            // Erro
+            const errorData = await response.json().catch(() => null);
+            const errorMessage = errorData?.message || 'Erro ao eliminar administrador';
+
+            // Mostrar erro no modal
+            showDeleteError(errorMessage);
+
+            // Restaurar botão
+            deleteBtn.disabled = false;
+            deleteBtn.innerHTML = originalText;
+        }
+    } catch (error) {
+        console.error('Erro ao eliminar administrador:', error);
+        showDeleteError('Erro de conexão ao eliminar administrador');
+
+        // Restaurar botão
+        const deleteBtn = document.querySelector('.btn-danger-confirm');
+        deleteBtn.disabled = false;
+        deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i> Eliminar';
+    }
+}
+
+function removeAdminFromList(adminId) {
+    // Remover do array mockAdmins
+    const index = mockAdmins.findIndex(admin => admin.id == adminId);
+    if (index !== -1) {
+        mockAdmins.splice(index, 1);
+    }
+
+    // Remover visualmente da tabela
+    const rows = document.querySelectorAll('tbody tr');
+    rows.forEach(row => {
+        const deleteBtn = row.querySelector('button[onclick*="openDeleteCard"]');
+        if (deleteBtn && deleteBtn.getAttribute('onclick').includes(`openDeleteCard(${adminId}`)) {
+            // Animar saída
+            row.style.transition = 'all 0.3s ease';
+            row.style.transform = 'translateX(-100%)';
+            row.style.opacity = '0';
+
+            setTimeout(() => {
+                row.remove();
+
+                // Verificar se a tabela está vazia
+                const remainingRows = document.querySelectorAll('tbody tr');
+                if (remainingRows.length === 0) {
+                    // Mostrar mensagem de "nenhum registro encontrado"
+                    const tbody = document.querySelector('tbody');
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="6" class="text-center" style="padding: 2rem; color: #6b7280;">
+                                <i class="fas fa-inbox" style="font-size: 2rem; margin-bottom: 0.5rem; opacity: 0.5;"></i><br>
+                                Nenhum administrador encontrado
+                            </td>
+                        </tr>
+                    `;
+                }
+            }, 300);
+        }
+    });
+}
+
+function showDeleteError(message) {
+    // Criar elemento de erro temporário
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'delete-error-message';
+    errorDiv.innerHTML = `
+        <div class="error-content">
+            <i class="fas fa-exclamation-circle"></i>
+            <span>${message}</span>
+        </div>
+    `;
+
+    // Adicionar CSS inline para o erro
+    errorDiv.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #dc2626, #b91c1c);
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(220, 38, 38, 0.3);
+        z-index: 10000;
+        animation: slideInRight 0.3s ease;
+    `;
+
+    // Estilo para o conteúdo do erro
+    const errorContent = errorDiv.querySelector('.error-content');
+    errorContent.style.cssText = `
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+    `;
+
+    // Adicionar ao DOM
+    document.body.appendChild(errorDiv);
+
+    // Remover após 5 segundos
+    setTimeout(() => {
+        errorDiv.style.animation = 'slideOutRight 0.3s ease';
+        setTimeout(() => {
+            document.body.removeChild(errorDiv);
+        }, 300);
+    }, 5000);
 }
 
 // ===========================================
