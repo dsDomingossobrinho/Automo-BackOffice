@@ -129,150 +129,271 @@
     background: #e2e8f0;
 }
 
-.filters-section {
+/* =====================================
+   ÁREA DE FILTROS MODERNA
+   ===================================== */
+
+.modern-filters-section {
     background: white;
-    border-radius: 12px;
+    border-radius: 16px;
     padding: 1.5rem;
     margin-bottom: 1.5rem;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    border: 1px solid #e2e8f0;
-}
-
-.filters-header {
-    margin-bottom: 1.5rem;
-}
-
-.filters-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: #1f2937;
-    margin: 0 0 0.5rem 0;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.filters-subtitle {
-    color: #6b7280;
-    margin: 0;
-    font-size: 0.875rem;
-}
-
-.filters-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-    margin-bottom: 1rem;
-}
-
-.filter-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.filter-label {
-    font-weight: 500;
-    color: #374151;
-    font-size: 0.875rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.search-input-wrapper {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(226, 232, 240, 0.6);
     position: relative;
+    overflow: hidden;
 }
 
-.filter-input, .filter-select {
+.modern-filters-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6, #06b6d4);
+}
+
+.filters-inline-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: nowrap;
+}
+
+/* Campo de Pesquisa Moderno */
+.modern-search-group {
+    flex: 1;
+    min-width: 300px;
+}
+
+.search-input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-icon {
+    position: absolute;
+    left: 1rem;
+    color: #64748b;
+    font-size: 1rem;
+    z-index: 2;
+}
+
+.modern-search-input {
     width: 100%;
-    padding: 0.625rem 0.875rem;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
+    padding: 0.875rem 1rem 0.875rem 2.5rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
     font-size: 0.9375rem;
-    transition: all 0.3s ease;
+    font-weight: 400;
+    background: #fafbfc;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: #1e293b;
 }
 
-.filter-input:focus, .filter-select:focus {
+.modern-search-input:focus {
     outline: none;
     border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    background: white;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+    transform: translateY(-1px);
 }
 
-.search-input {
-    padding-right: 3rem;
+.modern-search-input::placeholder {
+    color: #94a3b8;
+    font-weight: 400;
 }
 
-.search-input-icon {
-    position: absolute;
-    right: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #6b7280;
+/* Select de Status Moderno */
+.modern-select-group {
+    min-width: 200px;
 }
 
-.filters-actions {
+.modern-status-select {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    background: #fafbfc;
+    color: #1e293b;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.75rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+}
+
+.modern-status-select:focus {
+    outline: none;
+    border-color: #3b82f6;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+    transform: translateY(-1px);
+}
+
+.modern-status-select:hover {
+    border-color: #94a3b8;
+}
+
+/* Botões Modernos */
+.modern-buttons-group {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 1rem;
+    gap: 0.75rem;
 }
 
-.filters-actions-main {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.btn-search-filter {
+.modern-search-btn {
     background: linear-gradient(135deg, #3b82f6, #1e40af);
     color: white;
     border: none;
-    border-radius: 8px;
-    padding: 0.625rem 1.25rem;
-    font-weight: 500;
+    border-radius: 12px;
+    padding: 0.875rem 1.25rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
     display: flex;
     align-items: center;
     gap: 0.5rem;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+    position: relative;
+    overflow: hidden;
 }
 
-.btn-search-filter:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+.modern-search-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s;
 }
 
-.btn-clear-filters {
-    background: #f3f4f6;
-    color: #374151;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    padding: 0.625rem 1.25rem;
+.modern-search-btn:hover::before {
+    left: 100%;
+}
+
+.modern-search-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+}
+
+.modern-search-btn:active {
+    transform: translateY(0);
+}
+
+.modern-clear-btn {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 0.875rem 1.25rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
     text-decoration: none;
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    transition: all 0.3s ease;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
 }
 
-.btn-clear-filters:hover {
-    background: #e5e7eb;
-    color: #374151;
+.modern-clear-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
     text-decoration: none;
+    color: white;
 }
 
-.clear-filters-wrapper.inactive {
-    display: none;
+/* Info dos Resultados */
+.results-summary {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(226, 232, 240, 0.6);
 }
 
-.filters-results-info {
+.results-info {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    color: #6b7280;
+    color: #64748b;
     font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.results-info i {
+    color: #3b82f6;
+}
+
+.results-info strong {
+    color: #1e293b;
+    font-weight: 700;
+}
+
+/* Responsividade */
+@media (max-width: 1024px) {
+    .filters-inline-row {
+        flex-wrap: wrap;
+    }
+
+    .modern-search-group {
+        min-width: 250px;
+    }
+
+    .modern-select-group {
+        min-width: 180px;
+    }
+}
+
+@media (max-width: 768px) {
+    .modern-filters-section {
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .filters-inline-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+
+    .modern-search-group,
+    .modern-select-group {
+        min-width: auto;
+    }
+
+    .modern-buttons-group {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .modern-search-btn,
+    .modern-clear-btn {
+        flex: 1;
+        justify-content: center;
+    }
+
+    .results-summary {
+        margin-top: 0.75rem;
+        padding-top: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .modern-buttons-group {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
 }
 
 .admin-table-section {
@@ -2242,46 +2363,28 @@ input:checked + .toggle-slider:before {
     <?php endif; ?>
 </div>
 
-<!-- 3. ÁREA DE FILTROS -->
-<div class="filters-section">
+<!-- 3. ÁREA DE FILTROS MODERNA -->
+<div class="modern-filters-section">
     <div class="filters-container">
-        <div class="filters-header">
-            <h3 class="filters-title">
-                <i class="fas fa-search"></i>
-                Pesquisar & Filtrar
-            </h3>
-            <p class="filters-subtitle">Use os filtros abaixo para encontrar administradores específicos</p>
-        </div>
-        
-        <form method="GET" action="<?= url('/accounts') ?>" class="filters-form">
-            <div class="filters-row">
+        <form method="GET" action="<?= url('/accounts') ?>" class="modern-filters-form">
+            <div class="filters-inline-row">
                 <!-- Campo de Pesquisa -->
-                <div class="filter-group">
-                    <label class="filter-label">
-                        <i class="fas fa-search"></i>
-                        Pesquisar Administradores
-                    </label>
-                    <div class="search-input-wrapper">
-                        <input type="text" 
-                               name="search" 
-                               class="filter-input search-input" 
+                <div class="modern-search-group">
+                    <div class="search-input-container">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text"
+                               name="search"
+                               class="modern-search-input"
                                value="<?= e($search ?? '') ?>"
-                               placeholder="Digite nome, email ou usuário..."
+                               placeholder="Pesquisar administradores..."
                                autocomplete="off">
-                        <div class="search-input-icon">
-                            <i class="fas fa-search"></i>
-                        </div>
                     </div>
                 </div>
 
                 <!-- Filtro de Status -->
-                <div class="filter-group">
-                    <label class="filter-label">
-                        <i class="fas fa-toggle-on"></i>
-                        Filtrar por Status
-                    </label>
-                    <select name="status" class="filter-select">
-                        <option value="">🔍 Todos os Status</option>
+                <div class="modern-select-group">
+                    <select name="status" class="modern-status-select">
+                        <option value="">🌐 Todos os Status</option>
                         <option value="active" <?= ($status ?? '') === 'active' ? 'selected' : '' ?>>
                             ✅ Somente Ativos
                         </option>
@@ -2290,29 +2393,29 @@ input:checked + .toggle-slider:before {
                         </option>
                     </select>
                 </div>
-            </div>
-            
-            <!-- Ações dos Filtros -->
-            <div class="filters-actions">
-                <div class="filters-actions-main">
-                    <button type="submit" class="btn-search-filter">
+
+                <!-- Botões de Ação -->
+                <div class="modern-buttons-group">
+                    <button type="submit" class="modern-search-btn">
                         <i class="fas fa-search"></i>
-                        <span>Aplicar Filtros</span>
+                        <span>Pesquisar</span>
                     </button>
-                    
-                    <!-- Botão Limpar Filtros (condicional) -->
-                    <div class="clear-filters-wrapper <?= (!empty($search) || !empty($status)) ? 'active' : 'inactive' ?>">
-                        <a href="<?= url('/accounts') ?>" class="btn-clear-filters">
-                            <i class="fas fa-eraser"></i>
-                            <span>Limpar Filtros</span>
+
+                    <!-- Botão Limpar (condicional) -->
+                    <?php if (!empty($search) || !empty($status)): ?>
+                        <a href="<?= url('/accounts') ?>" class="modern-clear-btn">
+                            <i class="fas fa-times-circle"></i>
+                            <span>Limpar</span>
                         </a>
-                    </div>
+                    <?php endif; ?>
                 </div>
-                
-                <!-- Info dos resultados -->
-                <div class="filters-results-info">
+            </div>
+
+            <!-- Info dos Resultados -->
+            <div class="results-summary">
+                <div class="results-info">
                     <i class="fas fa-info-circle"></i>
-                    <small>Encontrados <?= count($accounts ?? []) ?> administrador<?= count($accounts ?? []) !== 1 ? 'es' : '' ?></small>
+                    <span>Exibindo <strong><?= count($accounts ?? []) ?></strong> de <strong><?= $pagination['total_elements'] ?? 0 ?></strong> administradores</span>
                 </div>
             </div>
         </form>
