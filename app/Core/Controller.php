@@ -136,11 +136,18 @@ abstract class Controller
     protected function getRequestData()
     {
         $method = $_SERVER['REQUEST_METHOD'];
-        
+        $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+
         switch ($method) {
             case 'GET':
                 return $_GET;
             case 'POST':
+                // Check if it's JSON content type
+                if (strpos($contentType, 'application/json') !== false) {
+                    $input = file_get_contents('php://input');
+                    $jsonData = json_decode($input, true);
+                    return $jsonData ?: [];
+                }
                 return $_POST;
             case 'PUT':
             case 'DELETE':

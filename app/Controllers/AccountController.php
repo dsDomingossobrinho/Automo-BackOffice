@@ -148,9 +148,15 @@ class AccountController extends Controller
         }
 
         $data = $this->getRequestData();
-        
+
+        if (DEBUG_MODE) {
+            error_log("ACCOUNTS CREATE: Raw request data: " . print_r($data, true));
+            error_log("ACCOUNTS CREATE: Content-Type: " . ($_SERVER['CONTENT_TYPE'] ?? 'not set'));
+            error_log("ACCOUNTS CREATE: Request method: " . $_SERVER['REQUEST_METHOD']);
+        }
+
         // Validate required fields based on AdminDto structure
-        $required = ['name', 'email', 'password', 'contact', 'accountTypeId'];
+        $required = ['name', 'email', 'password', 'accountTypeId'];
         foreach ($required as $field) {
             if (empty($data[$field])) {
                 $this->json(['success' => false, 'message' => "Campo {$field} é obrigatório"], 400);
@@ -158,17 +164,33 @@ class AccountController extends Controller
             }
         }
 
+        // Validate stateId is required
+        if (!isset($data['stateId']) || $data['stateId'] === '') {
+            $this->json(['success' => false, 'message' => 'Campo stateId é obrigatório'], 400);
+            return;
+        }
+
         try {
-            // Use the correct admin creation endpoint
-            $response = $this->apiClient->authenticatedRequest('POST', '/admins', [
+            // Prepare data for admin creation endpoint
+            $adminData = [
                 'name' => $data['name'],
                 'email' => $data['email'],
                 'password' => $data['password'],
-                'contact' => $data['contact'],
                 'accountTypeId' => (int)$data['accountTypeId'],
-                'stateId' => (int)($data['stateId'] ?? 1), // Default to ACTIVE
-                'img' => $data['img'] ?? null // Optional image path
-            ]);
+                'stateId' => (int)$data['stateId']
+            ];
+
+            // Add optional fields only if provided
+            if (!empty($data['contact'])) {
+                $adminData['contact'] = $data['contact'];
+            }
+
+            if (!empty($data['img'])) {
+                $adminData['img'] = $data['img'];
+            }
+
+            // Use the correct admin creation endpoint
+            $response = $this->apiClient->authenticatedRequest('POST', '/admins', $adminData);
             
             // Check if this is an AJAX request
             $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
@@ -182,7 +204,20 @@ class AccountController extends Controller
                 }
             } else {
                 if ($isAjax) {
-                    $this->json(['success' => false, 'message' => $response['message'] ?? 'Erro ao criar administrador', 'errors' => $response['errors'] ?? []], 400);
+                    // Handle field-specific errors from backend
+                    $errorResponse = [
+                        'success' => false,
+                        'message' => $response['message'] ?? 'Erro ao criar administrador'
+                    ];
+
+                    // Include field errors if they exist in the response data
+                    if (isset($response['data']['fieldErrors'])) {
+                        $errorResponse['errors'] = $response['data']['fieldErrors'];
+                    } elseif (isset($response['errors'])) {
+                        $errorResponse['errors'] = $response['errors'];
+                    }
+
+                    $this->json($errorResponse, 400);
                 } else {
                     $this->setFlash('errors', [$response['message'] ?? 'Erro ao criar administrador']);
                     $this->redirect('/accounts/create');

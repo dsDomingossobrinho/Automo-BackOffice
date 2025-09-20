@@ -900,6 +900,187 @@ input:checked + .toggle-slider:before {
     font-weight: 500;
 }
 
+/* =====================================
+   VALIDAÇÃO DE SENHA FORTE
+   ===================================== */
+
+.password-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-input {
+    padding-right: 3rem !important;
+}
+
+.password-toggle-btn {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #6b7280;
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    z-index: 2;
+}
+
+.password-toggle-btn:hover {
+    color: #3b82f6;
+    background: #f3f4f6;
+}
+
+.password-strength-container {
+    margin: 0.75rem 0 0.5rem 0;
+}
+
+.password-strength-bar {
+    width: 100%;
+    height: 6px;
+    background: #e5e7eb;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.strength-fill {
+    height: 100%;
+    width: 0%;
+    transition: all 0.3s ease;
+    border-radius: 3px;
+}
+
+.strength-fill.weak {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    width: 25%;
+}
+
+.strength-fill.fair {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    width: 50%;
+}
+
+.strength-fill.good {
+    background: linear-gradient(135deg, #3b82f6, #1e40af);
+    width: 75%;
+}
+
+.strength-fill.strong {
+    background: linear-gradient(135deg, #10b981, #059669);
+    width: 100%;
+}
+
+.strength-text {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.strength-text.weak {
+    color: #ef4444;
+}
+
+.strength-text.fair {
+    color: #f59e0b;
+}
+
+.strength-text.good {
+    color: #3b82f6;
+}
+
+.strength-text.strong {
+    color: #10b981;
+}
+
+.password-requirements {
+    margin-top: 0.75rem;
+    padding: 1rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    display: none;
+}
+
+.password-requirements.show {
+    display: block;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.requirement {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.8125rem;
+    transition: all 0.3s ease;
+}
+
+.requirement:last-child {
+    margin-bottom: 0;
+}
+
+.requirement-icon {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.requirement.valid .requirement-icon {
+    background: #10b981;
+    color: white;
+}
+
+.requirement.valid .requirement-icon:before {
+    content: "\f00c"; /* checkmark */
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+}
+
+.requirement.invalid .requirement-icon {
+    background: #ef4444;
+    color: white;
+}
+
+.requirement.invalid .requirement-icon:before {
+    content: "\f00d"; /* times */
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+}
+
+.requirement.valid {
+    color: #10b981;
+}
+
+.requirement.invalid {
+    color: #6b7280;
+}
+
+.requirement span {
+    transition: all 0.3s ease;
+}
+
 /* View Card Specific */
 .admin-profile-header {
     display: flex;
@@ -1660,29 +1841,75 @@ input:checked + .toggle-slider:before {
                                     <i class="fas fa-signature"></i>
                                     Nome Completo *
                                 </label>
-                                <input type="text" name="name" class="form-input" 
+                                <input type="text" name="name" class="form-input"
                                        placeholder="Ex: João Silva Santos" required>
                                 <small class="form-hint">Nome que será exibido no sistema</small>
                             </div>
-                            
+
                             <div class="form-group">
                                 <label class="form-label">
                                     <i class="fas fa-envelope"></i>
                                     Endereço de Email *
                                 </label>
-                                <input type="email" name="email" class="form-input" 
+                                <input type="email" name="email" class="form-input"
                                        placeholder="admin@empresa.com" required>
                                 <small class="form-hint">Email será usado para login</small>
                             </div>
-                            
+
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-lock"></i>
+                                    Senha *
+                                </label>
+                                <div class="password-input-wrapper">
+                                    <input type="password" name="password" id="createPassword" class="form-input password-input"
+                                           placeholder="Digite uma senha segura" required minlength="8">
+                                    <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('createPassword')">
+                                        <i class="fas fa-eye" id="createPasswordToggleIcon"></i>
+                                    </button>
+                                </div>
+
+                                <!-- Indicador de Força da Senha -->
+                                <div class="password-strength-container">
+                                    <div class="password-strength-bar">
+                                        <div class="strength-fill" id="createPasswordStrengthFill"></div>
+                                    </div>
+                                    <span class="strength-text" id="createPasswordStrengthText">Digite uma senha</span>
+                                </div>
+
+                                <!-- Requisitos da Senha -->
+                                <div class="password-requirements" id="createPasswordRequirements">
+                                    <div class="requirement" id="req-length">
+                                        <i class="fas fa-times requirement-icon"></i>
+                                        <span>Mínimo 8 caracteres</span>
+                                    </div>
+                                    <div class="requirement" id="req-uppercase">
+                                        <i class="fas fa-times requirement-icon"></i>
+                                        <span>Pelo menos 1 letra maiúscula</span>
+                                    </div>
+                                    <div class="requirement" id="req-lowercase">
+                                        <i class="fas fa-times requirement-icon"></i>
+                                        <span>Pelo menos 1 letra minúscula</span>
+                                    </div>
+                                    <div class="requirement" id="req-number">
+                                        <i class="fas fa-times requirement-icon"></i>
+                                        <span>Pelo menos 1 número</span>
+                                    </div>
+                                    <div class="requirement" id="req-special">
+                                        <i class="fas fa-times requirement-icon"></i>
+                                        <span>Pelo menos 1 símbolo (!@#$%^&*)</span>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="form-group">
                                 <label class="form-label">
                                     <i class="fas fa-phone"></i>
                                     Contacto Telefónico
                                 </label>
-                                <input type="tel" name="contact" class="form-input" 
-                                       placeholder="+351 912 345 678">
-                                <small class="form-hint">Formato: +351 912 345 678</small>
+                                <input type="tel" name="contact" class="form-input"
+                                       placeholder="+244 912 345 678">
+                                <small class="form-hint">Formato: +244 912 345 678</small>
                             </div>
                         </div>
                     </div>
@@ -1697,52 +1924,58 @@ input:checked + .toggle-slider:before {
                             
                             <div class="form-group">
                                 <label class="form-label">
-                                    <i class="fas fa-user-circle"></i>
-                                    Nome de Usuário *
+                                    <i class="fas fa-image"></i>
+                                    Imagem do Perfil
                                 </label>
-                                <input type="text" name="username" class="form-input" 
-                                       placeholder="joao.silva" required>
-                                <small class="form-hint">Usado para identificação interna</small>
+                                <input type="url" name="img" class="form-input"
+                                       placeholder="https://exemplo.com/imagem.jpg">
+                                <small class="form-hint">URL da imagem ou deixe vazio para usar avatar padrão</small>
                             </div>
-                            
+
                             <div class="form-group">
                                 <label class="form-label">
-                                    <i class="fas fa-user-shield"></i>
-                                    Função/Papel
+                                    <i class="fas fa-building"></i>
+                                    Tipo de Conta *
                                 </label>
-                                <select name="role_id" class="form-select">
-                                    <option value="">Selecionar função...</option>
-                                    <option value="1">Super Administrador</option>
-                                    <option value="2" selected>Administrador</option>
-                                    <option value="3">Gestor</option>
-                                    <option value="4">Operador</option>
+                                <select name="accountTypeId" class="form-select" required>
+                                    <option value="">Selecionar tipo...</option>
+                                    <?php if (!empty($accountTypes)): ?>
+                                        <?php foreach ($accountTypes as $type): ?>
+                                            <option value="<?= $type['id'] ?>"
+                                                    <?= $type['id'] == 1 ? 'selected' : '' ?>>
+                                                <?= e($type['type']) ?> - <?= e($type['description']) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <option value="1" selected>INDIVIDUAL - Back Office Individual</option>
+                                        <option value="2">CORPORATE - Corporate Account</option>
+                                    <?php endif; ?>
                                 </select>
-                                <small class="form-hint">Define as permissões do usuário</small>
+                                <small class="form-hint">Define o tipo da conta de administrador</small>
                             </div>
-                            
+
                             <div class="form-group">
                                 <label class="form-label">
                                     <i class="fas fa-toggle-on"></i>
-                                    Status da Conta
+                                    Estado da Conta *
                                 </label>
-                                <div class="status-toggle">
-                                    <input type="hidden" name="state" value="INACTIVE">
-                                    <label class="toggle-switch">
-                                        <input type="checkbox" name="is_active" value="1" checked>
-                                        <span class="toggle-slider"></span>
-                                    </label>
-                                    <span class="toggle-label">Conta Ativa</span>
-                                </div>
-                                <small class="form-hint">Administradores ativos podem fazer login</small>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-sticky-note"></i>
-                                    Notas Adicionais
-                                </label>
-                                <textarea name="notes" class="form-textarea" rows="3" 
-                                          placeholder="Informações adicionais sobre este administrador..."></textarea>
+                                <select name="stateId" class="form-select" required>
+                                    <option value="">Selecionar estado...</option>
+                                    <?php if (!empty($states)): ?>
+                                        <?php foreach ($states as $state): ?>
+                                            <option value="<?= $state['id'] ?>"
+                                                    <?= $state['id'] == 1 ? 'selected' : '' ?>>
+                                                <?= e($state['state']) ?> - <?= e($state['description']) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <option value="1" selected>ACTIVE - Ativo</option>
+                                        <option value="2">INACTIVE - Inativo</option>
+                                        <option value="3">PENDING - Pendente</option>
+                                        <option value="4">ELIMINATED - Eliminado</option>
+                                    <?php endif; ?>
+                                </select>
+                                <small class="form-hint">Estado inicial da conta do administrador</small>
                             </div>
                         </div>
                     </div>
@@ -2106,10 +2339,63 @@ function resetCreateForm() {
     const form = document.getElementById('createAdminForm');
     if (form) {
         form.reset();
-        // Marcar como ativo por padrão
-        document.querySelector('input[name="is_active"]').checked = true;
-        // Selecionar "Administrador" por padrão
-        document.querySelector('select[name="role_id"]').value = '2';
+        // Selecionar valores padrão
+        const accountTypeSelect = form.querySelector('select[name="accountTypeId"]');
+        if (accountTypeSelect) {
+            accountTypeSelect.value = '1'; // INDIVIDUAL - Back Office
+        }
+
+        const stateSelect = form.querySelector('select[name="stateId"]');
+        if (stateSelect) {
+            stateSelect.value = '1'; // ACTIVE
+        }
+
+        // Resetar indicador de senha
+        resetPasswordStrength('createPassword');
+    }
+}
+
+function resetPasswordStrength(inputId) {
+    const strengthFill = document.getElementById(inputId + 'StrengthFill');
+    const strengthText = document.getElementById(inputId + 'StrengthText');
+    const requirementsContainer = document.getElementById(inputId + 'Requirements');
+
+    if (strengthFill) strengthFill.className = 'strength-fill';
+    if (strengthText) {
+        strengthText.textContent = 'Digite uma senha';
+        strengthText.className = 'strength-text';
+    }
+    if (requirementsContainer) requirementsContainer.classList.remove('show');
+}
+
+function setupPasswordValidation(inputId) {
+    const passwordInput = document.getElementById(inputId);
+    if (passwordInput) {
+        // Remover listeners existentes
+        passwordInput.removeEventListener('input', passwordInput.strengthHandler);
+        passwordInput.removeEventListener('focus', passwordInput.focusHandler);
+        passwordInput.removeEventListener('blur', passwordInput.blurHandler);
+
+        // Adicionar novos listeners
+        passwordInput.strengthHandler = function() {
+            updatePasswordStrength(inputId);
+        };
+
+        passwordInput.focusHandler = function() {
+            if (this.value.length > 0) {
+                document.getElementById(inputId + 'Requirements').classList.add('show');
+            }
+        };
+
+        passwordInput.blurHandler = function() {
+            if (this.value.length === 0) {
+                document.getElementById(inputId + 'Requirements').classList.remove('show');
+            }
+        };
+
+        passwordInput.addEventListener('input', passwordInput.strengthHandler);
+        passwordInput.addEventListener('focus', passwordInput.focusHandler);
+        passwordInput.addEventListener('blur', passwordInput.blurHandler);
     }
 }
 
@@ -2216,6 +2502,11 @@ function showCard(cardId) {
         const firstInput = document.querySelector(`#${cardId} input, #${cardId} select, #${cardId} textarea`);
         if (firstInput) firstInput.focus();
     }, 100);
+
+    // Configurar validador de senha se for o card de criar
+    if (cardId === 'createAdminCard') {
+        setupPasswordValidation('createPassword');
+    }
 }
 
 function closeCard() {
@@ -2308,39 +2599,243 @@ function formatDate(dateString) {
 }
 
 function showLoading(message = 'Processando...') {
-    // Implementar loading spinner
-    console.log('Loading:', message);
+    // Remove existing loading
+    hideLoading();
+
+    const loadingOverlay = document.createElement('div');
+    loadingOverlay.id = 'loadingOverlay';
+    loadingOverlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(4px);
+        z-index: 999999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: fadeIn 0.2s ease;
+    `;
+
+    loadingOverlay.innerHTML = `
+        <div style="
+            background: white;
+            border-radius: 16px;
+            padding: 2rem 3rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            max-width: 400px;
+        ">
+            <div style="
+                width: 24px;
+                height: 24px;
+                border: 3px solid #e5e7eb;
+                border-top: 3px solid #3b82f6;
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+            "></div>
+            <span style="
+                color: #1f2937;
+                font-weight: 500;
+                font-size: 1rem;
+            ">${message}</span>
+        </div>
+    `;
+
+    // Add CSS animations if not exists
+    if (!document.getElementById('loadingAnimations')) {
+        const style = document.createElement('style');
+        style.id = 'loadingAnimations';
+        style.textContent = `
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    document.body.appendChild(loadingOverlay);
 }
 
 function hideLoading() {
-    // Ocultar loading spinner
-    console.log('Loading hidden');
+    const existingLoading = document.getElementById('loadingOverlay');
+    if (existingLoading) {
+        existingLoading.remove();
+    }
 }
 
 function showAlert(message, type) {
     // Remove existing alerts
-    const existingAlerts = document.querySelectorAll('.alert.position-fixed');
+    const existingAlerts = document.querySelectorAll('.admin-alert');
     existingAlerts.forEach(alert => alert.remove());
-    
+
     const alert = document.createElement('div');
-    alert.className = `alert alert-${type} alert-dismissible position-fixed`;
-    alert.style.cssText = 'top: 20px; right: 20px; z-index: 99999; min-width: 320px; box-shadow: 0 4px 16px rgba(0,0,0,0.15);';
+    alert.className = `admin-alert alert-${type}`;
+    alert.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 99999;
+        min-width: 320px;
+        max-width: 500px;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        background: ${type === 'success' ? 'linear-gradient(135deg, #10b981, #059669)' : 'linear-gradient(135deg, #ef4444, #dc2626)'};
+        color: white;
+        font-weight: 500;
+        animation: slideInAlert 0.3s ease;
+    `;
+
     alert.innerHTML = `
-        <div class="d-flex align-items-center">
-            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'danger' ? 'exclamation-circle' : 'info-circle'} me-2"></i>
-            <div class="flex-grow-1">${message}</div>
-            <button type="button" class="btn-close" onclick="this.parentElement.parentElement.remove()"></button>
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}" style="font-size: 1.25rem;"></i>
+            <div style="flex: 1; line-height: 1.4;">${message}</div>
+            <button type="button" onclick="this.parentElement.parentElement.remove()"
+                    style="background: none; border: none; color: white; font-size: 1.25rem; cursor: pointer; padding: 0; margin-left: 0.5rem;">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
     `;
-    
+
+    // Add CSS animation
+    if (!document.getElementById('alertAnimations')) {
+        const style = document.createElement('style');
+        style.id = 'alertAnimations';
+        style.textContent = `
+            @keyframes slideInAlert {
+                from {
+                    opacity: 0;
+                    transform: translateX(100%);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
     document.body.appendChild(alert);
-    
-    // Auto-remove after 5 seconds
+
+    // Auto-remove after 6 seconds for errors, 4 seconds for success
+    const timeout = type === 'success' ? 4000 : 6000;
     setTimeout(() => {
         if (alert && alert.parentElement) {
-            alert.remove();
+            alert.style.animation = 'slideInAlert 0.3s ease reverse';
+            setTimeout(() => alert.remove(), 300);
         }
-    }, 5000);
+    }, timeout);
+}
+
+// ===========================================
+// VALIDAÇÃO DE SENHA FORTE
+// ===========================================
+
+function togglePasswordVisibility(inputId) {
+    const passwordInput = document.getElementById(inputId);
+    const toggleIcon = document.getElementById(inputId + 'ToggleIcon');
+
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.className = 'fas fa-eye-slash';
+    } else {
+        passwordInput.type = 'password';
+        toggleIcon.className = 'fas fa-eye';
+    }
+}
+
+function checkPasswordStrength(password) {
+    const requirements = {
+        length: password.length >= 8,
+        uppercase: /[A-Z]/.test(password),
+        lowercase: /[a-z]/.test(password),
+        number: /\d/.test(password),
+        special: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)
+    };
+
+    const validCount = Object.values(requirements).filter(Boolean).length;
+
+    let strength = 'weak';
+    let score = 0;
+
+    if (validCount >= 5) {
+        strength = 'strong';
+        score = 4;
+    } else if (validCount >= 4) {
+        strength = 'good';
+        score = 3;
+    } else if (validCount >= 2) {
+        strength = 'fair';
+        score = 2;
+    } else if (validCount >= 1) {
+        strength = 'weak';
+        score = 1;
+    }
+
+    return {
+        strength,
+        score,
+        requirements,
+        validCount
+    };
+}
+
+function updatePasswordStrength(inputId) {
+    const passwordInput = document.getElementById(inputId);
+    const password = passwordInput.value;
+    const strengthFill = document.getElementById(inputId + 'StrengthFill');
+    const strengthText = document.getElementById(inputId + 'StrengthText');
+    const requirementsContainer = document.getElementById(inputId + 'Requirements');
+
+    if (password.length === 0) {
+        strengthFill.className = 'strength-fill';
+        strengthText.textContent = 'Digite uma senha';
+        strengthText.className = 'strength-text';
+        requirementsContainer.classList.remove('show');
+        return;
+    }
+
+    const result = checkPasswordStrength(password);
+
+    // Atualizar barra de força
+    strengthFill.className = `strength-fill ${result.strength}`;
+
+    // Atualizar texto de força
+    const strengthTexts = {
+        weak: '🔴 Fraca - Adicione mais caracteres',
+        fair: '🟡 Razoável - Quase lá!',
+        good: '🔵 Boa - Senha segura',
+        strong: '🟢 Forte - Excelente segurança!'
+    };
+
+    strengthText.textContent = strengthTexts[result.strength];
+    strengthText.className = `strength-text ${result.strength}`;
+
+    // Mostrar requisitos
+    requirementsContainer.classList.add('show');
+
+    // Atualizar requisitos individuais
+    const reqElements = {
+        'req-length': result.requirements.length,
+        'req-uppercase': result.requirements.uppercase,
+        'req-lowercase': result.requirements.lowercase,
+        'req-number': result.requirements.number,
+        'req-special': result.requirements.special
+    };
+
+    for (const [reqId, isValid] of Object.entries(reqElements)) {
+        const reqElement = document.getElementById(reqId);
+        if (reqElement) {
+            reqElement.className = `requirement ${isValid ? 'valid' : 'invalid'}`;
+        }
+    }
 }
 
 // ===========================================
@@ -2410,29 +2905,101 @@ document.addEventListener('DOMContentLoaded', function() {
     // Submissão do formulário de criação
     document.getElementById('createAdminForm').addEventListener('submit', async function(e) {
         e.preventDefault();
-        
+
+        // Validar campos obrigatórios
+        const requiredFields = ['name', 'email', 'password', 'accountTypeId', 'stateId'];
         const formData = new FormData(this);
-        
+
+        for (const field of requiredFields) {
+            const value = formData.get(field);
+            if (!value || value.trim() === '') {
+                showAlert(`Campo ${field === 'name' ? 'Nome' : field === 'email' ? 'Email' : field === 'password' ? 'Senha' : field === 'accountTypeId' ? 'Tipo de Conta' : 'Estado'} é obrigatório`, 'danger');
+                return;
+            }
+        }
+
+        // Validar formato do email
+        const email = formData.get('email');
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            showAlert('Por favor, insira um email válido', 'danger');
+            return;
+        }
+
+        // Validar força da senha
+        const password = formData.get('password');
+        const passwordStrength = checkPasswordStrength(password);
+
+        if (passwordStrength.score < 3) {
+            showAlert('A senha não atende aos requisitos mínimos de segurança. Verifique os indicadores abaixo do campo senha.', 'danger');
+            return;
+        }
+
+        // Preparar dados para envio (formato JSON conforme especificado)
+        const adminData = {
+            email: formData.get('email').trim(),
+            name: formData.get('name').trim(),
+            password: formData.get('password'),
+            accountTypeId: parseInt(formData.get('accountTypeId')),
+            stateId: parseInt(formData.get('stateId'))
+        };
+
+        // Adicionar campos opcionais apenas se preenchidos
+        const img = formData.get('img');
+        if (img && img.trim() !== '') {
+            adminData.img = img.trim();
+        }
+
+        const contact = formData.get('contact');
+        if (contact && contact.trim() !== '') {
+            adminData.contact = contact.trim();
+        }
+
         try {
             showLoading('Criando administrador...');
-            
+
             const response = await fetch('<?= url('/accounts') ?>', {
                 method: 'POST',
-                body: formData,
                 headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                },
+                body: JSON.stringify(adminData)
             });
-            
+
             hideLoading();
-            
-            if (response.ok) {
+
+            const responseData = await response.json().catch(() => ({}));
+
+            if (response.ok || response.status === 201) {
                 closeCard();
-                showAlert('Administrador criado com sucesso!', 'success');
-                setTimeout(() => window.location.reload(), 1000);
+                showAlert('Administrador criado com sucesso! 🎉', 'success');
+                setTimeout(() => window.location.reload(), 1500);
             } else {
-                const errorData = await response.json().catch(() => ({}));
-                showAlert(errorData.message || 'Erro ao criar administrador', 'danger');
+                // Tratar erros de validação do backend
+                let errorMessage = 'Erro ao criar administrador';
+
+                if (response.status === 500) {
+                    // Erro interno do servidor
+                    errorMessage = `⚠️ Erro interno do servidor (Backend): O sistema backend precisa ser corrigido.
+                                   Detalhes técnicos: ${responseData.message || 'Erro na validação da entidade Admin'}`;
+                } else if (responseData.errors && typeof responseData.errors === 'object') {
+                    // Se existem erros de campo específicos
+                    const errorMessages = [];
+                    for (const [field, messages] of Object.entries(responseData.errors)) {
+                        if (Array.isArray(messages)) {
+                            errorMessages.push(...messages);
+                        } else {
+                            errorMessages.push(messages);
+                        }
+                    }
+                    errorMessage = errorMessages.join(', ');
+                } else if (responseData.message) {
+                    errorMessage = responseData.message;
+                }
+
+                showAlert(errorMessage, 'danger');
             }
         } catch (error) {
             hideLoading();
