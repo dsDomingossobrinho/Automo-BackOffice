@@ -1328,6 +1328,584 @@ input:checked + .toggle-slider:before {
 }
 
 /* =====================================
+   LAYOUT COMPACTO PARA MODAL DE CRIAÇÃO
+   ===================================== */
+
+.compact-form-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-height: 60vh;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+}
+
+.form-row-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem;
+    align-items: end;
+}
+
+.form-row-password {
+    width: 100%;
+}
+
+.form-row-configs {
+    display: flex;
+    gap: 1rem;
+    align-items: end;
+}
+
+.form-row-optional {
+    border-top: 1px solid #e2e8f0;
+    padding-top: 1rem;
+}
+
+.form-group.compact {
+    margin-bottom: 0.75rem;
+}
+
+.form-group.compact.half-width {
+    flex: 1;
+}
+
+.form-label.compact {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.375rem;
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+}
+
+.form-input.compact,
+.form-select.compact {
+    height: 2.5rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: white;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.form-input.compact:focus,
+.form-select.compact:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    outline: none;
+}
+
+.password-toggle-btn.compact {
+    right: 0.5rem;
+    width: 2rem;
+    height: 2rem;
+    font-size: 0.875rem;
+}
+
+/* Força da senha compacta */
+.password-strength-compact {
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.strength-bar-mini {
+    flex: 1;
+    height: 4px;
+    background: #e5e7eb;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.strength-text-mini {
+    font-size: 0.75rem;
+    font-weight: 500;
+    min-width: 90px;
+    text-align: right;
+    transition: color 0.2s ease;
+}
+
+.strength-text-mini.weak {
+    color: #ef4444;
+}
+
+.strength-text-mini.fair {
+    color: #f59e0b;
+}
+
+.strength-text-mini.good {
+    color: #3b82f6;
+}
+
+.strength-text-mini.strong {
+    color: #10b981;
+}
+
+/* Requisitos compactos */
+.password-requirements-compact {
+    margin-top: 0.5rem;
+    padding: 0.75rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    display: none;
+}
+
+.password-requirements-compact.show {
+    display: block;
+    animation: slideDown 0.2s ease;
+}
+
+.requirements-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+}
+
+.requirement.compact {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.75rem;
+    margin-bottom: 0;
+}
+
+.requirement-icon-mini {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #ef4444;
+    display: block;
+    position: relative;
+}
+
+.requirement.compact.valid .requirement-icon-mini {
+    background: #10b981;
+}
+
+.requirement.compact.valid .requirement-icon-mini::after {
+    content: "✓";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 8px;
+    font-weight: bold;
+}
+
+.requirement.compact.invalid .requirement-icon-mini::after {
+    content: "×";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 8px;
+    font-weight: bold;
+}
+
+.requirement.compact.valid {
+    color: #10b981;
+}
+
+.requirement.compact.invalid {
+    color: #6b7280;
+}
+
+/* Seção opcional colapsível */
+.optional-section {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.optional-toggle {
+    width: 100%;
+    background: transparent;
+    border: none;
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    transition: all 0.2s ease;
+}
+
+.optional-toggle:hover {
+    background: #f3f4f6;
+}
+
+.optional-toggle i {
+    transition: transform 0.2s ease;
+}
+
+.optional-toggle.expanded i {
+    transform: rotate(90deg);
+}
+
+.optional-content {
+    padding: 0 1rem 1rem 1rem;
+    border-top: 1px solid #e2e8f0;
+    animation: slideDown 0.2s ease;
+}
+
+/* Sistema de Upload de Imagem */
+.image-upload-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.upload-options-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.upload-section-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+}
+
+.upload-method-toggle {
+    display: flex;
+    background: #f3f4f6;
+    border-radius: 8px;
+    padding: 0.25rem;
+    gap: 0.25rem;
+}
+
+.method-btn {
+    background: transparent;
+    border: none;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+}
+
+.method-btn:hover {
+    color: #374151;
+    background: #e5e7eb;
+}
+
+.method-btn.active {
+    background: white;
+    color: #3b82f6;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.upload-method-content {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* URL Input */
+.url-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.url-preview-btn {
+    position: absolute;
+    right: 0.5rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #6b7280;
+    transition: all 0.2s ease;
+}
+
+.url-preview-btn:hover {
+    background: #3b82f6;
+    color: white;
+    border-color: #3b82f6;
+}
+
+/* File Upload Area */
+.file-upload-area {
+    border: 2px dashed #d1d5db;
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: #fafafa;
+    position: relative;
+    overflow: hidden;
+}
+
+.file-upload-area:hover {
+    border-color: #3b82f6;
+    background: #f8fafc;
+}
+
+.file-upload-area.dragover {
+    border-color: #3b82f6;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(30, 64, 175, 0.05));
+}
+
+.upload-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.upload-icon {
+    font-size: 2rem;
+    color: #9ca3af;
+    margin-bottom: 0.5rem;
+}
+
+.upload-text {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+}
+
+.upload-hint {
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+/* Upload Preview */
+.upload-preview {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.upload-preview img {
+    max-width: 100%;
+    max-height: 120px;
+    border-radius: 6px;
+    object-fit: cover;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.preview-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 6px;
+}
+
+.upload-preview:hover .preview-overlay {
+    opacity: 1;
+}
+
+.change-file-btn,
+.remove-file-btn {
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 4px;
+    padding: 0.375rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.change-file-btn {
+    color: #3b82f6;
+}
+
+.change-file-btn:hover {
+    background: #3b82f6;
+    color: white;
+}
+
+.remove-file-btn {
+    color: #ef4444;
+}
+
+.remove-file-btn:hover {
+    background: #ef4444;
+    color: white;
+}
+
+/* Preview Global */
+.image-preview-section {
+    border-top: 1px solid #e2e8f0;
+    padding-top: 1rem;
+    margin-top: 1rem;
+}
+
+.global-image-preview {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+}
+
+.global-image-preview img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.preview-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+}
+
+.preview-status {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: #10b981;
+}
+
+.clear-preview-btn {
+    background: transparent;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.clear-preview-btn:hover {
+    background: #ef4444;
+    color: white;
+    border-color: #ef4444;
+}
+
+.form-hint.compact {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-top: 0.25rem;
+}
+
+/* Responsividade */
+@media (max-width: 480px) {
+    .upload-options-header {
+        flex-direction: column;
+        gap: 0.75rem;
+        align-items: stretch;
+    }
+
+    .upload-method-toggle {
+        justify-content: center;
+    }
+
+    .global-image-preview {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .file-upload-area {
+        padding: 1rem;
+    }
+
+    .upload-icon {
+        font-size: 1.5rem;
+    }
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .form-row-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+
+    .form-row-configs {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .form-group.compact.half-width {
+        width: 100%;
+    }
+
+    .requirements-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .compact-form-layout {
+        max-height: 70vh;
+    }
+}
+
+@media (max-width: 480px) {
+    .requirements-grid {
+        grid-template-columns: 1fr;
+        gap: 0.25rem;
+    }
+
+    .password-strength-compact {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+    }
+
+    .strength-text-mini {
+        text-align: left;
+        min-width: auto;
+    }
+}
+
+/* =====================================
    DASHBOARD HEADER MODERNIZADO
    ===================================== */
 
@@ -2707,156 +3285,212 @@ input:checked + .toggle-slider:before {
             <form id="createAdminForm" class="admin-form">
                 <?= csrfField() ?>
                 
-                <!-- Campos organizados em duas colunas -->
-                <div class="form-columns">
-                    <!-- Coluna Esquerda -->
-                    <div class="form-column left-column">
-                        <div class="form-section">
-                            <h4 class="section-title">
-                                <i class="fas fa-user"></i>
-                                Informações Pessoais
-                            </h4>
-                            
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-signature"></i>
-                                    Nome Completo *
-                                </label>
-                                <input type="text" name="name" class="form-input"
-                                       placeholder="Ex: João Silva Santos" required>
-                                <small class="form-hint">Nome que será exibido no sistema</small>
+                <!-- Layout compacto otimizado -->
+                <div class="compact-form-layout">
+                    <!-- Linha 1: Informações principais em grid -->
+                    <div class="form-row-grid">
+                        <div class="form-group compact">
+                            <label class="form-label compact">
+                                <i class="fas fa-signature"></i>Nome Completo *
+                            </label>
+                            <input type="text" name="name" class="form-input compact"
+                                   placeholder="Ex: João Silva Santos" required>
+                        </div>
+
+                        <div class="form-group compact">
+                            <label class="form-label compact">
+                                <i class="fas fa-envelope"></i>Email *
+                            </label>
+                            <input type="email" name="email" class="form-input compact"
+                                   placeholder="admin@empresa.com" required>
+                        </div>
+
+                        <div class="form-group compact">
+                            <label class="form-label compact">
+                                <i class="fas fa-phone"></i>Contacto
+                            </label>
+                            <input type="tel" name="contact" class="form-input compact"
+                                   placeholder="+244 912 345 678">
+                        </div>
+                    </div>
+
+                    <!-- Linha 2: Senha com validação compacta -->
+                    <div class="form-row-password">
+                        <div class="form-group compact">
+                            <label class="form-label compact">
+                                <i class="fas fa-lock"></i>Senha *
+                            </label>
+                            <div class="password-input-wrapper">
+                                <input type="password" name="password" id="createPassword" class="form-input compact password-input"
+                                       placeholder="Digite uma senha segura" required minlength="8">
+                                <button type="button" class="password-toggle-btn compact" onclick="togglePasswordVisibility('createPassword')">
+                                    <i class="fas fa-eye" id="createPasswordToggleIcon"></i>
+                                </button>
                             </div>
 
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-envelope"></i>
-                                    Endereço de Email *
-                                </label>
-                                <input type="email" name="email" class="form-input"
-                                       placeholder="admin@empresa.com" required>
-                                <small class="form-hint">Email será usado para login</small>
+                            <!-- Indicador compacto de força da senha -->
+                            <div class="password-strength-compact">
+                                <div class="strength-bar-mini">
+                                    <div class="strength-fill" id="createPasswordStrengthFill"></div>
+                                </div>
+                                <span class="strength-text-mini" id="createPasswordStrengthText">Força da senha</span>
                             </div>
 
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-lock"></i>
-                                    Senha *
-                                </label>
-                                <div class="password-input-wrapper">
-                                    <input type="password" name="password" id="createPassword" class="form-input password-input"
-                                           placeholder="Digite uma senha segura" required minlength="8">
-                                    <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('createPassword')">
-                                        <i class="fas fa-eye" id="createPasswordToggleIcon"></i>
-                                    </button>
-                                </div>
-
-                                <!-- Indicador de Força da Senha -->
-                                <div class="password-strength-container">
-                                    <div class="password-strength-bar">
-                                        <div class="strength-fill" id="createPasswordStrengthFill"></div>
+                            <!-- Requisitos compactos (ocultos por padrão) -->
+                            <div class="password-requirements-compact" id="createPasswordRequirements">
+                                <div class="requirements-grid">
+                                    <div class="requirement compact" id="req-length">
+                                        <i class="requirement-icon-mini"></i><span>8+ chars</span>
                                     </div>
-                                    <span class="strength-text" id="createPasswordStrengthText">Digite uma senha</span>
-                                </div>
-
-                                <!-- Requisitos da Senha -->
-                                <div class="password-requirements" id="createPasswordRequirements">
-                                    <div class="requirement" id="req-length">
-                                        <i class="fas fa-times requirement-icon"></i>
-                                        <span>Mínimo 8 caracteres</span>
+                                    <div class="requirement compact" id="req-uppercase">
+                                        <i class="requirement-icon-mini"></i><span>A-Z</span>
                                     </div>
-                                    <div class="requirement" id="req-uppercase">
-                                        <i class="fas fa-times requirement-icon"></i>
-                                        <span>Pelo menos 1 letra maiúscula</span>
+                                    <div class="requirement compact" id="req-lowercase">
+                                        <i class="requirement-icon-mini"></i><span>a-z</span>
                                     </div>
-                                    <div class="requirement" id="req-lowercase">
-                                        <i class="fas fa-times requirement-icon"></i>
-                                        <span>Pelo menos 1 letra minúscula</span>
+                                    <div class="requirement compact" id="req-number">
+                                        <i class="requirement-icon-mini"></i><span>0-9</span>
                                     </div>
-                                    <div class="requirement" id="req-number">
-                                        <i class="fas fa-times requirement-icon"></i>
-                                        <span>Pelo menos 1 número</span>
-                                    </div>
-                                    <div class="requirement" id="req-special">
-                                        <i class="fas fa-times requirement-icon"></i>
-                                        <span>Pelo menos 1 símbolo (!@#$%^&*)</span>
+                                    <div class="requirement compact" id="req-special">
+                                        <i class="requirement-icon-mini"></i><span>!@#</span>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-phone"></i>
-                                    Contacto Telefónico
-                                </label>
-                                <input type="tel" name="contact" class="form-input"
-                                       placeholder="+244 912 345 678">
-                                <small class="form-hint">Formato: +244 912 345 678</small>
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Coluna Direita -->
-                    <div class="form-column right-column">
-                        <div class="form-section">
-                            <h4 class="section-title">
-                                <i class="fas fa-cogs"></i>
-                                Configurações da Conta
-                            </h4>
-                            
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-image"></i>
-                                    Imagem do Perfil
-                                </label>
-                                <input type="url" name="img" class="form-input"
-                                       placeholder="https://exemplo.com/imagem.jpg">
-                                <small class="form-hint">URL da imagem ou deixe vazio para usar avatar padrão</small>
-                            </div>
 
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-building"></i>
-                                    Tipo de Conta *
-                                </label>
-                                <select name="accountTypeId" class="form-select" required>
-                                    <option value="">Selecionar tipo...</option>
-                                    <?php if (!empty($accountTypes)): ?>
-                                        <?php foreach ($accountTypes as $type): ?>
-                                            <option value="<?= $type['id'] ?>"
-                                                    <?= $type['id'] == 1 ? 'selected' : '' ?>>
-                                                <?= e($type['type']) ?> - <?= e($type['description']) ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    <?php else: ?>
-                                        <option value="1" selected>INDIVIDUAL - Back Office Individual</option>
-                                        <option value="2">CORPORATE - Corporate Account</option>
-                                    <?php endif; ?>
-                                </select>
-                                <small class="form-hint">Define o tipo da conta de administrador</small>
-                            </div>
+                    <!-- Linha 3: Configurações em linha horizontal -->
+                    <div class="form-row-configs">
+                        <div class="form-group compact half-width">
+                            <label class="form-label compact">
+                                <i class="fas fa-building"></i>Tipo de Conta *
+                            </label>
+                            <select name="accountTypeId" class="form-select compact" required>
+                                <option value="">Selecionar...</option>
+                                <?php if (!empty($accountTypes)): ?>
+                                    <?php foreach ($accountTypes as $type): ?>
+                                        <option value="<?= $type['id'] ?>"
+                                                <?= $type['id'] == 1 ? 'selected' : '' ?>>
+                                            <?= e($type['type']) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <option value="1" selected>INDIVIDUAL</option>
+                                    <option value="2">CORPORATE</option>
+                                <?php endif; ?>
+                            </select>
+                        </div>
 
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-toggle-on"></i>
-                                    Estado da Conta *
-                                </label>
-                                <select name="stateId" class="form-select" required>
-                                    <option value="">Selecionar estado...</option>
-                                    <?php if (!empty($states)): ?>
-                                        <?php foreach ($states as $state): ?>
-                                            <option value="<?= $state['id'] ?>"
-                                                    <?= $state['id'] == 1 ? 'selected' : '' ?>>
-                                                <?= e($state['state']) ?> - <?= e($state['description']) ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    <?php else: ?>
-                                        <option value="1" selected>ACTIVE - Ativo</option>
-                                        <option value="2">INACTIVE - Inativo</option>
-                                        <option value="3">PENDING - Pendente</option>
-                                        <option value="4">ELIMINATED - Eliminado</option>
-                                    <?php endif; ?>
-                                </select>
-                                <small class="form-hint">Estado inicial da conta do administrador</small>
+                        <div class="form-group compact half-width">
+                            <label class="form-label compact">
+                                <i class="fas fa-toggle-on"></i>Estado *
+                            </label>
+                            <select name="stateId" class="form-select compact" required>
+                                <option value="">Selecionar...</option>
+                                <?php if (!empty($states)): ?>
+                                    <?php foreach ($states as $state): ?>
+                                        <option value="<?= $state['id'] ?>"
+                                                <?= $state['id'] == 1 ? 'selected' : '' ?>>
+                                            <?= e($state['state']) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <option value="1" selected>ACTIVE</option>
+                                    <option value="2">INACTIVE</option>
+                                    <option value="3">PENDING</option>
+                                    <option value="4">ELIMINATED</option>
+                                <?php endif; ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Linha 4: Imagem opcional (colapsível) -->
+                    <div class="form-row-optional">
+                        <div class="optional-section">
+                            <button type="button" class="optional-toggle" onclick="toggleOptionalFields()">
+                                <i class="fas fa-chevron-right" id="optionalToggleIcon"></i>
+                                <span>Configurações Opcionais</span>
+                            </button>
+                            <div class="optional-content" id="optionalFields" style="display: none;">
+                                <div class="image-upload-section">
+                                    <div class="upload-options-header">
+                                        <h5 class="upload-section-title">
+                                            <i class="fas fa-image"></i>
+                                            Imagem do Perfil
+                                        </h5>
+                                        <div class="upload-method-toggle">
+                                            <button type="button" class="method-btn active" data-method="url" onclick="switchUploadMethod('url')">
+                                                <i class="fas fa-link"></i>URL
+                                            </button>
+                                            <button type="button" class="method-btn" data-method="file" onclick="switchUploadMethod('file')">
+                                                <i class="fas fa-upload"></i>Upload
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Método URL -->
+                                    <div class="upload-method-content" id="urlMethod">
+                                        <div class="form-group compact">
+                                            <label class="form-label compact">
+                                                <i class="fas fa-link"></i>URL da Imagem
+                                            </label>
+                                            <div class="url-input-wrapper">
+                                                <input type="url" name="img" id="imageUrl" class="form-input compact"
+                                                       placeholder="https://exemplo.com/imagem.jpg"
+                                                       onchange="previewImageFromUrl(this.value)">
+                                                <button type="button" class="url-preview-btn" onclick="previewImageFromUrl(document.getElementById('imageUrl').value)">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </div>
+                                            <small class="form-hint compact">Cole a URL direta da imagem</small>
+                                        </div>
+                                    </div>
+
+                                    <!-- Método Upload -->
+                                    <div class="upload-method-content" id="fileMethod" style="display: none;">
+                                        <div class="form-group compact">
+                                            <label class="form-label compact">
+                                                <i class="fas fa-upload"></i>Selecionar Arquivo
+                                            </label>
+                                            <div class="file-upload-area" onclick="document.getElementById('imageFile').click()">
+                                                <input type="file" id="imageFile" name="imageFile" accept="image/*"
+                                                       style="display: none;" onchange="handleFileUpload(this)">
+                                                <div class="upload-placeholder" id="uploadPlaceholder">
+                                                    <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                                                    <span class="upload-text">Clique para selecionar arquivo</span>
+                                                    <small class="upload-hint">JPG, PNG, GIF até 5MB</small>
+                                                </div>
+                                                <div class="upload-preview" id="uploadPreview" style="display: none;">
+                                                    <img id="previewImage" src="" alt="Preview">
+                                                    <div class="preview-overlay">
+                                                        <button type="button" class="change-file-btn" onclick="document.getElementById('imageFile').click()">
+                                                            <i class="fas fa-edit"></i>Alterar
+                                                        </button>
+                                                        <button type="button" class="remove-file-btn" onclick="removeFileUpload()">
+                                                            <i class="fas fa-trash"></i>Remover
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Preview Global -->
+                                    <div class="image-preview-section" id="imagePreviewSection" style="display: none;">
+                                        <label class="form-label compact">
+                                            <i class="fas fa-eye"></i>Preview
+                                        </label>
+                                        <div class="global-image-preview">
+                                            <img id="globalPreviewImage" src="" alt="Preview da imagem">
+                                            <div class="preview-info">
+                                                <span class="preview-status">✅ Imagem carregada</span>
+                                                <button type="button" class="clear-preview-btn" onclick="clearImagePreview()">
+                                                    <i class="fas fa-times"></i>Limpar
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -3677,8 +4311,12 @@ function updatePasswordStrength(inputId) {
 
     if (password.length === 0) {
         strengthFill.className = 'strength-fill';
-        strengthText.textContent = 'Digite uma senha';
-        strengthText.className = 'strength-text';
+
+        // Detectar se é layout compacto
+        const isCompact = strengthText.classList.contains('strength-text-mini');
+        strengthText.textContent = isCompact ? 'Força da senha' : 'Digite uma senha';
+        strengthText.className = isCompact ? 'strength-text-mini' : 'strength-text';
+
         requirementsContainer.classList.remove('show');
         return;
     }
@@ -3688,16 +4326,30 @@ function updatePasswordStrength(inputId) {
     // Atualizar barra de força
     strengthFill.className = `strength-fill ${result.strength}`;
 
-    // Atualizar texto de força
-    const strengthTexts = {
-        weak: '🔴 Fraca - Adicione mais caracteres',
-        fair: '🟡 Razoável - Quase lá!',
-        good: '🔵 Boa - Senha segura',
-        strong: '🟢 Forte - Excelente segurança!'
-    };
+    // Atualizar texto de força baseado no layout
+    const isCompact = strengthText.classList.contains('strength-text-mini');
 
-    strengthText.textContent = strengthTexts[result.strength];
-    strengthText.className = `strength-text ${result.strength}`;
+    if (isCompact) {
+        // Textos compactos
+        const compactTexts = {
+            weak: 'Fraca',
+            fair: 'Razoável',
+            good: 'Boa',
+            strong: 'Forte'
+        };
+        strengthText.textContent = compactTexts[result.strength];
+        strengthText.className = `strength-text-mini ${result.strength}`;
+    } else {
+        // Textos completos
+        const strengthTexts = {
+            weak: '🔴 Fraca - Adicione mais caracteres',
+            fair: '🟡 Razoável - Quase lá!',
+            good: '🔵 Boa - Senha segura',
+            strong: '🟢 Forte - Excelente segurança!'
+        };
+        strengthText.textContent = strengthTexts[result.strength];
+        strengthText.className = `strength-text ${result.strength}`;
+    }
 
     // Mostrar requisitos
     requirementsContainer.classList.add('show');
@@ -3714,10 +4366,267 @@ function updatePasswordStrength(inputId) {
     for (const [reqId, isValid] of Object.entries(reqElements)) {
         const reqElement = document.getElementById(reqId);
         if (reqElement) {
-            reqElement.className = `requirement ${isValid ? 'valid' : 'invalid'}`;
+            const baseClass = reqElement.classList.contains('compact') ? 'requirement compact' : 'requirement';
+            reqElement.className = `${baseClass} ${isValid ? 'valid' : 'invalid'}`;
         }
     }
 }
+
+// Função para alternar campos opcionais
+function toggleOptionalFields() {
+    const optionalFields = document.getElementById('optionalFields');
+    const toggleIcon = document.getElementById('optionalToggleIcon');
+    const toggleBtn = document.querySelector('.optional-toggle');
+
+    if (optionalFields.style.display === 'none') {
+        optionalFields.style.display = 'block';
+        toggleIcon.style.transform = 'rotate(90deg)';
+        toggleBtn.classList.add('expanded');
+    } else {
+        optionalFields.style.display = 'none';
+        toggleIcon.style.transform = 'rotate(0deg)';
+        toggleBtn.classList.remove('expanded');
+    }
+}
+
+// ===========================================
+// SISTEMA DE UPLOAD DUPLO DE IMAGEM
+// ===========================================
+
+// Alternar entre métodos de upload
+function switchUploadMethod(method) {
+    const urlMethod = document.getElementById('urlMethod');
+    const fileMethod = document.getElementById('fileMethod');
+    const urlBtn = document.querySelector('[data-method="url"]');
+    const fileBtn = document.querySelector('[data-method="file"]');
+
+    // Reset active states
+    urlBtn.classList.remove('active');
+    fileBtn.classList.remove('active');
+
+    // Hide both methods
+    urlMethod.style.display = 'none';
+    fileMethod.style.display = 'none';
+
+    // Show selected method
+    if (method === 'url') {
+        urlMethod.style.display = 'block';
+        urlBtn.classList.add('active');
+        // Clear file input when switching to URL
+        const fileInput = document.getElementById('imageFile');
+        if (fileInput) fileInput.value = '';
+        hideFilePreview();
+    } else {
+        fileMethod.style.display = 'block';
+        fileBtn.classList.add('active');
+        // Clear URL input when switching to file
+        const urlInput = document.getElementById('imageUrl');
+        if (urlInput) urlInput.value = '';
+        hideGlobalPreview();
+    }
+}
+
+// Preview de imagem via URL
+function previewImageFromUrl(url) {
+    if (!url || url.trim() === '') {
+        hideGlobalPreview();
+        return;
+    }
+
+    // Validar se é uma URL válida de imagem
+    const imageExtensions = /\.(jpg|jpeg|png|gif|webp|svg|bmp)(\?.*)?$/i;
+    if (!imageExtensions.test(url)) {
+        showImageError('URL deve apontar para uma imagem válida (JPG, PNG, GIF, etc.)');
+        return;
+    }
+
+    const globalPreview = document.getElementById('globalPreviewImage');
+    const previewSection = document.getElementById('imagePreviewSection');
+    const statusText = document.querySelector('.preview-status');
+
+    // Mostrar loading
+    statusText.textContent = '⏳ Carregando imagem...';
+    statusText.style.color = '#f59e0b';
+    previewSection.style.display = 'block';
+
+    // Carregar imagem
+    const img = new Image();
+    img.onload = function() {
+        globalPreview.src = url;
+        statusText.textContent = '✅ Imagem URL carregada';
+        statusText.style.color = '#10b981';
+    };
+    img.onerror = function() {
+        hideGlobalPreview();
+        showImageError('Não foi possível carregar a imagem da URL fornecida');
+    };
+    img.src = url;
+}
+
+// Manipular upload de arquivo
+function handleFileUpload(input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    // Validar tipo de arquivo
+    if (!file.type.startsWith('image/')) {
+        showImageError('Por favor, selecione apenas arquivos de imagem');
+        input.value = '';
+        return;
+    }
+
+    // Validar tamanho (5MB max)
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxSize) {
+        showImageError('Arquivo muito grande. Tamanho máximo: 5MB');
+        input.value = '';
+        return;
+    }
+
+    // Mostrar preview do arquivo
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        showFilePreview(e.target.result, file.name);
+        showGlobalPreview(e.target.result, 'upload');
+    };
+    reader.readAsDataURL(file);
+}
+
+// Mostrar preview do arquivo na área de upload
+function showFilePreview(src, filename) {
+    const placeholder = document.getElementById('uploadPlaceholder');
+    const preview = document.getElementById('uploadPreview');
+    const previewImg = document.getElementById('previewImage');
+
+    placeholder.style.display = 'none';
+    preview.style.display = 'flex';
+    previewImg.src = src;
+    previewImg.alt = filename;
+}
+
+// Ocultar preview do arquivo
+function hideFilePreview() {
+    const placeholder = document.getElementById('uploadPlaceholder');
+    const preview = document.getElementById('uploadPreview');
+
+    placeholder.style.display = 'flex';
+    preview.style.display = 'none';
+}
+
+// Remover arquivo selecionado
+function removeFileUpload() {
+    const fileInput = document.getElementById('imageFile');
+    fileInput.value = '';
+    hideFilePreview();
+    hideGlobalPreview();
+}
+
+// Mostrar preview global
+function showGlobalPreview(src, type) {
+    const globalPreview = document.getElementById('globalPreviewImage');
+    const previewSection = document.getElementById('imagePreviewSection');
+    const statusText = document.querySelector('.preview-status');
+
+    globalPreview.src = src;
+    previewSection.style.display = 'block';
+
+    if (type === 'upload') {
+        statusText.textContent = '✅ Arquivo carregado';
+    } else {
+        statusText.textContent = '✅ Imagem URL carregada';
+    }
+    statusText.style.color = '#10b981';
+}
+
+// Ocultar preview global
+function hideGlobalPreview() {
+    const previewSection = document.getElementById('imagePreviewSection');
+    previewSection.style.display = 'none';
+}
+
+// Limpar preview global
+function clearImagePreview() {
+    // Determinar qual método está ativo
+    const urlMethod = document.getElementById('urlMethod');
+    const fileMethod = document.getElementById('fileMethod');
+
+    if (urlMethod.style.display !== 'none') {
+        // Método URL ativo
+        const urlInput = document.getElementById('imageUrl');
+        urlInput.value = '';
+    } else {
+        // Método arquivo ativo
+        removeFileUpload();
+    }
+
+    hideGlobalPreview();
+}
+
+// Mostrar erro de imagem
+function showImageError(message) {
+    // Criar ou atualizar notificação de erro
+    let errorDiv = document.getElementById('imageError');
+    if (!errorDiv) {
+        errorDiv = document.createElement('div');
+        errorDiv.id = 'imageError';
+        errorDiv.style.cssText = `
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 0.75rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        `;
+        errorDiv.innerHTML = `<i class="fas fa-exclamation-triangle"></i><span></span>`;
+
+        // Inserir após o campo ativo
+        const activeMethod = document.querySelector('.upload-method-content[style*="block"]') ||
+                           document.getElementById('urlMethod');
+        activeMethod.appendChild(errorDiv);
+    }
+
+    errorDiv.querySelector('span').textContent = message;
+    errorDiv.style.display = 'flex';
+
+    // Auto-remover após 5 segundos
+    setTimeout(() => {
+        if (errorDiv.parentNode) {
+            errorDiv.parentNode.removeChild(errorDiv);
+        }
+    }, 5000);
+}
+
+// Configurar drag & drop na área de upload
+document.addEventListener('DOMContentLoaded', function() {
+    const uploadArea = document.querySelector('.file-upload-area');
+    if (uploadArea) {
+        uploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            this.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.classList.remove('dragover');
+
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                const fileInput = document.getElementById('imageFile');
+                fileInput.files = files;
+                handleFileUpload(fileInput);
+            }
+        });
+    }
+});
 
 // ===========================================
 // FUNÇÕES DE PAGINAÇÃO
