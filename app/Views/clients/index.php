@@ -1997,120 +1997,105 @@ input:checked + .toggle-slider:before {
         </div>
 
         <div class="card-body">
-            <form id="createClientForm">
-                <div class="form-columns">
-                    <div class="form-column">
-                        <div class="form-section">
-                            <h4 class="section-title">
-                                <i class="fas fa-user"></i>
-                                Informações Pessoais
-                            </h4>
+            <form id="createClientForm" class="admin-form">
+                <?= csrfField() ?>
 
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-signature"></i>
-                                    Nome Completo *
-                                </label>
-                                <input type="text" name="name" class="form-input" placeholder="Nome do cliente" required>
-                                <small class="form-hint">Nome completo do cliente</small>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-envelope"></i>
-                                    Email
-                                </label>
-                                <input type="email" name="email" class="form-input" placeholder="email@exemplo.com">
-                                <small class="form-hint">Email válido para comunicação</small>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-phone"></i>
-                                    Contacto *
-                                </label>
-                                <input type="text" name="contact" class="form-input" placeholder="+244 900 000 000" required>
-                                <small class="form-hint">Número de telefone principal</small>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-image"></i>
-                                    URL da Imagem
-                                </label>
-                                <input type="url" name="img" class="form-input" placeholder="https://exemplo.com/imagem.jpg">
-                                <small class="form-hint">Link para foto de perfil (opcional)</small>
-                            </div>
+                <!-- Layout compacto otimizado -->
+                <div class="compact-form-layout">
+                    <!-- Linha 1: Informações principais em grid -->
+                    <div class="form-row-grid">
+                        <div class="form-group compact">
+                            <label class="form-label compact">
+                                <i class="fas fa-signature"></i>Nome Completo *
+                            </label>
+                            <input type="text" name="name" class="form-input compact"
+                                   placeholder="Ex: João Silva Santos" required>
+                        </div>
+                        <div class="form-group compact">
+                            <label class="form-label compact">
+                                <i class="fas fa-envelope"></i>Email
+                            </label>
+                            <input type="email" name="email" class="form-input compact"
+                                   placeholder="cliente@empresa.com">
+                        </div>
+                        <div class="form-group compact">
+                            <label class="form-label compact">
+                                <i class="fas fa-phone"></i>Contacto *
+                            </label>
+                            <input type="tel" name="contact" class="form-input compact"
+                                   placeholder="+244 912 345 678" required>
                         </div>
                     </div>
 
-                    <div class="form-column">
-                        <div class="form-section">
-                            <h4 class="section-title">
-                                <i class="fas fa-cog"></i>
-                                Configurações da Conta
-                            </h4>
+                    <!-- Linha 2: Configurações da conta -->
+                    <div class="form-row-configs">
+                        <div class="form-group compact half-width">
+                            <label class="form-label compact">
+                                <i class="fas fa-layer-group"></i>Tipo de Conta *
+                            </label>
+                            <select name="account_type_id" class="form-input compact" required>
+                                <option value="">Selecionar tipo...</option>
+                                <?php if (!empty($account_types)): ?>
+                                    <?php foreach ($account_types as $type): ?>
+                                        <option value="<?= $type['id'] ?>" <?= ($type['id'] == 2) ? 'selected' : '' ?>>
+                                            <?= e($type['name']) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </select>
+                        </div>
+                        <div class="form-group compact half-width">
+                            <label class="form-label compact">
+                                <i class="fas fa-toggle-on"></i>Estado Inicial *
+                            </label>
+                            <select name="state_id" class="form-input compact" required>
+                                <?php if (!empty($states)): ?>
+                                    <?php foreach ($states as $state): ?>
+                                        <option value="<?= $state['id'] ?>" <?= ($state['id'] == 1) ? 'selected' : '' ?>>
+                                            <?= e($state['name']) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </select>
+                        </div>
+                    </div>
 
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-building"></i>
-                                    Tipo de Conta *
-                                </label>
-                                <select name="accountTypeId" class="form-select" required>
-                                    <option value="">Selecionar tipo...</option>
-                                    <option value="1">Individual</option>
-                                    <option value="2">Corporativo</option>
-                                </select>
-                                <small class="form-hint">Tipo de conta do cliente</small>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-toggle-on"></i>
-                                    Status da Conta
-                                </label>
-                                <div class="status-toggle">
-                                    <label class="toggle-switch">
-                                        <input type="checkbox" name="status" checked>
-                                        <span class="toggle-slider"></span>
+                    <!-- Seção opcional para imagem e senha -->
+                    <div class="optional-section">
+                        <button type="button" class="optional-toggle" onclick="toggleOptionalFields('create')">
+                            <i class="fas fa-chevron-right"></i>
+                            <span>Configurações Avançadas (Opcional)</span>
+                        </button>
+                        <div class="optional-content" id="optionalFieldsCreate" style="display: none;">
+                            <div class="form-row-grid">
+                                <div class="form-group compact">
+                                    <label class="form-label compact">
+                                        <i class="fas fa-image"></i>URL da Imagem
                                     </label>
-                                    <span class="toggle-label">Conta ativa</span>
+                                    <input type="url" name="img" class="form-input compact"
+                                           placeholder="https://exemplo.com/foto.jpg">
                                 </div>
-                                <small class="form-hint">Status inicial da conta</small>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-key"></i>
-                                    Palavra-passe
-                                </label>
-                                <input type="password" name="password" class="form-input" placeholder="Senha (opcional)">
-                                <small class="form-hint">Deixe em branco para gerar automaticamente</small>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-sticky-note"></i>
-                                    Observações
-                                </label>
-                                <textarea name="notes" class="form-textarea" placeholder="Observações sobre o cliente..."></textarea>
-                                <small class="form-hint">Notas internas sobre o cliente (opcional)</small>
+                                <div class="form-group compact">
+                                    <label class="form-label compact">
+                                        <i class="fas fa-key"></i>Senha
+                                    </label>
+                                    <input type="password" name="password" class="form-input compact"
+                                           placeholder="Senha inicial (opcional)">
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </form>
-        </div>
 
-        <div class="card-footer">
-            <button type="button" class="btn-secondary" onclick="closeCard()">
-                <i class="fas fa-times"></i>
-                Cancelar
-            </button>
-            <button type="button" class="btn-primary" onclick="createClient()">
-                <i class="fas fa-save"></i>
-                Salvar Cliente
-            </button>
+                <div class="card-footer">
+                    <button type="button" class="btn-secondary" onclick="closeCard()">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-user-plus"></i> Criar Cliente
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -2132,20 +2117,124 @@ input:checked + .toggle-slider:before {
         </div>
 
         <div class="card-body">
-            <div id="viewClientContent">
-                <!-- Conteúdo será preenchido dinamicamente -->
+            <!-- Modern Profile Header -->
+            <div class="modern-profile-header">
+                <div class="profile-banner">
+                    <div class="profile-avatar-container">
+                        <div class="profile-avatar-large" id="viewClientAvatar">
+                            <img id="viewClientImage" src="" alt="Avatar" style="display: none;">
+                            <span id="viewClientInitials">CL</span>
+                        </div>
+                        <div class="avatar-status-indicator" id="viewAvatarStatus">
+                            <i class="fas fa-circle"></i>
+                        </div>
+                    </div>
+                    <div class="profile-main-info">
+                        <h4 class="profile-name" id="viewClientName">Nome do Cliente</h4>
+                        <p class="profile-email" id="viewClientEmailHeader">email@exemplo.com</p>
+                        <div class="profile-badges">
+                            <div class="status-badge" id="viewStatusBadge">
+                                <i class="fas fa-circle"></i>
+                                <span id="viewStatusText">Ativo</span>
+                            </div>
+                            <div class="account-type-badge" id="viewAccountTypeBadge">
+                                <i class="fas fa-user"></i>
+                                <span id="viewAccountTypeText">Cliente</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <div class="card-footer">
-            <button type="button" class="btn-secondary" onclick="closeCard()">
-                <i class="fas fa-arrow-left"></i>
-                Voltar
-            </button>
-            <button type="button" class="btn-primary" onclick="editFromView()">
-                <i class="fas fa-edit"></i>
-                Editar Cliente
-            </button>
+            <!-- Modern Info Grid -->
+            <div class="modern-info-grid">
+                <!-- Card Informações Pessoais -->
+                <div class="info-card">
+                    <div class="info-card-header">
+                        <div class="info-card-icon personal">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h5 class="info-card-title">Informações Pessoais</h5>
+                    </div>
+                    <div class="info-card-content">
+                        <div class="info-row">
+                            <div class="info-item-modern">
+                                <i class="fas fa-id-card info-icon"></i>
+                                <div class="info-content">
+                                    <label class="info-label-modern">Nome Completo</label>
+                                    <div class="info-value-modern" id="viewFullName">-</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-item-modern">
+                                <i class="fas fa-envelope info-icon"></i>
+                                <div class="info-content">
+                                    <label class="info-label-modern">Email</label>
+                                    <div class="info-value-modern email-link" id="viewEmail">-</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-item-modern">
+                                <i class="fas fa-phone info-icon"></i>
+                                <div class="info-content">
+                                    <label class="info-label-modern">Contacto</label>
+                                    <div class="info-value-modern" id="viewContact">-</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card Informações da Conta -->
+                <div class="info-card">
+                    <div class="info-card-header">
+                        <div class="info-card-icon account">
+                            <i class="fas fa-cog"></i>
+                        </div>
+                        <h5 class="info-card-title">Informações da Conta</h5>
+                    </div>
+                    <div class="info-card-content">
+                        <div class="info-row">
+                            <div class="info-item-modern">
+                                <i class="fas fa-layer-group info-icon"></i>
+                                <div class="info-content">
+                                    <label class="info-label-modern">Tipo de Conta</label>
+                                    <div class="info-value-modern" id="viewAccountType">-</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-item-modern">
+                                <i class="fas fa-toggle-on info-icon"></i>
+                                <div class="info-content">
+                                    <label class="info-label-modern">Estado</label>
+                                    <div class="info-value-modern" id="viewState">-</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-item-modern">
+                                <i class="fas fa-calendar-plus info-icon"></i>
+                                <div class="info-content">
+                                    <label class="info-label-modern">Data de Criação</label>
+                                    <div class="info-value-modern" id="viewCreatedAt">-</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <button type="button" class="btn-secondary" onclick="closeCard()">
+                    <i class="fas fa-arrow-left"></i> Voltar
+                </button>
+                <button type="button" class="btn-primary" onclick="openEditCardFromView()">
+                    <i class="fas fa-edit"></i> Editar Cliente
+                </button>
+            </div>
         </div>
     </div>
 
@@ -2167,112 +2256,107 @@ input:checked + .toggle-slider:before {
         </div>
 
         <div class="card-body">
-            <form id="editClientForm">
-                <div class="form-columns">
-                    <div class="form-column">
-                        <div class="form-section">
-                            <h4 class="section-title">
-                                <i class="fas fa-user"></i>
-                                Informações Pessoais
-                            </h4>
+            <form id="editClientForm" class="admin-form">
+                <?= csrfField() ?>
+                <?= methodField('PUT') ?>
+                <input type="hidden" name="client_id" id="editClientId">
 
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-signature"></i>
-                                    Nome Completo *
-                                </label>
-                                <input type="text" name="name" id="editClientName" class="form-input" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-envelope"></i>
-                                    Email
-                                </label>
-                                <input type="email" name="email" id="editClientEmail" class="form-input">
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-phone"></i>
-                                    Contacto *
-                                </label>
-                                <input type="text" name="contact" id="editClientContact" class="form-input" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-image"></i>
-                                    URL da Imagem
-                                </label>
-                                <input type="url" name="img" id="editClientImg" class="form-input">
-                            </div>
+                <!-- Layout compacto otimizado -->
+                <div class="compact-form-layout">
+                    <!-- Linha 1: Informações principais em grid -->
+                    <div class="form-row-grid">
+                        <div class="form-group compact">
+                            <label class="form-label compact">
+                                <i class="fas fa-signature"></i>Nome Completo *
+                            </label>
+                            <input type="text" name="name" id="editName" class="form-input compact"
+                                   placeholder="Ex: João Silva Santos" required>
+                        </div>
+                        <div class="form-group compact">
+                            <label class="form-label compact">
+                                <i class="fas fa-envelope"></i>Email
+                            </label>
+                            <input type="email" name="email" id="editEmail" class="form-input compact"
+                                   placeholder="cliente@empresa.com">
+                        </div>
+                        <div class="form-group compact">
+                            <label class="form-label compact">
+                                <i class="fas fa-phone"></i>Contacto *
+                            </label>
+                            <input type="tel" name="contact" id="editContact" class="form-input compact"
+                                   placeholder="+244 912 345 678" required>
                         </div>
                     </div>
 
-                    <div class="form-column">
-                        <div class="form-section">
-                            <h4 class="section-title">
-                                <i class="fas fa-cog"></i>
-                                Configurações da Conta
-                            </h4>
+                    <!-- Linha 2: Configurações da conta -->
+                    <div class="form-row-configs">
+                        <div class="form-group compact half-width">
+                            <label class="form-label compact">
+                                <i class="fas fa-layer-group"></i>Tipo de Conta *
+                            </label>
+                            <select name="account_type_id" id="editAccountType" class="form-input compact" required>
+                                <option value="">Selecionar tipo...</option>
+                                <?php if (!empty($account_types)): ?>
+                                    <?php foreach ($account_types as $type): ?>
+                                        <option value="<?= $type['id'] ?>">
+                                            <?= e($type['name']) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </select>
+                        </div>
+                        <div class="form-group compact half-width">
+                            <label class="form-label compact">
+                                <i class="fas fa-toggle-on"></i>Estado *
+                            </label>
+                            <select name="state_id" id="editState" class="form-input compact" required>
+                                <?php if (!empty($states)): ?>
+                                    <?php foreach ($states as $state): ?>
+                                        <option value="<?= $state['id'] ?>">
+                                            <?= e($state['name']) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </select>
+                        </div>
+                    </div>
 
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-building"></i>
-                                    Tipo de Conta *
-                                </label>
-                                <select name="accountTypeId" id="editClientAccountType" class="form-select" required>
-                                    <option value="">Selecionar tipo...</option>
-                                    <option value="1">Individual</option>
-                                    <option value="2">Corporativo</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-toggle-on"></i>
-                                    Status da Conta
-                                </label>
-                                <div class="status-toggle">
-                                    <label class="toggle-switch">
-                                        <input type="checkbox" name="status" id="editClientStatus">
-                                        <span class="toggle-slider"></span>
+                    <!-- Seção opcional para imagem e senha -->
+                    <div class="optional-section">
+                        <button type="button" class="optional-toggle" onclick="toggleOptionalFields('edit')">
+                            <i class="fas fa-chevron-right"></i>
+                            <span>Configurações Avançadas (Opcional)</span>
+                        </button>
+                        <div class="optional-content" id="optionalFieldsEdit" style="display: none;">
+                            <div class="form-row-grid">
+                                <div class="form-group compact">
+                                    <label class="form-label compact">
+                                        <i class="fas fa-image"></i>URL da Imagem
                                     </label>
-                                    <span class="toggle-label">Conta ativa</span>
+                                    <input type="url" name="img" id="editImg" class="form-input compact"
+                                           placeholder="https://exemplo.com/foto.jpg">
                                 </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-key"></i>
-                                    Nova Palavra-passe
-                                </label>
-                                <input type="password" name="password" id="editClientPassword" class="form-input" placeholder="Deixe em branco para manter atual">
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-sticky-note"></i>
-                                    Observações
-                                </label>
-                                <textarea name="notes" id="editClientNotes" class="form-textarea"></textarea>
+                                <div class="form-group compact">
+                                    <label class="form-label compact">
+                                        <i class="fas fa-key"></i>Nova Senha
+                                    </label>
+                                    <input type="password" name="password" class="form-input compact"
+                                           placeholder="Deixe em branco para manter">
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </form>
-        </div>
 
-        <div class="card-footer">
-            <button type="button" class="btn-secondary" onclick="closeCard()">
-                <i class="fas fa-times"></i>
-                Cancelar
-            </button>
-            <button type="button" class="btn-primary" onclick="updateClient()">
-                <i class="fas fa-save"></i>
-                Atualizar Cliente
-            </button>
+                <div class="card-footer">
+                    <button type="button" class="btn-secondary" onclick="closeCard()">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-save"></i> Salvar Alterações
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -2318,21 +2402,18 @@ input:checked + .toggle-slider:before {
                 <p>Esta ação eliminará permanentemente a conta do cliente e não pode ser desfeita.</p>
                 <p class="warning-emphasis">Todos os dados associados serão perdidos!</p>
             </div>
-        </div>
 
-        <div class="card-footer">
-            <button type="button" class="btn-secondary" onclick="closeCard()">
-                <i class="fas fa-arrow-left"></i>
-                Cancelar
-            </button>
-            <button type="button" class="btn-danger" onclick="confirmDelete()">
-                <i class="fas fa-trash-alt"></i>
-                Confirmar Eliminação
-            </button>
+            <div class="card-footer">
+                <button type="button" class="btn-secondary" onclick="closeCard()">
+                    <i class="fas fa-times"></i> Cancelar
+                </button>
+                <button type="button" class="btn-danger-confirm" onclick="confirmDelete()">
+                    <i class="fas fa-trash-alt"></i> Confirmar Eliminação
+                </button>
+            </div>
         </div>
     </div>
 </div>
-
 <script>
 // ===========================================
 // VARIABLES GLOBAIS
@@ -2469,8 +2550,12 @@ function openViewCard(id) {
     if (client) {
         currentClientId = id;
 
+        // Usar a nova função para popular o card moderno
+        populateViewCard(client);
+
+        // Manter compatibilidade - content não é mais usado
         const content = document.getElementById('viewClientContent');
-        content.innerHTML = `
+        if (content) content.innerHTML = `
             <div class="info-section">
                 <h4><i class="fas fa-user"></i> Informações Pessoais</h4>
                 <div class="info-grid">
@@ -2538,14 +2623,11 @@ function openEditCard(id) {
     if (client) {
         currentClientId = id;
 
-        // Preencher formulário
-        document.getElementById('editClientName').value = client.name || '';
-        document.getElementById('editClientEmail').value = client.email || '';
-        document.getElementById('editClientContact').value = client.contact || '';
-        document.getElementById('editClientImg').value = client.img || '';
-        document.getElementById('editClientAccountType').value = client.account_type_id || '';
-        document.getElementById('editClientStatus').checked = (client.state || 'active') === 'active';
-        document.getElementById('editClientNotes').value = client.notes || '';
+        // Preencher ID do cliente
+        document.getElementById('editClientId').value = client.id;
+
+        // Usar a nova função para carregar dados
+        loadEditClientData(client);
 
         showCard('editClientCard');
     }
@@ -2748,5 +2830,130 @@ function resetForm(formId) {
     if (form) {
         form.reset();
     }
+}
+
+// ===========================================
+// FUNÇÕES PARA NOVOS CARDS
+// ===========================================
+
+// Função para alternar campos opcionais
+function toggleOptionalFields(cardType) {
+    const toggle = event.target.closest('.optional-toggle');
+    const content = document.getElementById(`optionalFields${cardType.charAt(0).toUpperCase() + cardType.slice(1)}`);
+    const icon = toggle.querySelector('i');
+
+    if (content.style.display === 'none' || !content.style.display) {
+        content.style.display = 'block';
+        icon.style.transform = 'rotate(90deg)';
+        toggle.classList.add('expanded');
+    } else {
+        content.style.display = 'none';
+        icon.style.transform = 'rotate(0deg)';
+        toggle.classList.remove('expanded');
+    }
+}
+
+// Função para abrir card de edição a partir da visualização
+function openEditCardFromView() {
+    if (currentClientId) {
+        closeCard();
+        setTimeout(() => openEditCard(currentClientId), 300);
+    }
+}
+
+// Função para popular o card de visualização
+function populateViewCard(client) {
+    try {
+        // Header principal com avatar e informações
+        const avatarElement = document.getElementById('viewClientAvatar');
+        const imageElement = document.getElementById('viewClientImage');
+        const initialsElement = document.getElementById('viewClientInitials');
+
+        // Configurar avatar
+        if (imageElement && initialsElement) {
+            if (client.img) {
+                imageElement.src = client.img;
+                imageElement.style.display = 'block';
+                initialsElement.style.display = 'none';
+            } else {
+                imageElement.style.display = 'none';
+                initialsElement.style.display = 'flex';
+                initialsElement.textContent = getInitials(client.name || client.email);
+            }
+        }
+
+        // Informações do header
+        document.getElementById('viewClientName').textContent = client.name || 'Nome não informado';
+        document.getElementById('viewClientEmailHeader').textContent = client.email || 'Email não informado';
+
+        // Status badge
+        const statusBadge = document.getElementById('viewStatusBadge');
+        const statusText = document.getElementById('viewStatusText');
+        if (statusBadge && statusText) {
+            statusText.textContent = client.state?.name || 'Desconhecido';
+            statusBadge.className = `status-badge ${getStatusClass(client.state?.name)}`;
+        }
+
+        // Account type badge
+        const accountTypeBadge = document.getElementById('viewAccountTypeBadge');
+        const accountTypeText = document.getElementById('viewAccountTypeText');
+        if (accountTypeBadge && accountTypeText) {
+            accountTypeText.textContent = client.accountType?.name || 'Desconhecido';
+        }
+
+        // Informações detalhadas
+        document.getElementById('viewFullName').textContent = client.name || '-';
+        document.getElementById('viewEmail').textContent = client.email || '-';
+        document.getElementById('viewContact').textContent = client.contact || '-';
+        document.getElementById('viewAccountType').textContent = client.accountType?.name || '-';
+        document.getElementById('viewState').textContent = client.state?.name || '-';
+        document.getElementById('viewCreatedAt').textContent = client.createdAt ?
+            new Date(client.createdAt).toLocaleDateString('pt-PT') : '-';
+
+    } catch (error) {
+        console.error('Erro ao popular card de visualização:', error);
+    }
+}
+
+// Função para obter iniciais do nome
+function getInitials(name) {
+    if (!name) return 'CL';
+    return name.split(' ')
+        .map(n => n[0])
+        .join('')
+        .substring(0, 2)
+        .toUpperCase();
+}
+
+// Função para obter classe CSS do status
+function getStatusClass(status) {
+    if (!status) return 'status-unknown';
+
+    switch (status.toLowerCase()) {
+        case 'active':
+        case 'ativo':
+            return 'status-active';
+        case 'inactive':
+        case 'inativo':
+            return 'status-inactive';
+        case 'pending':
+        case 'pendente':
+            return 'status-pending';
+        case 'eliminated':
+        case 'eliminado':
+            return 'status-eliminated';
+        default:
+            return 'status-unknown';
+    }
+}
+
+// Função para carregar dados no card de edição
+function loadEditClientData(client) {
+    document.getElementById('editName').value = client.name || '';
+    document.getElementById('editEmail').value = client.email || '';
+    document.getElementById('editContact').value = client.contact || '';
+    document.getElementById('editAccountType').value = client.accountTypeId || '';
+    document.getElementById('editState').value = client.stateId || '';
+    document.getElementById('editImg').value = client.img || '';
 }
 </script>
