@@ -44,7 +44,14 @@ class ClientController extends Controller
 
             // Usar endpoint /users/paginated ao invés de clients
             $response = $this->apiClient->authenticatedRequest('GET', '/users/paginated', $params);
-            $clients = $response['content'] ?? $response ?? [];
+            $clients = $response['data']['content'] ?? $response['content'] ?? $response ?? [];
+
+            // Debug: Log the actual response structure (disabled)
+            // if (DEBUG_MODE) {
+            //     error_log("DEBUG Clients Response: " . print_r($response, true));
+            //     error_log("DEBUG Clients Array: " . print_r($clients, true));
+            //     error_log("DEBUG Clients Count: " . (is_array($clients) ? count($clients) : 'NOT_ARRAY'));
+            // }
             
             // Get available states for filter
             $states = $this->getAvailableStates();
@@ -52,10 +59,22 @@ class ClientController extends Controller
             // Get statistics
             $statistics = $this->getClientStatistics();
 
+            // Extrair dados de paginação
+            $responseData = $response['data'] ?? $response;
+            $pagination = [
+                'current_page' => $page,
+                'total_pages' => $responseData['totalPages'] ?? 1,
+                'total_elements' => $responseData['totalElements'] ?? count($clients),
+                'page_size' => $responseData['pageSize'] ?? DEFAULT_PAGE_SIZE,
+                'has_next' => $responseData['hasNext'] ?? false,
+                'has_previous' => $responseData['hasPrevious'] ?? false
+            ];
+
             $this->view('clients/index', [
                 'clients' => $clients,
                 'states' => $states,
                 'statistics' => $statistics,
+                'pagination' => $pagination,
                 'current_page' => $page,
                 'search' => $search,
                 'selected_state' => $stateId,
@@ -68,6 +87,23 @@ class ClientController extends Controller
             $this->view('clients/index', [
                 'clients' => [],
                 'states' => [],
+                'statistics' => [
+                    'totalUsers' => 0,
+                    'activeUsers' => 0,
+                    'inactiveUsers' => 0,
+                    'eliminatedUsers' => 0
+                ],
+                'pagination' => [
+                    'current_page' => 1,
+                    'total_pages' => 1,
+                    'total_elements' => 0,
+                    'page_size' => DEFAULT_PAGE_SIZE,
+                    'has_next' => false,
+                    'has_previous' => false
+                ],
+                'current_page' => 1,
+                'search' => $search ?? '',
+                'selected_state' => $stateId ?? '',
                 'api_error' => true
             ]);
         }
@@ -437,7 +473,8 @@ class ClientController extends Controller
     private function getClientStatistics()
     {
         try {
-            return $this->apiClient->authenticatedRequest('GET', '/users/statistics') ?? [
+            $response = $this->apiClient->authenticatedRequest('GET', '/users/statistics');
+            return $response['data'] ?? $response ?? [
                 'totalUsers' => 0,
                 'activeUsers' => 0,
                 'inactiveUsers' => 0,
