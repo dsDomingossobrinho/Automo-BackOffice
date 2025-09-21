@@ -123,13 +123,7 @@ class View
             ['to' => '/accounts', 'label' => 'Administradores', 'icon' => 'users-cog'],
 
             ['group' => 'Estatísticas Gerais'],
-            [
-                'to' => '', 'label' => 'Clientes', 'icon' => 'users',
-                'children' => [
-                    ['to' => '/clients', 'label' => 'Registados', 'icon' => 'user-plus'],
-                    ['to' => '/clients/active', 'label' => 'Activos', 'icon' => 'user-check'],
-                ],
-            ],
+            ['to' => '/clients', 'label' => 'Clientes', 'icon' => 'users'],
             [
                 'to' => '', 'label' => 'Mensagens', 'icon' => 'comments',
                 'children' => [
@@ -139,7 +133,6 @@ class View
             ],
 
             ['group' => 'Estatísticas por Agente'],
-            ['to' => '/clients/capted', 'label' => 'Clientes Captados', 'icon' => 'user-friends'],
             [
                 'to' => '', 'label' => 'Mensagens', 'icon' => 'chart-line',
                 'children' => [

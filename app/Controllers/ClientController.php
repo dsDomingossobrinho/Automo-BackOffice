@@ -18,7 +18,7 @@ class ClientController extends Controller
     }
     
     /**
-     * Display all clients
+     * Display all clients (users)
      */
     public function index()
     {
@@ -26,29 +26,36 @@ class ClientController extends Controller
             $page = (int)($_GET['page'] ?? 1);
             $search = $_GET['search'] ?? '';
             $stateId = $_GET['state'] ?? '';
-            
+
             $params = [
-                'page' => $page,
-                'size' => DEFAULT_PAGE_SIZE
+                'page' => $page - 1, // Backend usa 0-based indexing
+                'size' => DEFAULT_PAGE_SIZE,
+                'sortBy' => 'id',
+                'sortDirection' => 'DESC'
             ];
-            
+
             if ($search) {
                 $params['search'] = $search;
             }
-            
+
             if ($stateId) {
                 $params['stateId'] = $stateId;
             }
-            
-            $response = $this->clientModel->findAll($params);
+
+            // Usar endpoint /users/paginated ao invés de clients
+            $response = $this->apiClient->authenticatedRequest('GET', '/users/paginated', $params);
             $clients = $response['content'] ?? $response ?? [];
             
             // Get available states for filter
             $states = $this->getAvailableStates();
             
+            // Get statistics
+            $statistics = $this->getClientStatistics();
+
             $this->view('clients/index', [
                 'clients' => $clients,
                 'states' => $states,
+                'statistics' => $statistics,
                 'current_page' => $page,
                 'search' => $search,
                 'selected_state' => $stateId,
@@ -203,15 +210,15 @@ class ClientController extends Controller
                 $this->redirect('/clients/create');
             }
             
-            // Create client via API
-            $response = $this->clientModel->create([
+            // Create client via API using /users endpoint
+            $response = $this->apiClient->authenticatedRequest('POST', '/users', [
                 'name' => $data['name'],
                 'email' => $data['email'] ?? null,
                 'contact' => $data['contact'],
+                'img' => $data['img'] ?? null,
+                'password' => $data['password'] ?? null,
                 'accountTypeId' => (int)$data['account_type_id'],
-                'stateId' => (int)($data['state_id'] ?? 1),
-                'address' => $data['address'] ?? null,
-                'notes' => $data['notes'] ?? null
+                'stateId' => (int)($data['state_id'] ?? 1)
             ]);
             
             clearInput();
@@ -230,7 +237,7 @@ class ClientController extends Controller
     public function show($id)
     {
         try {
-            $client = $this->clientModel->findById($id);
+            $client = $this->apiClient->authenticatedRequest('GET', "/users/{$id}");
             
             if (!$client) {
                 $this->setFlash('errors', ['Cliente não encontrado']);
@@ -259,7 +266,7 @@ class ClientController extends Controller
         }
         
         try {
-            $client = $this->clientModel->findById($id);
+            $client = $this->apiClient->authenticatedRequest('GET', "/users/{$id}");
             
             if (!$client) {
                 $this->setFlash('errors', ['Cliente não encontrado']);
@@ -309,16 +316,22 @@ class ClientController extends Controller
                 $this->redirect("/clients/{$id}/edit");
             }
             
-            // Update client via API
-            $response = $this->clientModel->update($id, [
+            // Update client via API using /users endpoint
+            $updateData = [
                 'name' => $data['name'],
                 'email' => $data['email'] ?? null,
                 'contact' => $data['contact'],
+                'img' => $data['img'] ?? null,
                 'accountTypeId' => (int)$data['account_type_id'],
-                'stateId' => (int)$data['state_id'],
-                'address' => $data['address'] ?? null,
-                'notes' => $data['notes'] ?? null
-            ]);
+                'stateId' => (int)$data['state_id']
+            ];
+
+            // Adicionar password apenas se foi fornecida
+            if (!empty($data['password'])) {
+                $updateData['password'] = $data['password'];
+            }
+
+            $response = $this->apiClient->authenticatedRequest('PUT', "/users/{$id}", $updateData);
             
             clearInput();
             $this->setFlash('success', 'Cliente actualizado com sucesso!');
@@ -339,8 +352,8 @@ class ClientController extends Controller
         }
         
         try {
-            // Soft delete - this will set state to ELIMINATED
-            $response = $this->clientModel->delete($id);
+            // Delete client via API using /users endpoint
+            $response = $this->apiClient->authenticatedRequest('DELETE', "/users/{$id}");
             
             $this->json(['success' => true, 'message' => 'Cliente eliminado com sucesso']);
         } catch (\Exception $e) {
@@ -415,6 +428,28 @@ class ClientController extends Controller
             return $this->apiClient->authenticatedRequest('GET', '/agents') ?? [];
         } catch (\Exception $e) {
             return [];
+        }
+    }
+
+    /**
+     * Get client statistics from API
+     */
+    private function getClientStatistics()
+    {
+        try {
+            return $this->apiClient->authenticatedRequest('GET', '/users/statistics') ?? [
+                'totalUsers' => 0,
+                'activeUsers' => 0,
+                'inactiveUsers' => 0,
+                'eliminatedUsers' => 0
+            ];
+        } catch (\Exception $e) {
+            return [
+                'totalUsers' => 0,
+                'activeUsers' => 0,
+                'inactiveUsers' => 0,
+                'eliminatedUsers' => 0
+            ];
         }
     }
 }
