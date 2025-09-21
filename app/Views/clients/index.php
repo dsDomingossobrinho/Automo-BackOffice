@@ -1977,10 +1977,10 @@ input:checked + .toggle-slider:before {
 </div>
 
 <!-- MODAIS DE CLIENTES -->
-<div id="cardOverlay" class="card-overlay" onclick="closeCard()">
+<div id="cardOverlay" class="card-overlay">
 
-    <!-- 1. MODAL CRIAR CLIENTE -->
-    <div id="createClientCard" class="admin-card create-card" onclick="event.stopPropagation()">
+    <!-- 1. CARD CRIAR CLIENTE -->
+    <div id="createClientCard" class="admin-card create-card">
         <div class="card-header">
             <div class="card-header-content">
                 <div class="card-icon create-icon">
@@ -2011,6 +2011,7 @@ input:checked + .toggle-slider:before {
                             <input type="text" name="name" class="form-input compact"
                                    placeholder="Ex: João Silva Santos" required>
                         </div>
+
                         <div class="form-group compact">
                             <label class="form-label compact">
                                 <i class="fas fa-envelope"></i>Email
@@ -2018,6 +2019,7 @@ input:checked + .toggle-slider:before {
                             <input type="email" name="email" class="form-input compact"
                                    placeholder="cliente@empresa.com">
                         </div>
+
                         <div class="form-group compact">
                             <label class="form-label compact">
                                 <i class="fas fa-phone"></i>Contacto *
@@ -2027,80 +2029,98 @@ input:checked + .toggle-slider:before {
                         </div>
                     </div>
 
-                    <!-- Linha 2: Configurações da conta -->
+                    <!-- Linha 2: Configurações em linha horizontal -->
                     <div class="form-row-configs">
                         <div class="form-group compact half-width">
                             <label class="form-label compact">
                                 <i class="fas fa-layer-group"></i>Tipo de Conta *
                             </label>
-                            <select name="account_type_id" class="form-input compact" required>
-                                <option value="">Selecionar tipo...</option>
+                            <select name="account_type_id" class="form-select compact" required>
+                                <option value="">Selecionar...</option>
                                 <?php if (!empty($account_types)): ?>
                                     <?php foreach ($account_types as $type): ?>
-                                        <option value="<?= $type['id'] ?>" <?= ($type['id'] == 2) ? 'selected' : '' ?>>
+                                        <option value="<?= $type['id'] ?>"
+                                                <?= $type['id'] == 2 ? 'selected' : '' ?>>
                                             <?= e($type['name']) ?>
                                         </option>
                                     <?php endforeach; ?>
+                                <?php else: ?>
+                                    <option value="1">INDIVIDUAL</option>
+                                    <option value="2" selected>CORPORATE</option>
                                 <?php endif; ?>
                             </select>
                         </div>
+
                         <div class="form-group compact half-width">
                             <label class="form-label compact">
-                                <i class="fas fa-toggle-on"></i>Estado Inicial *
+                                <i class="fas fa-toggle-on"></i>Estado *
                             </label>
-                            <select name="state_id" class="form-input compact" required>
+                            <select name="state_id" class="form-select compact" required>
+                                <option value="">Selecionar...</option>
                                 <?php if (!empty($states)): ?>
                                     <?php foreach ($states as $state): ?>
-                                        <option value="<?= $state['id'] ?>" <?= ($state['id'] == 1) ? 'selected' : '' ?>>
+                                        <option value="<?= $state['id'] ?>"
+                                                <?= $state['id'] == 1 ? 'selected' : '' ?>>
                                             <?= e($state['name']) ?>
                                         </option>
                                     <?php endforeach; ?>
+                                <?php else: ?>
+                                    <option value="1" selected>ACTIVE</option>
+                                    <option value="2">INACTIVE</option>
+                                    <option value="3">PENDING</option>
+                                    <option value="4">ELIMINATED</option>
                                 <?php endif; ?>
                             </select>
                         </div>
                     </div>
 
-                    <!-- Seção opcional para imagem e senha -->
-                    <div class="optional-section">
-                        <button type="button" class="optional-toggle" onclick="toggleOptionalFields('create')">
-                            <i class="fas fa-chevron-right"></i>
-                            <span>Configurações Avançadas (Opcional)</span>
-                        </button>
-                        <div class="optional-content" id="optionalFieldsCreate" style="display: none;">
-                            <div class="form-row-grid">
-                                <div class="form-group compact">
-                                    <label class="form-label compact">
-                                        <i class="fas fa-image"></i>URL da Imagem
-                                    </label>
-                                    <input type="url" name="img" class="form-input compact"
-                                           placeholder="https://exemplo.com/foto.jpg">
-                                </div>
-                                <div class="form-group compact">
-                                    <label class="form-label compact">
-                                        <i class="fas fa-key"></i>Senha
-                                    </label>
-                                    <input type="password" name="password" class="form-input compact"
-                                           placeholder="Senha inicial (opcional)">
+                    <!-- Linha 3: Configurações Opcionais (colapsível) -->
+                    <div class="form-row-optional">
+                        <div class="optional-section">
+                            <button type="button" class="optional-toggle" onclick="toggleOptionalFields()">
+                                <i class="fas fa-chevron-right" id="optionalToggleIcon"></i>
+                                <span>Configurações Opcionais</span>
+                            </button>
+                            <div class="optional-content" id="optionalFields" style="display: none;">
+                                <div class="form-row-grid">
+                                    <div class="form-group compact">
+                                        <label class="form-label compact">
+                                            <i class="fas fa-image"></i>URL da Imagem
+                                        </label>
+                                        <input type="url" name="img" class="form-input compact"
+                                               placeholder="https://exemplo.com/imagem.jpg">
+                                    </div>
+                                    <div class="form-group compact">
+                                        <label class="form-label compact">
+                                            <i class="fas fa-key"></i>Senha
+                                        </label>
+                                        <input type="password" name="password" class="form-input compact"
+                                               placeholder="Senha inicial (opcional)">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <div class="card-footer">
-                    <button type="button" class="btn-secondary" onclick="closeCard()">
-                        <i class="fas fa-times"></i> Cancelar
-                    </button>
-                    <button type="submit" class="btn-primary">
-                        <i class="fas fa-user-plus"></i> Criar Cliente
-                    </button>
-                </div>
             </form>
+        </div>
+
+        <div class="card-footer">
+            <div class="footer-actions">
+                <button type="button" class="btn-cancel" onclick="closeCard()">
+                    <i class="fas fa-times"></i>
+                    Cancelar
+                </button>
+                <button type="submit" form="createClientForm" class="btn-create">
+                    <i class="fas fa-user-plus"></i>
+                    Criar Cliente
+                </button>
+            </div>
         </div>
     </div>
 
-    <!-- 2. MODAL VER CLIENTE -->
-    <div id="viewClientCard" class="admin-card view-card" onclick="event.stopPropagation()">
+    <!-- 2. CARD VISUALIZAR CLIENTE -->
+    <div id="viewClientCard" class="admin-card view-card">
         <div class="card-header">
             <div class="card-header-content">
                 <div class="card-icon view-icon">
@@ -2180,7 +2200,7 @@ input:checked + .toggle-slider:before {
                                 <i class="fas fa-phone info-icon"></i>
                                 <div class="info-content">
                                     <label class="info-label-modern">Contacto</label>
-                                    <div class="info-value-modern" id="viewContact">-</div>
+                                    <div class="info-value-modern" id="viewContact">Não informado</div>
                                 </div>
                             </div>
                         </div>
@@ -2191,17 +2211,26 @@ input:checked + .toggle-slider:before {
                 <div class="info-card">
                     <div class="info-card-header">
                         <div class="info-card-icon account">
-                            <i class="fas fa-cog"></i>
+                            <i class="fas fa-cogs"></i>
                         </div>
                         <h5 class="info-card-title">Informações da Conta</h5>
                     </div>
                     <div class="info-card-content">
                         <div class="info-row">
                             <div class="info-item-modern">
+                                <i class="fas fa-fingerprint info-icon"></i>
+                                <div class="info-content">
+                                    <label class="info-label-modern">ID do Sistema</label>
+                                    <div class="info-value-modern" id="viewClientId">-</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-item-modern">
                                 <i class="fas fa-layer-group info-icon"></i>
                                 <div class="info-content">
                                     <label class="info-label-modern">Tipo de Conta</label>
-                                    <div class="info-value-modern" id="viewAccountType">-</div>
+                                    <div class="info-value-modern" id="viewAccountTypeDetail">-</div>
                                 </div>
                             </div>
                         </div>
@@ -2209,37 +2238,71 @@ input:checked + .toggle-slider:before {
                             <div class="info-item-modern">
                                 <i class="fas fa-toggle-on info-icon"></i>
                                 <div class="info-content">
-                                    <label class="info-label-modern">Estado</label>
-                                    <div class="info-value-modern" id="viewState">-</div>
+                                    <label class="info-label-modern">Estado da Conta</label>
+                                    <div class="info-value-modern" id="viewStateDetail">-</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card Atividade -->
+                <div class="info-card activity-card">
+                    <div class="info-card-header">
+                        <div class="info-card-icon activity">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h5 class="info-card-title">Atividade e Histórico</h5>
+                    </div>
+                    <div class="info-card-content">
+                        <div class="info-row">
+                            <div class="info-item-modern">
+                                <i class="fas fa-calendar-plus info-icon"></i>
+                                <div class="info-content">
+                                    <label class="info-label-modern">Criado em</label>
+                                    <div class="info-value-modern" id="viewCreatedAt">-</div>
                                 </div>
                             </div>
                         </div>
                         <div class="info-row">
                             <div class="info-item-modern">
-                                <i class="fas fa-calendar-plus info-icon"></i>
+                                <i class="fas fa-calendar-check info-icon"></i>
                                 <div class="info-content">
-                                    <label class="info-label-modern">Data de Criação</label>
-                                    <div class="info-value-modern" id="viewCreatedAt">-</div>
+                                    <label class="info-label-modern">Última Atualização</label>
+                                    <div class="info-value-modern" id="viewUpdatedAt">-</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-item-modern">
+                                <i class="fas fa-sign-in-alt info-icon"></i>
+                                <div class="info-content">
+                                    <label class="info-label-modern">Último Acesso</label>
+                                    <div class="info-value-modern" id="viewLastLogin">Nunca acessou</div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="card-footer">
-                <button type="button" class="btn-secondary" onclick="closeCard()">
-                    <i class="fas fa-arrow-left"></i> Voltar
+        <div class="card-footer">
+            <div class="footer-actions">
+                <button type="button" class="btn-cancel" onclick="closeCard()">
+                    <i class="fas fa-arrow-left"></i>
+                    Voltar
                 </button>
-                <button type="button" class="btn-primary" onclick="openEditCardFromView()">
-                    <i class="fas fa-edit"></i> Editar Cliente
+                <button type="button" class="btn-edit" onclick="openEditCardFromView()">
+                    <i class="fas fa-edit"></i>
+                    Editar Cliente
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- 3. MODAL EDITAR CLIENTE -->
-    <div id="editClientCard" class="admin-card edit-card" onclick="event.stopPropagation()">
+    <!-- 3. CARD EDITAR CLIENTE -->
+    <div id="editClientCard" class="admin-card edit-card">
         <div class="card-header">
             <div class="card-header-content">
                 <div class="card-icon edit-icon">
@@ -2261,7 +2324,7 @@ input:checked + .toggle-slider:before {
                 <?= methodField('PUT') ?>
                 <input type="hidden" name="client_id" id="editClientId">
 
-                <!-- Layout compacto otimizado -->
+                <!-- Layout compacto otimizado para edição -->
                 <div class="compact-form-layout">
                     <!-- Linha 1: Informações principais em grid -->
                     <div class="form-row-grid">
@@ -2272,6 +2335,7 @@ input:checked + .toggle-slider:before {
                             <input type="text" name="name" id="editName" class="form-input compact"
                                    placeholder="Ex: João Silva Santos" required>
                         </div>
+
                         <div class="form-group compact">
                             <label class="form-label compact">
                                 <i class="fas fa-envelope"></i>Email
@@ -2279,6 +2343,7 @@ input:checked + .toggle-slider:before {
                             <input type="email" name="email" id="editEmail" class="form-input compact"
                                    placeholder="cliente@empresa.com">
                         </div>
+
                         <div class="form-group compact">
                             <label class="form-label compact">
                                 <i class="fas fa-phone"></i>Contacto *
@@ -2288,80 +2353,96 @@ input:checked + .toggle-slider:before {
                         </div>
                     </div>
 
-                    <!-- Linha 2: Configurações da conta -->
+                    <!-- Linha 2: Configurações em linha horizontal -->
                     <div class="form-row-configs">
                         <div class="form-group compact half-width">
                             <label class="form-label compact">
                                 <i class="fas fa-layer-group"></i>Tipo de Conta *
                             </label>
-                            <select name="account_type_id" id="editAccountType" class="form-input compact" required>
-                                <option value="">Selecionar tipo...</option>
+                            <select name="account_type_id" id="editAccountTypeId" class="form-select compact" required>
+                                <option value="">Selecionar...</option>
                                 <?php if (!empty($account_types)): ?>
                                     <?php foreach ($account_types as $type): ?>
                                         <option value="<?= $type['id'] ?>">
                                             <?= e($type['name']) ?>
                                         </option>
                                     <?php endforeach; ?>
+                                <?php else: ?>
+                                    <option value="1">INDIVIDUAL</option>
+                                    <option value="2">CORPORATE</option>
                                 <?php endif; ?>
                             </select>
                         </div>
+
                         <div class="form-group compact half-width">
                             <label class="form-label compact">
                                 <i class="fas fa-toggle-on"></i>Estado *
                             </label>
-                            <select name="state_id" id="editState" class="form-input compact" required>
+                            <select name="state_id" id="editStateId" class="form-select compact" required>
+                                <option value="">Selecionar...</option>
                                 <?php if (!empty($states)): ?>
                                     <?php foreach ($states as $state): ?>
                                         <option value="<?= $state['id'] ?>">
                                             <?= e($state['name']) ?>
                                         </option>
                                     <?php endforeach; ?>
+                                <?php else: ?>
+                                    <option value="1">ACTIVE</option>
+                                    <option value="2">INACTIVE</option>
+                                    <option value="3">PENDING</option>
+                                    <option value="4">ELIMINATED</option>
                                 <?php endif; ?>
                             </select>
                         </div>
                     </div>
 
-                    <!-- Seção opcional para imagem e senha -->
-                    <div class="optional-section">
-                        <button type="button" class="optional-toggle" onclick="toggleOptionalFields('edit')">
-                            <i class="fas fa-chevron-right"></i>
-                            <span>Configurações Avançadas (Opcional)</span>
-                        </button>
-                        <div class="optional-content" id="optionalFieldsEdit" style="display: none;">
-                            <div class="form-row-grid">
-                                <div class="form-group compact">
-                                    <label class="form-label compact">
-                                        <i class="fas fa-image"></i>URL da Imagem
-                                    </label>
-                                    <input type="url" name="img" id="editImg" class="form-input compact"
-                                           placeholder="https://exemplo.com/foto.jpg">
-                                </div>
-                                <div class="form-group compact">
-                                    <label class="form-label compact">
-                                        <i class="fas fa-key"></i>Nova Senha
-                                    </label>
-                                    <input type="password" name="password" class="form-input compact"
-                                           placeholder="Deixe em branco para manter">
+                    <!-- Linha 3: Configurações Opcionais (colapsível) -->
+                    <div class="form-row-optional">
+                        <div class="optional-section">
+                            <button type="button" class="optional-toggle" onclick="toggleOptionalFieldsEdit()">
+                                <i class="fas fa-chevron-right" id="optionalToggleIconEdit"></i>
+                                <span>Configurações de Imagem e Senha</span>
+                            </button>
+                            <div class="optional-content" id="optionalFieldsEdit" style="display: none;">
+                                <div class="form-row-grid">
+                                    <div class="form-group compact">
+                                        <label class="form-label compact">
+                                            <i class="fas fa-image"></i>URL da Imagem
+                                        </label>
+                                        <input type="url" name="img" id="editImageUrl" class="form-input compact"
+                                               placeholder="https://exemplo.com/imagem.jpg">
+                                    </div>
+                                    <div class="form-group compact">
+                                        <label class="form-label compact">
+                                            <i class="fas fa-key"></i>Nova Senha (opcional)
+                                        </label>
+                                        <input type="password" name="password" class="form-input compact"
+                                               placeholder="Deixe vazio para manter atual">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <div class="card-footer">
-                    <button type="button" class="btn-secondary" onclick="closeCard()">
-                        <i class="fas fa-times"></i> Cancelar
-                    </button>
-                    <button type="submit" class="btn-primary">
-                        <i class="fas fa-save"></i> Salvar Alterações
-                    </button>
-                </div>
             </form>
+        </div>
+
+        <div class="card-footer">
+            <div class="footer-actions">
+                <button type="button" class="btn-cancel" onclick="closeCard()">
+                    <i class="fas fa-times"></i>
+                    Cancelar
+                </button>
+                <button type="submit" form="editClientForm" class="btn-save">
+                    <i class="fas fa-save"></i>
+                    Salvar Alterações
+                </button>
+            </div>
         </div>
     </div>
 
-    <!-- 4. MODAL ELIMINAR CLIENTE -->
-    <div id="deleteClientCard" class="admin-card delete-card" onclick="event.stopPropagation()">
+    <!-- 4. CARD ELIMINAR CLIENTE -->
+    <div id="deleteClientCard" class="admin-card delete-card">
         <div class="card-header danger-header">
             <div class="card-header-content">
                 <div class="card-icon delete-icon">
@@ -2399,20 +2480,24 @@ input:checked + .toggle-slider:before {
 
             <!-- Warning Message -->
             <div class="warning-message-compact">
-                <p>Esta ação eliminará permanentemente a conta do cliente e não pode ser desfeita.</p>
-                <p class="warning-emphasis">Todos os dados associados serão perdidos!</p>
+                <p><strong>Atenção:</strong> Esta ação é permanente e não pode ser desfeita.</p>
             </div>
+        </div>
 
-            <div class="card-footer">
-                <button type="button" class="btn-secondary" onclick="closeCard()">
-                    <i class="fas fa-times"></i> Cancelar
+        <div class="card-footer delete-footer">
+            <div class="footer-actions danger-actions">
+                <button type="button" class="btn-safe-cancel" onclick="closeCard()">
+                    <i class="fas fa-arrow-left"></i>
+                    Cancelar
                 </button>
                 <button type="button" class="btn-danger-confirm" onclick="confirmDelete()">
-                    <i class="fas fa-trash-alt"></i> Confirmar Eliminação
+                    <i class="fas fa-trash-alt"></i>
+                    Eliminar
                 </button>
             </div>
         </div>
     </div>
+
 </div>
 <script>
 // ===========================================
