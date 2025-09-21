@@ -740,7 +740,7 @@
 }
 
 /* Card Base */
-.client-card {
+.admin-card {
     background: white;
     border-radius: 16px;
     box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
@@ -753,7 +753,7 @@
     position: relative;
 }
 
-.client-card.active {
+.admin-card.active {
     display: block;
 }
 
@@ -1191,7 +1191,7 @@ input:checked + .toggle-slider:before {
         padding: 1rem;
     }
 
-    .client-card {
+    .admin-card {
         max-height: 90vh;
     }
 
@@ -1980,15 +1980,15 @@ input:checked + .toggle-slider:before {
 <div id="cardOverlay" class="card-overlay" onclick="closeCard()">
 
     <!-- 1. MODAL CRIAR CLIENTE -->
-    <div id="createClientCard" class="client-card" onclick="event.stopPropagation()">
+    <div id="createClientCard" class="admin-card create-card" onclick="event.stopPropagation()">
         <div class="card-header">
             <div class="card-header-content">
                 <div class="card-icon create-icon">
-                    <i class="fas fa-plus"></i>
+                    <i class="fas fa-user-plus"></i>
                 </div>
                 <div class="card-title-group">
-                    <h3 class="card-title">Adicionar Cliente</h3>
-                    <p class="card-subtitle">Criar novo cliente no sistema</p>
+                    <h3 class="card-title">Criar Novo Cliente</h3>
+                    <p class="card-subtitle">Preencha as informações do novo cliente</p>
                 </div>
             </div>
             <button class="card-close-btn" onclick="closeCard()">
@@ -2115,7 +2115,7 @@ input:checked + .toggle-slider:before {
     </div>
 
     <!-- 2. MODAL VER CLIENTE -->
-    <div id="viewClientCard" class="client-card" onclick="event.stopPropagation()">
+    <div id="viewClientCard" class="admin-card view-card" onclick="event.stopPropagation()">
         <div class="card-header">
             <div class="card-header-content">
                 <div class="card-icon view-icon">
@@ -2123,7 +2123,7 @@ input:checked + .toggle-slider:before {
                 </div>
                 <div class="card-title-group">
                     <h3 class="card-title">Detalhes do Cliente</h3>
-                    <p class="card-subtitle">Visualizar informações completas</p>
+                    <p class="card-subtitle">Informações completas da conta</p>
                 </div>
             </div>
             <button class="card-close-btn" onclick="closeCard()">
@@ -2150,7 +2150,7 @@ input:checked + .toggle-slider:before {
     </div>
 
     <!-- 3. MODAL EDITAR CLIENTE -->
-    <div id="editClientCard" class="client-card" onclick="event.stopPropagation()">
+    <div id="editClientCard" class="admin-card edit-card" onclick="event.stopPropagation()">
         <div class="card-header">
             <div class="card-header-content">
                 <div class="card-icon edit-icon">
@@ -2158,7 +2158,7 @@ input:checked + .toggle-slider:before {
                 </div>
                 <div class="card-title-group">
                     <h3 class="card-title">Editar Cliente</h3>
-                    <p class="card-subtitle">Atualizar informações do cliente</p>
+                    <p class="card-subtitle">Atualize as informações e configurações da conta</p>
                 </div>
             </div>
             <button class="card-close-btn" onclick="closeCard()">
@@ -2277,8 +2277,8 @@ input:checked + .toggle-slider:before {
     </div>
 
     <!-- 4. MODAL ELIMINAR CLIENTE -->
-    <div id="deleteClientCard" class="client-card" onclick="event.stopPropagation()">
-        <div class="card-header">
+    <div id="deleteClientCard" class="admin-card delete-card" onclick="event.stopPropagation()">
+        <div class="card-header danger-header">
             <div class="card-header-content">
                 <div class="card-icon delete-icon">
                     <i class="fas fa-exclamation-triangle"></i>
@@ -2293,20 +2293,30 @@ input:checked + .toggle-slider:before {
             </button>
         </div>
 
-        <div class="card-body">
-            <div class="delete-warning">
-                <div class="warning-icon">
+        <div class="card-body delete-body-compact">
+            <!-- Warning Icon -->
+            <div class="delete-warning-compact">
+                <div class="warning-icon-compact">
                     <i class="fas fa-exclamation-triangle"></i>
                 </div>
                 <h4 class="delete-title">Eliminar Cliente?</h4>
-                <p class="delete-message">
-                    Tem certeza de que deseja eliminar este cliente permanentemente?
-                    Esta ação não pode ser desfeita e todos os dados relacionados serão perdidos.
-                </p>
+            </div>
 
-                <div class="client-info-display" id="deleteClientInfo">
-                    <!-- Informações do cliente preenchidas dinamicamente -->
+            <!-- Client Info Compact -->
+            <div class="admin-info-compact">
+                <div class="admin-avatar-compact">
+                    <span id="deleteClientInitials">CL</span>
                 </div>
+                <div class="admin-text-compact">
+                    <h5 id="deleteClientName">Nome do Cliente</h5>
+                    <span id="deleteClientEmail">email@exemplo.com</span>
+                </div>
+            </div>
+
+            <!-- Warning Message -->
+            <div class="warning-message-compact">
+                <p>Esta ação eliminará permanentemente a conta do cliente e não pode ser desfeita.</p>
+                <p class="warning-emphasis">Todos os dados associados serão perdidos!</p>
             </div>
         </div>
 
@@ -2374,7 +2384,7 @@ function initializeSelectAll() {
 // ===========================================
 function showCard(cardId) {
     // Esconder todos os cards
-    document.querySelectorAll('.client-card').forEach(card => {
+    document.querySelectorAll('.admin-card').forEach(card => {
         card.classList.remove('active');
     });
 
@@ -2388,7 +2398,7 @@ function showCard(cardId) {
 
 function closeCard() {
     document.getElementById('cardOverlay').classList.remove('active');
-    document.querySelectorAll('.client-card').forEach(card => {
+    document.querySelectorAll('.admin-card').forEach(card => {
         card.classList.remove('active');
     });
 
@@ -2598,19 +2608,12 @@ function openDeleteCard(id) {
         currentClientId = id;
 
         // Preencher informações do cliente
-        const clientInfo = document.getElementById('deleteClientInfo');
-        clientInfo.innerHTML = `
-            <div class="client-avatar">
-                ${client.img ?
-                    `<img src="${client.img}" alt="${client.name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">` :
-                    (client.name ? client.name.charAt(0).toUpperCase() : 'C')
-                }
-            </div>
-            <div class="client-details">
-                <div class="client-name">${client.name || 'Nome não informado'}</div>
-                <div class="client-username">${client.email || 'Email não informado'}</div>
-            </div>
-        `;
+        document.getElementById('deleteClientName').textContent = client.name || 'Nome não informado';
+        document.getElementById('deleteClientEmail').textContent = client.email || 'Email não informado';
+
+        // Gerar iniciais para o avatar
+        const initials = client.name ? client.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : 'CL';
+        document.getElementById('deleteClientInitials').textContent = initials;
 
         showCard('deleteClientCard');
     }
