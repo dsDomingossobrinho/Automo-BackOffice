@@ -95,3 +95,8 @@ $router->get('/api/auth/resend-otp', 'Api\\AuthController@resendOtp');
 $router->get('/api/clients/search', 'Api\\ClientController@search');
 $router->get('/api/messages/stats', 'Api\\MessageController@stats');
 $router->get('/api/finances/chart', 'Api\\FinanceController@chartData');
+
+// API routes for searchable selects
+$router->get('/api/organization-types/search', 'Api\\DataController@organizationTypes');
+$router->get('/api/countries/search', 'Api\\DataController@countries');
+$router->get('/api/provinces/search', 'Api\\DataController@provinces');

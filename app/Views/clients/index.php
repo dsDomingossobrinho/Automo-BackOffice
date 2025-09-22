@@ -10,6 +10,527 @@
 
 <style>
 /* CSS inline para clientes */
+
+/* =====================================
+   LAYOUT COMPACTO PARA MODAL DE CRIAÇÃO
+   ===================================== */
+
+.compact-form-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-height: 60vh;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+}
+
+.form-row-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem;
+    align-items: end;
+}
+
+.form-row-password {
+    width: 100%;
+}
+
+.form-row-configs {
+    display: flex;
+    gap: 1rem;
+    align-items: end;
+}
+
+.form-row-optional {
+    border-top: 1px solid #e2e8f0;
+    padding-top: 1rem;
+}
+
+.form-group.compact {
+    margin-bottom: 0.75rem;
+}
+
+.form-group.compact.half-width {
+    flex: 1;
+}
+
+.form-label.compact {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.375rem;
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+}
+
+.form-input.compact,
+.form-select.compact {
+    height: 2.5rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: white;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.form-input.compact:focus,
+.form-select.compact:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    outline: none;
+}
+
+.password-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-toggle-btn.compact {
+    position: absolute;
+    right: 0.5rem;
+    width: 2rem;
+    height: 2rem;
+    font-size: 0.875rem;
+    background: none;
+    border: none;
+    color: #6b7280;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.password-toggle-btn.compact:hover {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+/* Força da senha compacta */
+.password-strength-compact {
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.strength-bar-mini {
+    flex: 1;
+    height: 4px;
+    background: #e5e7eb;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.strength-fill {
+    height: 100%;
+    transition: all 0.3s ease;
+    border-radius: 2px;
+    width: 0%;
+}
+
+.strength-text-mini {
+    font-size: 0.75rem;
+    font-weight: 500;
+    min-width: 90px;
+    text-align: right;
+    transition: color 0.2s ease;
+    color: #6b7280;
+}
+
+.strength-text-mini.weak {
+    color: #ef4444;
+}
+
+.strength-text-mini.fair {
+    color: #f59e0b;
+}
+
+.strength-text-mini.good {
+    color: #3b82f6;
+}
+
+.strength-text-mini.strong {
+    color: #10b981;
+}
+
+/* Requisitos compactos */
+.password-requirements-compact {
+    margin-top: 0.5rem;
+    padding: 0.75rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    display: none;
+}
+
+.password-requirements-compact.show {
+    display: block;
+    animation: slideDown 0.2s ease;
+}
+
+.requirements-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+}
+
+.requirement.compact {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.75rem;
+    margin-bottom: 0;
+}
+
+.requirement-icon-mini {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #ef4444;
+    display: block;
+    position: relative;
+}
+
+.requirement.compact.valid .requirement-icon-mini {
+    background: #10b981;
+}
+
+.requirement.compact.valid .requirement-icon-mini::after {
+    content: "✓";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 8px;
+    font-weight: bold;
+}
+
+.requirement.compact.invalid .requirement-icon-mini::after {
+    content: "×";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 8px;
+    font-weight: bold;
+}
+
+.requirement.compact.valid {
+    color: #10b981;
+}
+
+.requirement.compact.invalid {
+    color: #6b7280;
+}
+
+/* Seção opcional colapsível */
+.optional-section {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.optional-toggle {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #374151;
+    font-weight: 500;
+}
+
+.optional-toggle:hover {
+    background: #f1f5f9;
+}
+
+.optional-toggle i {
+    transition: transform 0.2s ease;
+}
+
+.optional-toggle.expanded i {
+    transform: rotate(90deg);
+}
+
+.optional-content {
+    padding: 0 1rem 1rem 1rem;
+    background: white;
+}
+
+/* Upload de imagem */
+.image-upload-section {
+    margin-top: 0.5rem;
+}
+
+.upload-options-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.upload-section-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+}
+
+.upload-method-toggle {
+    display: flex;
+    background: #f3f4f6;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.method-btn {
+    padding: 0.5rem 0.75rem;
+    background: none;
+    border: none;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.method-btn.active {
+    background: #3b82f6;
+    color: white;
+}
+
+.method-btn:hover:not(.active) {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+.upload-method-content {
+    margin-top: 0.75rem;
+}
+
+.url-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.url-preview-btn {
+    position: absolute;
+    right: 0.5rem;
+    width: 2rem;
+    height: 2rem;
+    background: none;
+    border: none;
+    color: #6b7280;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.url-preview-btn:hover {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.form-hint.compact {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-top: 0.25rem;
+}
+
+.file-upload-area {
+    border: 2px dashed #d1d5db;
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #f9fafb;
+}
+
+.file-upload-area:hover {
+    border-color: #3b82f6;
+    background: #f3f4f6;
+}
+
+.upload-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.upload-icon {
+    font-size: 1.5rem;
+    color: #6b7280;
+}
+
+.upload-text {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+}
+
+.upload-hint {
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+.upload-preview {
+    display: none;
+    position: relative;
+}
+
+.upload-preview img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.preview-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    border-radius: 6px;
+}
+
+.upload-preview:hover .preview-overlay {
+    opacity: 1;
+}
+
+.change-file-btn,
+.remove-file-btn {
+    padding: 0.375rem 0.75rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.change-file-btn {
+    background: #3b82f6;
+    color: white;
+}
+
+.remove-file-btn {
+    background: #ef4444;
+    color: white;
+}
+
+.image-preview-section {
+    margin-top: 1rem;
+    display: none;
+}
+
+.global-image-preview {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+}
+
+.global-image-preview img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.preview-info {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.preview-status {
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.clear-preview-btn {
+    padding: 0.25rem 0.5rem;
+    background: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.clear-preview-btn:hover {
+    background: #dc2626;
+}
+
+/* Media queries para responsividade */
+@media (max-width: 768px) {
+    .form-row-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+
+    .form-row-configs {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .form-group.compact.half-width {
+        width: 100%;
+    }
+
+    .requirements-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .compact-form-layout {
+        max-height: 70vh;
+    }
+}
+
+@media (max-width: 480px) {
+    .requirements-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 .page-title-section {
     background: white;
     border-radius: 12px;
@@ -732,6 +1253,35 @@
 
 .card-overlay.active {
     display: flex;
+}
+
+/* Admin Card Base Styles - ESSENCIAL PARA MODAL FUNCIONAR */
+.admin-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+    max-width: 800px;
+    width: 100%;
+    max-height: 85vh;
+    overflow: hidden;
+    display: none;
+    animation: slideInScale 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+.admin-card.active {
+    display: block;
+}
+
+@keyframes slideInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
 }
 
 @keyframes fadeIn {
@@ -1612,6 +2162,292 @@ input:checked + .toggle-slider:before {
         align-self: center;
     }
 }
+/* =====================================
+   ESTILOS DOS BOTÕES - IDÊNTICOS AOS DE ADMIN
+   ===================================== */
+
+.card-footer {
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+    padding: 1.5rem 2rem;
+}
+
+.footer-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.footer-actions.danger-actions {
+    justify-content: center;
+    gap: 2rem;
+}
+
+.btn-cancel, .btn-create, .btn-edit, .btn-save, .btn-delete-confirm, .safe-cancel {
+    padding: 0.875rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 140px;
+    justify-content: center;
+}
+
+.btn-cancel, .safe-cancel {
+    background: #f3f4f6;
+    color: #374151;
+    border: 1px solid #d1d5db;
+}
+
+.btn-cancel:hover, .safe-cancel:hover {
+    background: #e5e7eb;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-create {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+}
+
+.btn-create:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.3);
+}
+
+.btn-edit, .btn-save {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+}
+
+.btn-edit:hover, .btn-save:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(245, 158, 11, 0.3);
+}
+
+.btn-delete-confirm {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+}
+
+.btn-delete-confirm:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(239, 68, 68, 0.3);
+}
+
+/* Responsividade dos botões */
+@media (max-width: 768px) {
+    .card-footer {
+        padding: 1rem;
+    }
+
+    .footer-actions {
+        flex-direction: column-reverse;
+        gap: 0.75rem;
+    }
+
+    .btn-cancel, .btn-create, .btn-edit, .btn-save, .btn-delete-confirm, .safe-cancel {
+        width: 100%;
+        min-width: auto;
+    }
+}
+
+/* Estilos para selects pesquisáveis híbridos */
+.full-width {
+    width: 100%;
+}
+
+.searchable-select-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.searchable-select-input {
+    width: 100%;
+    padding-right: 2.5rem;
+    cursor: pointer;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.searchable-select-input:focus {
+    border-color: var(--gradient-start);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    outline: none;
+}
+
+.searchable-select-input.typing {
+    cursor: text;
+}
+
+.searchable-select-arrow {
+    position: absolute;
+    right: 0.75rem;
+    color: #6b7280;
+    pointer-events: none;
+    transition: transform 0.3s ease;
+}
+
+.searchable-select-arrow.open {
+    transform: rotate(180deg);
+}
+
+.searchable-select-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    max-height: 250px;
+    overflow-y: auto;
+    z-index: 999999;
+    display: none;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.searchable-select-dropdown.open {
+    display: block !important;
+}
+
+.dropdown-option {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    border-bottom: 1px solid #f3f4f6;
+    transition: all 0.2s ease;
+    font-size: 0.9375rem;
+    color: #374151;
+}
+
+.dropdown-option:hover {
+    background: #f8fafc;
+    color: #1f2937;
+}
+
+.dropdown-option:last-child {
+    border-bottom: none;
+    border-radius: 0 0 8px 8px;
+}
+
+.dropdown-option.no-results {
+    color: #6b7280;
+    font-style: italic;
+    cursor: default;
+    text-align: center;
+    padding: 1rem;
+}
+
+.dropdown-option.no-results:hover {
+    background: white;
+    color: #6b7280;
+}
+
+.dropdown-item {
+    padding: 0.875rem 1rem;
+    cursor: pointer;
+    border-bottom: 1px solid #f3f4f6;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    font-size: 0.9375rem;
+}
+
+.dropdown-item:hover {
+    background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+    border-left: 3px solid var(--gradient-start);
+}
+
+.dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.dropdown-item.selected {
+    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+    color: #1e40af;
+    border-left: 3px solid #1e40af;
+    font-weight: 500;
+}
+
+.dropdown-loading {
+    padding: 1.5rem;
+    text-align: center;
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+.dropdown-loading i {
+    margin-right: 0.5rem;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.dropdown-no-results {
+    padding: 1.5rem;
+    text-align: center;
+    color: #9ca3af;
+    font-size: 0.875rem;
+    font-style: italic;
+}
+
+.select-loading {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    padding: 0.75rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+    z-index: 10;
+}
+
+.select-loading.hidden {
+    display: none;
+}
+
+.select-loading i {
+    margin-right: 0.5rem;
+}
+
+/* Responsividade para campos pesquisáveis */
+@media (max-width: 768px) {
+    .form-row-configs {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .half-width,
+    .full-width {
+        width: 100%;
+    }
+}
+
+/* Ajustes para ícones dos campos geográficos */
+.form-label compact i.fa-building-user,
+.form-label compact i.fa-flag,
+.form-label compact i.fa-map-marker-alt {
+    color: var(--gradient-start);
+    margin-right: 0.5rem;
+}
+
 </style>
 
 <!-- SEÇÃO SUPERIOR MODERNIZADA -->
@@ -1630,7 +2466,7 @@ input:checked + .toggle-slider:before {
 
         <!-- Botão de Ação Principal -->
         <div class="dashboard-action">
-            <button class="primary-action-btn" onclick="openClientCreateModal()">
+            <button class="primary-action-btn" onclick="openCreateModal()">
                 <div class="action-btn-icon">
                     <i class="fas fa-plus"></i>
                 </div>
@@ -2009,7 +2845,7 @@ input:checked + .toggle-slider:before {
                                 <i class="fas fa-signature"></i>Nome Completo *
                             </label>
                             <input type="text" name="name" class="form-input compact"
-                                   placeholder="Ex: João Silva Santos" required>
+                                   placeholder="Ex: João Silva Santos" value="<?= e(old('name')) ?>" required>
                         </div>
 
                         <div class="form-group compact">
@@ -2017,32 +2853,79 @@ input:checked + .toggle-slider:before {
                                 <i class="fas fa-envelope"></i>Email
                             </label>
                             <input type="email" name="email" class="form-input compact"
-                                   placeholder="cliente@empresa.com">
+                                   placeholder="cliente@empresa.com" value="<?= e(old('email')) ?>">
                         </div>
 
                         <div class="form-group compact">
                             <label class="form-label compact">
-                                <i class="fas fa-phone"></i>Contacto *
+                                <i class="fas fa-phone"></i>Contacto
                             </label>
                             <input type="tel" name="contact" class="form-input compact"
-                                   placeholder="+244 912 345 678" required>
+                                   placeholder="+244 912 345 678" value="<?= e(old('contact')) ?>">
                         </div>
                     </div>
 
-                    <!-- Linha 2: Configurações em linha horizontal -->
+                    <!-- Linha 2: Senha com validação compacta -->
+                    <div class="form-row-password">
+                        <div class="form-group compact">
+                            <label class="form-label compact">
+                                <i class="fas fa-lock"></i>Senha (Opcional)
+                            </label>
+                            <div class="password-input-wrapper">
+                                <input type="password" name="password" id="createClientPassword" class="form-input compact password-input"
+                                       placeholder="Deixe vazio para auto-gerar" minlength="8">
+                                <button type="button" class="password-toggle-btn compact" onclick="togglePasswordVisibility('createClientPassword')">
+                                    <i class="fas fa-eye" id="createClientPasswordToggleIcon"></i>
+                                </button>
+                            </div>
+
+                            <!-- Indicador compacto de força da senha -->
+                            <div class="password-strength-compact">
+                                <div class="strength-bar-mini">
+                                    <div class="strength-fill" id="createClientPasswordStrengthFill"></div>
+                                </div>
+                                <span class="strength-text-mini" id="createClientPasswordStrengthText">Força da senha</span>
+                            </div>
+
+                            <!-- Requisitos compactos (ocultos por padrão) -->
+                            <div class="password-requirements-compact" id="createClientPasswordRequirements">
+                                <div class="requirements-grid">
+                                    <div class="requirement compact" id="req-client-length">
+                                        <i class="requirement-icon-mini"></i><span>8+ chars</span>
+                                    </div>
+                                    <div class="requirement compact" id="req-client-uppercase">
+                                        <i class="requirement-icon-mini"></i><span>A-Z</span>
+                                    </div>
+                                    <div class="requirement compact" id="req-client-lowercase">
+                                        <i class="requirement-icon-mini"></i><span>a-z</span>
+                                    </div>
+                                    <div class="requirement compact" id="req-client-number">
+                                        <i class="requirement-icon-mini"></i><span>0-9</span>
+                                    </div>
+                                    <div class="requirement compact" id="req-client-special">
+                                        <i class="requirement-icon-mini"></i><span>!@#</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Linha 3: Configurações em linha horizontal -->
                     <div class="form-row-configs">
                         <div class="form-group compact half-width">
                             <label class="form-label compact">
-                                <i class="fas fa-layer-group"></i>Tipo de Conta *
+                                <i class="fas fa-building"></i>Tipo de Conta *
                             </label>
                             <select name="account_type_id" class="form-select compact" required>
                                 <option value="">Selecionar...</option>
-                                <?php if (!empty($account_types)): ?>
+                                <?php if (!empty($account_types) && is_array($account_types)): ?>
                                     <?php foreach ($account_types as $type): ?>
-                                        <option value="<?= $type['id'] ?>"
-                                                <?= $type['id'] == 2 ? 'selected' : '' ?>>
-                                            <?= e($type['name']) ?>
-                                        </option>
+                                        <?php if (is_array($type) && isset($type['id'])): ?>
+                                            <option value="<?= $type['id'] ?>"
+                                                    <?= ($type['id'] == old('account_type_id') || (!old('account_type_id') && $type['id'] == 2)) ? 'selected' : '' ?>>
+                                                <?= e($type['name'] ?? $type['type'] ?? 'Unknown') ?>
+                                            </option>
+                                        <?php endif; ?>
                                     <?php endforeach; ?>
                                 <?php else: ?>
                                     <option value="1">INDIVIDUAL</option>
@@ -2057,12 +2940,14 @@ input:checked + .toggle-slider:before {
                             </label>
                             <select name="state_id" class="form-select compact" required>
                                 <option value="">Selecionar...</option>
-                                <?php if (!empty($states)): ?>
+                                <?php if (!empty($states) && is_array($states)): ?>
                                     <?php foreach ($states as $state): ?>
-                                        <option value="<?= $state['id'] ?>"
-                                                <?= $state['id'] == 1 ? 'selected' : '' ?>>
-                                            <?= e($state['name']) ?>
-                                        </option>
+                                        <?php if (is_array($state) && isset($state['id'])): ?>
+                                            <option value="<?= $state['id'] ?>"
+                                                    <?= ($state['id'] == old('state_id') || (!old('state_id') && $state['id'] == 1)) ? 'selected' : '' ?>>
+                                                <?= e($state['state'] ?? $state['name'] ?? 'Unknown') ?>
+                                            </option>
+                                        <?php endif; ?>
                                     <?php endforeach; ?>
                                 <?php else: ?>
                                     <option value="1" selected>ACTIVE</option>
@@ -2074,28 +2959,154 @@ input:checked + .toggle-slider:before {
                         </div>
                     </div>
 
-                    <!-- Linha 3: Configurações Opcionais (colapsível) -->
+                    <!-- Linha 4: Tipo de Organização -->
+                    <div class="form-row-configs">
+                        <div class="form-group compact half-width">
+                            <label class="form-label compact">
+                                <i class="fas fa-building-user"></i>Tipo de Organização *
+                            </label>
+                            <div class="searchable-select-container">
+                                <input type="text"
+                                       name="organization_type_display"
+                                       class="form-input compact searchable-select-input"
+                                       data-endpoint="organization-types"
+                                       data-target="organization_type_id"
+                                       placeholder="Selecione ou digite para buscar..."
+                                       autocomplete="off"
+                                       readonly>
+                                <i class="fas fa-chevron-down searchable-select-arrow"></i>
+                                <input type="hidden" name="organization_type_id" required>
+                                <div class="searchable-select-dropdown" id="org-type-dropdown"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group compact half-width">
+                            <label class="form-label compact">
+                                <i class="fas fa-flag"></i>País *
+                            </label>
+                            <div class="searchable-select-container">
+                                <input type="text"
+                                       name="country_display"
+                                       class="form-input compact searchable-select-input"
+                                       data-endpoint="countries"
+                                       data-target="country_id"
+                                       placeholder="Selecione ou digite para buscar..."
+                                       autocomplete="off"
+                                       readonly>
+                                <i class="fas fa-chevron-down searchable-select-arrow"></i>
+                                <input type="hidden" name="country_id" required>
+                                <div class="searchable-select-dropdown" id="country-dropdown"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Linha 5: Província -->
+                    <div class="form-row-configs">
+                        <div class="form-group compact full-width">
+                            <label class="form-label compact">
+                                <i class="fas fa-map-marker-alt"></i>Província
+                            </label>
+                            <div class="searchable-select-container">
+                                <input type="text"
+                                       name="province_display"
+                                       class="form-input compact searchable-select-input"
+                                       data-endpoint="provinces"
+                                       data-target="province_id"
+                                       placeholder="Selecione ou digite para buscar..."
+                                       autocomplete="off"
+                                       readonly>
+                                <i class="fas fa-chevron-down searchable-select-arrow"></i>
+                                <input type="hidden" name="province_id">
+                                <div class="searchable-select-dropdown" id="province-dropdown"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Linha 5: Imagem opcional (colapsível) -->
                     <div class="form-row-optional">
                         <div class="optional-section">
                             <button type="button" class="optional-toggle" onclick="toggleOptionalFields()">
-                                <i class="fas fa-chevron-right" id="optionalToggleIcon"></i>
+                                <i class="fas fa-chevron-right" id="optionalClientToggleIcon"></i>
                                 <span>Configurações Opcionais</span>
                             </button>
-                            <div class="optional-content" id="optionalFields" style="display: none;">
-                                <div class="form-row-grid">
-                                    <div class="form-group compact">
-                                        <label class="form-label compact">
-                                            <i class="fas fa-image"></i>URL da Imagem
-                                        </label>
-                                        <input type="url" name="img" class="form-input compact"
-                                               placeholder="https://exemplo.com/imagem.jpg">
+                            <div class="optional-content" id="optionalClientFields" style="display: none;">
+                                <div class="image-upload-section">
+                                    <div class="upload-options-header">
+                                        <h5 class="upload-section-title">
+                                            <i class="fas fa-image"></i>
+                                            Imagem do Perfil
+                                        </h5>
+                                        <div class="upload-method-toggle">
+                                            <button type="button" class="method-btn active" data-method="url" onclick="switchUploadMethod('url')">
+                                                <i class="fas fa-link"></i>URL
+                                            </button>
+                                            <button type="button" class="method-btn" data-method="file" onclick="switchUploadMethod('file')">
+                                                <i class="fas fa-upload"></i>Upload
+                                            </button>
+                                        </div>
                                     </div>
-                                    <div class="form-group compact">
+
+                                    <!-- Método URL -->
+                                    <div class="upload-method-content" id="urlClientMethod">
+                                        <div class="form-group compact">
+                                            <label class="form-label compact">
+                                                <i class="fas fa-link"></i>URL da Imagem
+                                            </label>
+                                            <div class="url-input-wrapper">
+                                                <input type="url" name="img" id="clientImageUrl" class="form-input compact"
+                                                       placeholder="https://exemplo.com/imagem.jpg" value="<?= e(old('img')) ?>"
+                                                       onchange="previewImageFromUrl(this.value)">
+                                                <button type="button" class="url-preview-btn" onclick="previewImageFromUrl(document.getElementById('clientImageUrl').value)">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </div>
+                                            <small class="form-hint compact">Cole a URL direta da imagem</small>
+                                        </div>
+                                    </div>
+
+                                    <!-- Método Upload -->
+                                    <div class="upload-method-content" id="fileClientMethod" style="display: none;">
+                                        <div class="form-group compact">
+                                            <label class="form-label compact">
+                                                <i class="fas fa-upload"></i>Selecionar Arquivo
+                                            </label>
+                                            <div class="file-upload-area" onclick="document.getElementById('clientImageFile').click()">
+                                                <input type="file" id="clientImageFile" name="image_file" accept="image/*"
+                                                       style="display: none;" onchange="handleFileUpload(this)">
+                                                <div class="upload-placeholder" id="clientUploadPlaceholder">
+                                                    <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                                                    <span class="upload-text">Clique para selecionar arquivo</span>
+                                                    <small class="upload-hint">JPG, PNG, GIF até 5MB</small>
+                                                </div>
+                                                <div class="upload-preview" id="clientUploadPreview" style="display: none;">
+                                                    <img id="clientPreviewImage" src="" alt="Preview">
+                                                    <div class="preview-overlay">
+                                                        <button type="button" class="change-file-btn" onclick="document.getElementById('clientImageFile').click()">
+                                                            <i class="fas fa-edit"></i>Alterar
+                                                        </button>
+                                                        <button type="button" class="remove-file-btn" onclick="removeFileUpload()">
+                                                            <i class="fas fa-trash"></i>Remover
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Preview Global -->
+                                    <div class="image-preview-section" id="clientImagePreviewSection" style="display: none;">
                                         <label class="form-label compact">
-                                            <i class="fas fa-key"></i>Senha
+                                            <i class="fas fa-eye"></i>Preview
                                         </label>
-                                        <input type="password" name="password" class="form-input compact"
-                                               placeholder="Senha inicial (opcional)">
+                                        <div class="global-image-preview">
+                                            <img id="clientGlobalPreviewImage" src="" alt="Preview da imagem">
+                                            <div class="preview-info">
+                                                <span class="preview-status">✅ Imagem carregada</span>
+                                                <button type="button" class="clear-preview-btn" onclick="clearImagePreview()">
+                                                    <i class="fas fa-times"></i>Limpar
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -2346,10 +3357,10 @@ input:checked + .toggle-slider:before {
 
                         <div class="form-group compact">
                             <label class="form-label compact">
-                                <i class="fas fa-phone"></i>Contacto *
+                                <i class="fas fa-phone"></i>Contacto
                             </label>
                             <input type="tel" name="contact" id="editContact" class="form-input compact"
-                                   placeholder="+244 912 345 678" required>
+                                   placeholder="+244 912 345 678">
                         </div>
                     </div>
 
@@ -2361,11 +3372,13 @@ input:checked + .toggle-slider:before {
                             </label>
                             <select name="account_type_id" id="editAccountTypeId" class="form-select compact" required>
                                 <option value="">Selecionar...</option>
-                                <?php if (!empty($account_types)): ?>
+                                <?php if (!empty($account_types) && is_array($account_types)): ?>
                                     <?php foreach ($account_types as $type): ?>
-                                        <option value="<?= $type['id'] ?>">
-                                            <?= e($type['name']) ?>
-                                        </option>
+                                        <?php if (is_array($type) && isset($type['id'])): ?>
+                                            <option value="<?= $type['id'] ?>">
+                                                <?= e($type['name'] ?? $type['type'] ?? 'Unknown') ?>
+                                            </option>
+                                        <?php endif; ?>
                                     <?php endforeach; ?>
                                 <?php else: ?>
                                     <option value="1">INDIVIDUAL</option>
@@ -2380,11 +3393,13 @@ input:checked + .toggle-slider:before {
                             </label>
                             <select name="state_id" id="editStateId" class="form-select compact" required>
                                 <option value="">Selecionar...</option>
-                                <?php if (!empty($states)): ?>
+                                <?php if (!empty($states) && is_array($states)): ?>
                                     <?php foreach ($states as $state): ?>
-                                        <option value="<?= $state['id'] ?>">
-                                            <?= e($state['name']) ?>
-                                        </option>
+                                        <?php if (is_array($state) && isset($state['id'])): ?>
+                                            <option value="<?= $state['id'] ?>">
+                                                <?= e($state['state'] ?? $state['name'] ?? 'Unknown') ?>
+                                            </option>
+                                        <?php endif; ?>
                                     <?php endforeach; ?>
                                 <?php else: ?>
                                     <option value="1">ACTIVE</option>
@@ -2500,134 +3515,460 @@ input:checked + .toggle-slider:before {
 
 </div>
 <script>
-// ===========================================
-// VARIABLES GLOBAIS
-// ===========================================
+// Simple and robust client management system
 let currentClientId = null;
 let clientsData = <?= json_encode($clients ?? []) ?>;
 
-// ===========================================
-// INICIALIZAÇÃO
-// ===========================================
+// Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
-    initializeEventListeners();
-    initializeSelectAll();
+    console.log('Client page initialized');
+
+    // Submissão do formulário de criação
+    document.getElementById('createClientForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        // Validar campos obrigatórios
+        const requiredFields = ['name', 'account_type_id', 'state_id', 'organization_type_id', 'country_id'];
+        const formData = new FormData(this);
+
+        for (const field of requiredFields) {
+            const value = formData.get(field);
+            if (!value || value.trim() === '') {
+                const fieldNames = {
+                    'name': 'Nome',
+                    'account_type_id': 'Tipo de Conta',
+                    'state_id': 'Estado',
+                    'organization_type_id': 'Tipo de Organização',
+                    'country_id': 'País'
+                };
+                showAlert(`Campo ${fieldNames[field]} é obrigatório`, 'danger');
+                return;
+            }
+        }
+
+        // Validar formato do email se fornecido
+        const email = formData.get('email');
+        if (email && email.trim()) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showAlert('Por favor, insira um email válido', 'danger');
+                return;
+            }
+        }
+
+        // Preparar dados para envio
+        try {
+            showLoading('Criando cliente...');
+
+            const response = await fetch('<?= url('/clients') ?>', {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: formData
+            });
+
+            hideLoading();
+
+            if (response.ok && (response.status === 200 || response.status === 302)) {
+                // Success - the controller redirects on success
+                closeCard();
+                showAlert('Cliente criado com sucesso! 🎉', 'success');
+                setTimeout(() => window.location.reload(), 1500);
+            } else {
+                // Handle errors
+                let errorMessage = 'Erro ao criar cliente';
+
+                try {
+                    const responseText = await response.text();
+                    if (responseText.includes('Token de segurança inválido')) {
+                        errorMessage = 'Token de segurança inválido. Recarregue a página e tente novamente.';
+                    } else if (responseText.includes('Erro ao criar cliente')) {
+                        // Extract error message from HTML if possible
+                        const match = responseText.match(/Erro ao criar cliente: ([^<]+)/);
+                        if (match) {
+                            errorMessage = match[1];
+                        }
+                    }
+                } catch (e) {
+                    console.error('Error parsing response:', e);
+                }
+
+                showAlert(errorMessage, 'danger');
+            }
+        } catch (error) {
+            hideLoading();
+            showAlert('Erro de conexão: ' + error.message, 'danger');
+        }
+    });
 });
 
-// ===========================================
-// EVENT LISTENERS
-// ===========================================
-function initializeEventListeners() {
-    // Fechar modal com Escape
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            closeCard();
-        }
-    });
+// Searchable Select Implementation
+class SearchableSelect {
+    constructor(container) {
+        this.container = container;
+        this.input = container.querySelector('.searchable-select-input');
+        this.hiddenInput = container.querySelector('input[type="hidden"]');
+        this.dropdown = container.querySelector('.searchable-select-dropdown');
+        this.arrow = container.querySelector('.searchable-select-arrow');
+        this.endpoint = this.input.getAttribute('data-endpoint');
+        this.isOpen = false;
+        this.searchTimeout = null;
+        this.currentData = [];
 
-    // Prevenir submit do formulário com Enter
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA' && e.target.type !== 'submit') {
-            e.preventDefault();
-        }
-    });
-}
+        this.init();
+    }
 
-function initializeSelectAll() {
-    const selectAllCheckbox = document.getElementById('selectAll');
-    if (selectAllCheckbox) {
-        selectAllCheckbox.addEventListener('change', function() {
-            const checkboxes = document.querySelectorAll('.client-table .table-checkbox:not(#selectAll)');
-            checkboxes.forEach(checkbox => {
-                checkbox.checked = this.checked;
-            });
+    init() {
+        // Click on input to toggle dropdown
+        this.input.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (this.isOpen) {
+                this.closeDropdown();
+            } else {
+                this.openDropdown();
+            }
         });
+
+        // Input event for search
+        this.input.addEventListener('input', (e) => {
+            if (!this.input.readOnly) {
+                this.handleSearch(e.target.value);
+            }
+        });
+
+        // Arrow click
+        this.arrow.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (this.isOpen) {
+                this.closeDropdown();
+            } else {
+                this.openDropdown();
+            }
+        });
+
+        // Close when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!this.container.contains(e.target)) {
+                this.closeDropdown();
+            }
+        });
+    }
+
+    async openDropdown() {
+        console.log('=== OPENING DROPDOWN ===');
+        console.log('1. Opening dropdown for endpoint:', this.endpoint);
+        console.log('2. Dropdown element:', this.dropdown);
+        console.log('3. Container element:', this.container);
+
+        this.isOpen = true;
+        this.input.readOnly = false;
+        this.arrow.classList.add('open');
+        this.dropdown.classList.add('open');
+
+        console.log('4. Dropdown classes after adding open:', this.dropdown.className);
+        console.log('5. Dropdown computed styles after open:', {
+            display: window.getComputedStyle(this.dropdown).display,
+            visibility: window.getComputedStyle(this.dropdown).visibility,
+            opacity: window.getComputedStyle(this.dropdown).opacity,
+            zIndex: window.getComputedStyle(this.dropdown).zIndex,
+            position: window.getComputedStyle(this.dropdown).position,
+            height: window.getComputedStyle(this.dropdown).height,
+            width: window.getComputedStyle(this.dropdown).width
+        });
+
+        // Sempre carregar dados ao abrir, sem search (traz todos os dados)
+        console.log('6. Loading data...');
+        await this.loadData('');
+        console.log('7. Data loaded, calling renderDropdown...');
+        this.renderDropdown();
+    }
+
+    closeDropdown() {
+        this.isOpen = false;
+        this.input.readOnly = true;
+        this.arrow.classList.remove('open');
+        this.dropdown.classList.remove('open');
+    }
+
+    async loadData(search = '') {
+        try {
+            console.log(`Loading data for ${this.endpoint} with search: "${search}"`);
+
+            const response = await fetch(`/api/${this.endpoint}/search?search=${encodeURIComponent(search)}&page=0&size=30`, {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'same-origin'
+            });
+
+            console.log('Response status:', response.status);
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Received data:', data);
+                this.currentData = data.content || [];
+                console.log('Set currentData to:', this.currentData);
+            } else {
+                console.error('Error loading data:', response.status);
+                this.currentData = [];
+            }
+        } catch (error) {
+            console.error('Error loading data:', error);
+            this.currentData = [];
+        }
+    }
+
+    handleSearch(searchTerm) {
+        clearTimeout(this.searchTimeout);
+
+        this.searchTimeout = setTimeout(async () => {
+            await this.loadData(searchTerm);
+            this.renderDropdown();
+        }, 300);
+    }
+
+    renderDropdown() {
+        try {
+            console.log('=== RENDERING DROPDOWN ===');
+            console.log('8. Rendering dropdown with data:', this.currentData);
+            console.log('9. Data length:', this.currentData.length);
+
+            if (this.currentData.length === 0) {
+                console.log('10. No data, setting no results message');
+                this.dropdown.innerHTML = '<div class="dropdown-option no-results">Nenhum resultado encontrado</div>';
+                console.log('11. Dropdown innerHTML after no results:', this.dropdown.innerHTML);
+                console.log('12. Dropdown children count after no results:', this.dropdown.children.length);
+                return;
+            }
+
+            console.log('13. Creating options HTML...');
+            const options = this.currentData.map((item, index) => {
+                const displayValue = this.getDisplayValue(item);
+                console.log(`14.${index}. Creating option: id=${item.id}, displayValue="${displayValue}"`);
+                return `<div class="dropdown-option" data-id="${item.id}" data-value="${displayValue}">${displayValue}</div>`;
+            }).join('');
+
+            console.log('15. Generated options HTML:', options);
+            console.log('16. Setting dropdown innerHTML...');
+            this.dropdown.innerHTML = options;
+
+            console.log('17. Dropdown innerHTML AFTER setting:', this.dropdown.innerHTML);
+            console.log('18. Dropdown children count AFTER setting:', this.dropdown.children.length);
+            console.log('19. First child element:', this.dropdown.children[0]);
+
+            // Verificar se dropdown está visível
+            const rect = this.dropdown.getBoundingClientRect();
+            console.log('20. Dropdown getBoundingClientRect():', rect);
+            console.log('21. Dropdown offsetWidth:', this.dropdown.offsetWidth);
+            console.log('22. Dropdown offsetHeight:', this.dropdown.offsetHeight);
+            console.log('23. Dropdown scrollHeight:', this.dropdown.scrollHeight);
+
+            // Verificar estilos finais
+            const finalStyles = window.getComputedStyle(this.dropdown);
+            console.log('24. Final computed styles:', {
+                display: finalStyles.display,
+                visibility: finalStyles.visibility,
+                opacity: finalStyles.opacity,
+                zIndex: finalStyles.zIndex,
+                position: finalStyles.position,
+                top: finalStyles.top,
+                left: finalStyles.left,
+                width: finalStyles.width,
+                height: finalStyles.height,
+                maxHeight: finalStyles.maxHeight,
+                overflow: finalStyles.overflow
+            });
+
+            // Add click handlers to options
+            console.log('25. Adding click handlers...');
+            this.dropdown.querySelectorAll('.dropdown-option').forEach((option, index) => {
+                console.log(`26.${index}. Adding click handler to option:`, option);
+                if (!option.classList.contains('no-results')) {
+                    option.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        this.selectOption(e.target);
+                    });
+                }
+            });
+            console.log('27. Render dropdown completed successfully');
+
+        } catch (error) {
+            console.error('=== ERROR IN RENDER DROPDOWN ===');
+            console.error('Error details:', error);
+            console.error('Error stack:', error.stack);
+        }
+    }
+
+    getDisplayValue(item) {
+        // Customize display based on endpoint
+        switch (this.endpoint) {
+            case 'organization-types':
+                return item.type || item.description || 'N/A';
+            case 'countries':
+                return item.country || 'N/A';
+            case 'provinces':
+                return item.province || item.name || 'N/A';
+            default:
+                return item.name || item.description || 'N/A';
+        }
+    }
+
+    selectOption(optionElement) {
+        const id = optionElement.getAttribute('data-id');
+        const value = optionElement.getAttribute('data-value');
+
+        // Update display input
+        this.input.value = value;
+
+        // Update hidden input
+        this.hiddenInput.value = id;
+
+        // Close dropdown
+        this.closeDropdown();
     }
 }
 
-// ===========================================
-// FUNÇÕES DE MODAL
-// ===========================================
-function showCard(cardId) {
-    // Esconder todos os cards
-    document.querySelectorAll('.admin-card').forEach(card => {
-        card.classList.remove('active');
+// Initialize searchable selects when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    const searchableSelects = document.querySelectorAll('.searchable-select-container');
+    searchableSelects.forEach(container => {
+        new SearchableSelect(container);
+    });
+});
+
+// Main modal functions
+function openCreateModal() {
+    showModal('createClientCard');
+}
+
+function showModal(modalId) {
+    // Hide all modals first
+    const allModals = document.querySelectorAll('.admin-card');
+    allModals.forEach(modal => {
+        modal.classList.remove('active');
     });
 
-    // Mostrar overlay e card específico
-    document.getElementById('cardOverlay').classList.add('active');
-    document.getElementById(cardId).classList.add('active');
+    // Show overlay
+    const overlay = document.getElementById('cardOverlay');
+    if (overlay) {
+        overlay.classList.add('active');
+    }
 
-    // Prevenir scroll do body
-    document.body.style.overflow = 'hidden';
+    // Show target modal
+    const targetModal = document.getElementById(modalId);
+    if (targetModal) {
+        targetModal.classList.add('active');
+    }
 }
 
 function closeCard() {
-    document.getElementById('cardOverlay').classList.remove('active');
-    document.querySelectorAll('.admin-card').forEach(card => {
-        card.classList.remove('active');
+    // Hide all modals
+    const allModals = document.querySelectorAll('.admin-card');
+    allModals.forEach(modal => {
+        modal.classList.remove('active');
     });
 
-    document.body.style.overflow = 'auto';
-
-    // Limpar formulários
-    const forms = document.querySelectorAll('#createClientForm, #editClientForm');
-    forms.forEach(form => form.reset());
-
-    currentClientId = null;
-}
-
-// ===========================================
-// MODAL FUNCTIONS
-// ===========================================
-
-// 1. CRIAR CLIENTE
-function openClientCreateModal() {
-    showCard('createClientCard');
-}
-
-async function createClient() {
-    try {
-        const form = document.getElementById('createClientForm');
-        const formData = new FormData(form);
-
-        const clientData = {
-            name: formData.get('name'),
-            email: formData.get('email') || null,
-            contact: formData.get('contact'),
-            img: formData.get('img') || null,
-            password: formData.get('password') || null,
-            accountTypeId: parseInt(formData.get('accountTypeId')),
-            status: formData.get('status') ? 'active' : 'inactive',
-            notes: formData.get('notes') || null
-        };
-
-        // TODO: Implementar chamada real à API
-        const response = await fetch('<?= url('/clients') ?>', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
-            },
-            body: JSON.stringify(clientData)
-        });
-
-        if (response.ok) {
-            const result = await response.json();
-            showNotification('Cliente criado com sucesso!', 'success');
-            closeCard();
-            // Recarregar página ou atualizar dados
-            window.location.reload();
-        } else {
-            const error = await response.json();
-            showNotification(error.message || 'Erro ao criar cliente', 'error');
-        }
-    } catch (error) {
-        console.error('Erro ao criar cliente:', error);
-        showNotification('Erro ao criar cliente', 'error');
+    // Hide overlay
+    const overlay = document.getElementById('cardOverlay');
+    if (overlay) {
+        overlay.classList.remove('active');
     }
 }
+
+
+// Client CRUD operations
+function openViewCard(id) {
+    const client = clientsData.find(c => c.id == id);
+    if (client) {
+        currentClientId = id;
+        populateViewCard(client);
+        showModal('viewClientCard');
+    }
+}
+
+function openEditCard(id) {
+    const client = clientsData.find(c => c.id == id);
+    if (client) {
+        currentClientId = id;
+        populateEditCard(client);
+        showModal('editClientCard');
+    }
+}
+
+function openDeleteCard(id) {
+    const client = clientsData.find(c => c.id == id);
+    if (client) {
+        currentClientId = id;
+        populateDeleteCard(client);
+        showModal('deleteClientCard');
+    }
+}
+
+// Populate modal functions
+function populateViewCard(client) {
+    const elements = {
+        photo: document.getElementById('viewClientPhoto'),
+        name: document.getElementById('viewClientName'),
+        email: document.getElementById('viewClientEmail'),
+        status: document.getElementById('viewClientStatus'),
+        contact: document.getElementById('viewClientContact'),
+        accountType: document.getElementById('viewClientAccountType'),
+        createdAt: document.getElementById('viewClientCreatedAt'),
+        notes: document.getElementById('viewClientNotes')
+    };
+
+    if (elements.photo) elements.photo.src = client.img || '/assets/images/default-avatar.png';
+    if (elements.name) elements.name.textContent = client.name || 'Nome não informado';
+    if (elements.email) elements.email.textContent = client.email || 'Email não informado';
+    if (elements.contact) elements.contact.textContent = client.contact || 'Não informado';
+    if (elements.accountType) elements.accountType.textContent = (client.account_type_id || 1) == 2 ? 'Corporativo' : 'Individual';
+    if (elements.createdAt) elements.createdAt.textContent = new Date().toLocaleDateString('pt-PT');
+    if (elements.notes) elements.notes.textContent = client.notes || 'Nenhuma observação registrada.';
+
+    if (elements.status) {
+        const isActive = (client.state || 'active') === 'active';
+        elements.status.className = `modern-status-badge ${isActive ? 'active' : 'inactive'}`;
+        elements.status.innerHTML = `<div class="status-indicator"></div>${isActive ? 'Ativo' : 'Inativo'}`;
+    }
+}
+
+function populateEditCard(client) {
+    const form = document.getElementById('editClientForm');
+    if (form) {
+        const fields = {
+            name: form.querySelector('[name="name"]'),
+            email: form.querySelector('[name="email"]'),
+            contact: form.querySelector('[name="contact"]'),
+            img: form.querySelector('[name="img"]'),
+            account_type_id: form.querySelector('[name="account_type_id"]'),
+            state_id: form.querySelector('[name="state_id"]'),
+            status: form.querySelector('[name="status"]'),
+            notes: form.querySelector('[name="notes"]')
+        };
+
+        if (fields.name) fields.name.value = client.name || '';
+        if (fields.email) fields.email.value = client.email || '';
+        if (fields.contact) fields.contact.value = client.contact || '';
+        if (fields.img) fields.img.value = client.img || '';
+        if (fields.account_type_id) fields.account_type_id.value = client.account_type_id || 1;
+        if (fields.state_id) fields.state_id.value = client.state_id || 1;
+        if (fields.status) fields.status.checked = (client.state || 'active') === 'active';
+        if (fields.notes) fields.notes.value = client.notes || '';
+    }
+}
+
+function populateDeleteCard(client) {
+    const nameEl = document.getElementById('deleteClientName');
+    const emailEl = document.getElementById('deleteClientEmail');
+
+    if (nameEl) nameEl.textContent = client.name || 'Cliente';
+    if (emailEl) emailEl.textContent = client.email || 'Email não informado';
+}
+
 
 // 2. VER CLIENTE
 function openViewCard(id) {
@@ -2921,20 +4262,345 @@ function resetForm(formId) {
 // FUNÇÕES PARA NOVOS CARDS
 // ===========================================
 
-// Função para alternar campos opcionais
-function toggleOptionalFields(cardType) {
-    const toggle = event.target.closest('.optional-toggle');
-    const content = document.getElementById(`optionalFields${cardType.charAt(0).toUpperCase() + cardType.slice(1)}`);
-    const icon = toggle.querySelector('i');
+// Função para alternar campos opcionais - compatível com admin
+function toggleOptionalFields() {
+    const optionalFields = document.getElementById('optionalClientFields');
+    const toggleIcon = document.getElementById('optionalClientToggleIcon');
+    const toggleBtn = document.querySelector('.optional-toggle');
 
-    if (content.style.display === 'none' || !content.style.display) {
-        content.style.display = 'block';
-        icon.style.transform = 'rotate(90deg)';
-        toggle.classList.add('expanded');
+    if (optionalFields.style.display === 'none' || !optionalFields.style.display) {
+        optionalFields.style.display = 'block';
+        toggleIcon.style.transform = 'rotate(90deg)';
+        toggleBtn.classList.add('expanded');
     } else {
-        content.style.display = 'none';
-        icon.style.transform = 'rotate(0deg)';
-        toggle.classList.remove('expanded');
+        optionalFields.style.display = 'none';
+        toggleIcon.style.transform = 'rotate(0deg)';
+        toggleBtn.classList.remove('expanded');
+    }
+}
+
+// ===========================================
+// SISTEMA DE UPLOAD DUPLO DE IMAGEM - CLIENTES
+// ===========================================
+
+// Alternar entre métodos de upload
+function switchUploadMethod(method) {
+    const urlMethod = document.getElementById('urlClientMethod');
+    const fileMethod = document.getElementById('fileClientMethod');
+    const urlBtn = document.querySelector('[data-method="url"]');
+    const fileBtn = document.querySelector('[data-method="file"]');
+
+    // Reset active states
+    urlBtn.classList.remove('active');
+    fileBtn.classList.remove('active');
+
+    // Hide both methods
+    urlMethod.style.display = 'none';
+    fileMethod.style.display = 'none';
+
+    // Show selected method
+    if (method === 'url') {
+        urlMethod.style.display = 'block';
+        urlBtn.classList.add('active');
+        // Clear file input when switching to URL
+        const fileInput = document.getElementById('clientImageFile');
+        if (fileInput) fileInput.value = '';
+        hideFilePreviewClient();
+    } else {
+        fileMethod.style.display = 'block';
+        fileBtn.classList.add('active');
+        // Clear URL input when switching to file
+        const urlInput = document.getElementById('clientImageUrl');
+        if (urlInput) urlInput.value = '';
+        hideGlobalPreviewClient();
+    }
+}
+
+// Preview de imagem via URL
+function previewImageFromUrl(url) {
+    if (!url || url.trim() === '') {
+        hideGlobalPreviewClient();
+        return;
+    }
+
+    // Validar se é uma URL válida de imagem
+    const imageExtensions = /\.(jpg|jpeg|png|gif|webp|svg|bmp)(\?.*)?$/i;
+    if (!imageExtensions.test(url)) {
+        showImageErrorClient('URL deve apontar para uma imagem válida (JPG, PNG, GIF, etc.)');
+        return;
+    }
+
+    const globalPreview = document.getElementById('clientGlobalPreviewImage');
+    const previewSection = document.getElementById('clientImagePreviewSection');
+    const statusText = previewSection.querySelector('.preview-status');
+
+    // Mostrar loading
+    statusText.textContent = '⏳ Carregando imagem...';
+    statusText.style.color = '#f59e0b';
+    previewSection.style.display = 'block';
+
+    // Carregar imagem
+    const img = new Image();
+    img.onload = function() {
+        globalPreview.src = url;
+        statusText.textContent = '✅ Imagem URL carregada';
+        statusText.style.color = '#10b981';
+    };
+    img.onerror = function() {
+        hideGlobalPreviewClient();
+        showImageErrorClient('Não foi possível carregar a imagem da URL fornecida');
+    };
+    img.src = url;
+}
+
+// Manipular upload de arquivo
+function handleFileUpload(input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    // Validar tipo de arquivo
+    if (!file.type.startsWith('image/')) {
+        showImageErrorClient('Por favor, selecione apenas arquivos de imagem');
+        input.value = '';
+        return;
+    }
+
+    // Validar tamanho (5MB max)
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxSize) {
+        showImageErrorClient('Arquivo muito grande. Tamanho máximo: 5MB');
+        input.value = '';
+        return;
+    }
+
+    // Mostrar preview do arquivo
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        showFilePreviewClient(e.target.result, file.name);
+        showGlobalPreviewClient(e.target.result, 'upload');
+    };
+    reader.readAsDataURL(file);
+}
+
+// Mostrar preview do arquivo na área de upload
+function showFilePreviewClient(src, filename) {
+    const placeholder = document.getElementById('clientUploadPlaceholder');
+    const preview = document.getElementById('clientUploadPreview');
+    const previewImage = document.getElementById('clientPreviewImage');
+
+    placeholder.style.display = 'none';
+    preview.style.display = 'block';
+    previewImage.src = src;
+}
+
+// Ocultar preview do arquivo
+function hideFilePreviewClient() {
+    const placeholder = document.getElementById('clientUploadPlaceholder');
+    const preview = document.getElementById('clientUploadPreview');
+
+    placeholder.style.display = 'flex';
+    preview.style.display = 'none';
+}
+
+// Mostrar preview global
+function showGlobalPreviewClient(src, type) {
+    const globalPreview = document.getElementById('clientGlobalPreviewImage');
+    const previewSection = document.getElementById('clientImagePreviewSection');
+    const statusText = previewSection.querySelector('.preview-status');
+
+    globalPreview.src = src;
+    statusText.textContent = type === 'upload' ? '✅ Arquivo carregado' : '✅ Imagem URL carregada';
+    statusText.style.color = '#10b981';
+    previewSection.style.display = 'block';
+}
+
+// Ocultar preview global
+function hideGlobalPreviewClient() {
+    const previewSection = document.getElementById('clientImagePreviewSection');
+    if (previewSection) {
+        previewSection.style.display = 'none';
+    }
+}
+
+// Limpar preview
+function clearImagePreview() {
+    hideGlobalPreviewClient();
+    hideFilePreviewClient();
+
+    // Limpar inputs
+    const urlInput = document.getElementById('clientImageUrl');
+    const fileInput = document.getElementById('clientImageFile');
+
+    if (urlInput) urlInput.value = '';
+    if (fileInput) fileInput.value = '';
+}
+
+// Remover upload de arquivo
+function removeFileUpload() {
+    const fileInput = document.getElementById('clientImageFile');
+    if (fileInput) fileInput.value = '';
+    hideFilePreviewClient();
+    hideGlobalPreviewClient();
+}
+
+// Mostrar erro de imagem
+function showImageErrorClient(message) {
+    showAlert(message, 'danger');
+}
+
+// Validação de senha para clientes
+function togglePasswordVisibility(fieldId) {
+    const input = document.getElementById(fieldId);
+    const icon = document.getElementById(fieldId + 'ToggleIcon');
+
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+}
+
+// Função para checar força da senha
+function checkPasswordStrength(password) {
+    const requirements = {
+        length: password.length >= 8,
+        uppercase: /[A-Z]/.test(password),
+        lowercase: /[a-z]/.test(password),
+        number: /\d/.test(password),
+        special: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)
+    };
+
+    const validCount = Object.values(requirements).filter(Boolean).length;
+
+    let strength = 'weak';
+    let score = 1;
+
+    if (validCount >= 5) {
+        strength = 'strong';
+        score = 4;
+    } else if (validCount >= 4) {
+        strength = 'good';
+        score = 3;
+    } else if (validCount >= 2) {
+        strength = 'fair';
+        score = 2;
+    }
+
+    return {
+        requirements,
+        validCount,
+        strength,
+        score
+    };
+}
+
+// Função para atualizar indicador de força da senha
+function updatePasswordStrength(inputId) {
+    const passwordInput = document.getElementById(inputId);
+    const strengthFill = document.getElementById(inputId + 'StrengthFill');
+    const strengthText = document.getElementById(inputId + 'StrengthText');
+    const requirementsContainer = document.getElementById(inputId + 'Requirements');
+
+    if (!passwordInput || !strengthFill || !strengthText) return;
+
+    const password = passwordInput.value;
+
+    if (!password) {
+        strengthFill.style.width = '0%';
+        strengthFill.className = 'strength-fill';
+        strengthText.textContent = 'Força da senha';
+        strengthText.className = 'strength-text-mini';
+        if (requirementsContainer) {
+            requirementsContainer.classList.remove('show');
+        }
+        return;
+    }
+
+    const result = checkPasswordStrength(password);
+
+    // Atualizar barra de força
+    strengthFill.className = `strength-fill ${result.strength}`;
+
+    // Calcular largura da barra baseada no score
+    const widths = { weak: '25%', fair: '50%', good: '75%', strong: '100%' };
+    strengthFill.style.width = widths[result.strength];
+
+    // Atualizar cores da barra
+    const colors = {
+        weak: '#ef4444',
+        fair: '#f59e0b',
+        good: '#3b82f6',
+        strong: '#10b981'
+    };
+    strengthFill.style.background = colors[result.strength];
+
+    // Atualizar texto de força (versão compacta)
+    const compactTexts = {
+        weak: 'Fraca',
+        fair: 'Razoável',
+        good: 'Boa',
+        strong: 'Forte'
+    };
+
+    strengthText.textContent = compactTexts[result.strength];
+    strengthText.className = `strength-text-mini ${result.strength}`;
+
+    // Atualizar requisitos se existir o container
+    if (requirementsContainer) {
+        const requirements = [
+            { id: 'req-client-length', valid: result.requirements.length },
+            { id: 'req-client-uppercase', valid: result.requirements.uppercase },
+            { id: 'req-client-lowercase', valid: result.requirements.lowercase },
+            { id: 'req-client-number', valid: result.requirements.number },
+            { id: 'req-client-special', valid: result.requirements.special }
+        ];
+
+        requirements.forEach(req => {
+            const element = document.getElementById(req.id);
+            if (element) {
+                element.className = `requirement compact ${req.valid ? 'valid' : 'invalid'}`;
+            }
+        });
+    }
+}
+
+// Função para configurar validação de senha
+function setupPasswordValidation(inputId) {
+    const passwordInput = document.getElementById(inputId);
+    if (passwordInput) {
+        // Remover listeners existentes
+        passwordInput.removeEventListener('input', passwordInput.strengthHandler);
+        passwordInput.removeEventListener('focus', passwordInput.focusHandler);
+        passwordInput.removeEventListener('blur', passwordInput.blurHandler);
+
+        // Adicionar novos listeners
+        passwordInput.strengthHandler = function() {
+            updatePasswordStrength(inputId);
+        };
+
+        passwordInput.focusHandler = function() {
+            const requirementsContainer = document.getElementById(inputId + 'Requirements');
+            if (requirementsContainer && this.value) {
+                requirementsContainer.classList.add('show');
+            }
+        };
+
+        passwordInput.blurHandler = function() {
+            const requirementsContainer = document.getElementById(inputId + 'Requirements');
+            if (requirementsContainer) {
+                setTimeout(() => {
+                    requirementsContainer.classList.remove('show');
+                }, 200);
+            }
+        };
+
+        passwordInput.addEventListener('input', passwordInput.strengthHandler);
+        passwordInput.addEventListener('focus', passwordInput.focusHandler);
+        passwordInput.addEventListener('blur', passwordInput.blurHandler);
     }
 }
 
@@ -3033,12 +4699,402 @@ function getStatusClass(status) {
 }
 
 // Função para carregar dados no card de edição
-function loadEditClientData(client) {
-    document.getElementById('editName').value = client.name || '';
-    document.getElementById('editEmail').value = client.email || '';
-    document.getElementById('editContact').value = client.contact || '';
-    document.getElementById('editAccountType').value = client.accountTypeId || '';
-    document.getElementById('editState').value = client.stateId || '';
-    document.getElementById('editImg').value = client.img || '';
+async function editClient() {
+    if (!currentClientId) return;
+
+    const form = document.getElementById('editClientForm');
+    if (!form) return;
+
+    try {
+        const formData = new FormData(form);
+
+        const response = await fetch(`<?= url('/clients') ?>/${currentClientId}`, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+
+        if (response.ok) {
+            alert('Cliente atualizado com sucesso!');
+            closeCard();
+            window.location.reload();
+        } else {
+            alert('Erro ao atualizar cliente');
+        }
+    } catch (error) {
+        console.error('Erro:', error);
+        alert('Erro ao atualizar cliente');
+    }
 }
+
+async function deleteClient() {
+    if (!currentClientId) return;
+
+    try {
+        const response = await fetch(`<?= url('/clients') ?>/${currentClientId}`, {
+            method: 'DELETE',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+            }
+        });
+
+        if (response.ok) {
+            alert('Cliente eliminado com sucesso!');
+            closeCard();
+            window.location.reload();
+        } else {
+            alert('Erro ao eliminar cliente');
+        }
+    } catch (error) {
+        console.error('Erro:', error);
+        alert('Erro ao eliminar cliente');
+    }
+}
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeCard();
+    }
+});
+
+// Close modal by clicking overlay
+document.addEventListener('click', function(e) {
+    if (e.target.id === 'cardOverlay') {
+        closeCard();
+    }
+});
+
+// Helper functions (copiadas do admin)
+function showLoading(message = 'Processando...') {
+    // Remove existing loading
+    hideLoading();
+
+    const loadingOverlay = document.createElement('div');
+    loadingOverlay.id = 'loadingOverlay';
+    loadingOverlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(4px);
+        z-index: 999999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: fadeIn 0.2s ease;
+    `;
+
+    const loadingContent = document.createElement('div');
+    loadingContent.style.cssText = `
+        background: white;
+        padding: 2rem 3rem;
+        border-radius: 16px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        text-align: center;
+        max-width: 400px;
+        width: 90%;
+    `;
+
+    loadingContent.innerHTML = `
+        <div style="
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem auto;
+        "></div>
+        <p style="margin: 0; color: #374151; font-weight: 500; font-size: 1rem;">${message}</p>
+    `;
+
+    if (!document.getElementById('spinnerCSS')) {
+        const style = document.createElement('style');
+        style.id = 'spinnerCSS';
+        style.textContent = `
+            @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+            @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        `;
+        document.head.appendChild(style);
+    }
+
+    loadingOverlay.appendChild(loadingContent);
+    document.body.appendChild(loadingOverlay);
+}
+
+function hideLoading() {
+    const existingLoading = document.getElementById('loadingOverlay');
+    if (existingLoading) {
+        existingLoading.remove();
+    }
+}
+
+function showAlert(message, type) {
+    // Remove existing alerts
+    const existingAlerts = document.querySelectorAll('.admin-alert');
+    existingAlerts.forEach(alert => alert.remove());
+
+    const alert = document.createElement('div');
+    alert.className = `admin-alert alert-${type}`;
+    alert.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 99999;
+        min-width: 320px;
+        max-width: 500px;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        background: ${type === 'success' ? 'linear-gradient(135deg, #10b981, #059669)' : 'linear-gradient(135deg, #ef4444, #dc2626)'};
+        color: white;
+        font-weight: 500;
+        animation: slideInAlert 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    `;
+
+    const icon = type === 'success' ? '✅' : '⚠️';
+    alert.innerHTML = `
+        <span style="font-size: 1.25rem;">${icon}</span>
+        <span style="flex: 1; white-space: pre-line;">${message}</span>
+        <button onclick="this.parentElement.remove()" style="
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1.125rem;
+            padding: 0.25rem;
+            border-radius: 4px;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        " onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">✕</button>
+    `;
+
+    if (!document.getElementById('alertCSS')) {
+        const style = document.createElement('style');
+        style.id = 'alertCSS';
+        style.textContent = `
+            @keyframes slideInAlert {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    document.body.appendChild(alert);
+
+    // Auto remove after 8 seconds
+    setTimeout(() => {
+        if (alert.parentNode) {
+            alert.style.animation = 'slideInAlert 0.3s ease reverse';
+            setTimeout(() => alert.remove(), 300);
+        }
+    }, 8000);
+}
+
+// =============================================================================
+// SEARCHABLE INPUTS - Busca dinâmica com API
+// =============================================================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    initSearchableInputs();
+});
+
+function initSearchableInputs() {
+    const searchableInputs = document.querySelectorAll('.searchable-input');
+
+    searchableInputs.forEach(input => {
+        const endpoint = input.dataset.endpoint;
+        const targetField = input.dataset.target;
+        const resultsContainer = input.parentElement.querySelector('.search-results');
+
+        // Carregar dados iniciais quando o input recebe foco
+        input.addEventListener('focus', function() {
+            loadInitialData(endpoint, resultsContainer, input, targetField);
+        });
+
+        // Busca em tempo real enquanto o usuário digita
+        input.addEventListener('input', debounce(function() {
+            const searchTerm = this.value.trim();
+            if (searchTerm.length >= 2) {
+                searchData(endpoint, searchTerm, resultsContainer, input, targetField);
+            } else if (searchTerm.length === 0) {
+                loadInitialData(endpoint, resultsContainer, input, targetField);
+            }
+        }, 300));
+
+        // Esconder resultados quando perder o foco (com delay para permitir clique)
+        input.addEventListener('blur', function() {
+            setTimeout(() => {
+                hideResults(resultsContainer);
+            }, 200);
+        });
+    });
+}
+
+async function loadInitialData(endpoint, resultsContainer, input, targetField) {
+    const apiEndpoint = getApiEndpoint(endpoint);
+    await fetchData(apiEndpoint, '', resultsContainer, input, targetField, 30);
+}
+
+async function searchData(endpoint, searchTerm, resultsContainer, input, targetField) {
+    const apiEndpoint = getApiEndpoint(endpoint);
+    await fetchData(apiEndpoint, searchTerm, resultsContainer, input, targetField, 30);
+}
+
+function getApiEndpoint(endpoint) {
+    switch (endpoint) {
+        case 'organization-types':
+            return '/organization-types/paginated';
+        case 'countries':
+            return '/countries/paginated';
+        case 'provinces':
+            return '/provinces/paginated';
+        default:
+            return '/organization-types/paginated';
+    }
+}
+
+async function fetchData(apiEndpoint, searchTerm, resultsContainer, input, targetField, size = 30) {
+    try {
+        showLoading(resultsContainer);
+
+        const params = new URLSearchParams({
+            search: searchTerm,
+            page: 0,
+            size: size
+        });
+
+        const response = await fetch(`<?= $_ENV['API_BASE_URL'] ?? 'http://172.17.0.1:8080' ?>${apiEndpoint}?${params}`, {
+            headers: {
+                'Authorization': 'Bearer <?= $_SESSION['jwt_token'] ?? '' ?>',
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        displayResults(data.content || [], resultsContainer, input, targetField, apiEndpoint);
+
+    } catch (error) {
+        console.error(`Erro ao buscar dados:`, error);
+        displayFallbackData(apiEndpoint, resultsContainer, input, targetField);
+    }
+}
+
+function displayResults(data, resultsContainer, input, targetField, apiEndpoint) {
+    resultsContainer.innerHTML = '';
+
+    if (data.length === 0) {
+        resultsContainer.innerHTML = '<div class="search-no-results">Nenhum resultado encontrado</div>';
+        showResults(resultsContainer);
+        return;
+    }
+
+    data.forEach(item => {
+        const resultItem = document.createElement('div');
+        resultItem.className = 'search-result-item';
+
+        // Formatação baseada no tipo de dados
+        let displayText = '';
+        if (apiEndpoint.includes('organization-types')) {
+            displayText = item.type || item.description || 'Tipo não definido';
+        } else if (apiEndpoint.includes('countries')) {
+            displayText = `${item.country} (${item.indicative || 'N/A'})`;
+        } else if (apiEndpoint.includes('provinces')) {
+            displayText = item.provinceName || item.name || 'Província não definida';
+        } else {
+            displayText = item.name || item.description || item.type || 'Item não definido';
+        }
+
+        resultItem.textContent = displayText;
+        resultItem.dataset.id = item.id;
+        resultItem.dataset.value = displayText;
+
+        // Clique para selecionar
+        resultItem.addEventListener('click', function() {
+            selectItem(this, input, targetField, resultsContainer);
+        });
+
+        resultsContainer.appendChild(resultItem);
+    });
+
+    showResults(resultsContainer);
+}
+
+function displayFallbackData(apiEndpoint, resultsContainer, input, targetField) {
+    let fallbackData = [];
+
+    if (apiEndpoint.includes('organization-types')) {
+        fallbackData = [
+            { id: 1, type: 'Individual' },
+            { id: 2, type: 'Enterprise' }
+        ];
+    } else if (apiEndpoint.includes('countries')) {
+        fallbackData = [
+            { id: 25, country: 'Brasil', indicative: '+55' },
+            { id: 1, country: 'Portugal', indicative: '+351' },
+            { id: 2, country: 'Angola', indicative: '+244' }
+        ];
+    }
+
+    displayResults(fallbackData, resultsContainer, input, targetField, apiEndpoint);
+}
+
+function selectItem(resultItem, input, targetField, resultsContainer) {
+    const id = resultItem.dataset.id;
+    const displayValue = resultItem.dataset.value;
+
+    // Atualizar input visível
+    input.value = displayValue;
+
+    // Atualizar campo hidden
+    const hiddenField = document.querySelector(`[name="${targetField}"]`);
+    if (hiddenField) {
+        hiddenField.value = id;
+    }
+
+    // Esconder resultados
+    hideResults(resultsContainer);
+}
+
+function showLoading(resultsContainer) {
+    resultsContainer.innerHTML = '<div class="search-loading"><i class="fas fa-spinner fa-spin"></i> Carregando...</div>';
+    showResults(resultsContainer);
+}
+
+function showResults(resultsContainer) {
+    resultsContainer.style.display = 'block';
+}
+
+function hideResults(resultsContainer) {
+    resultsContainer.style.display = 'none';
+}
+
+// Utility: debounce function
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
 </script>
