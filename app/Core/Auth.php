@@ -394,8 +394,8 @@ class Auth
         $loginTime = $_SESSION['login_time'] ?? 0;
         $tokenAge = time() - $loginTime;
         
-        // Refresh if token is older than 3.5 hours (JWT expires in 4 hours)
-        if ($tokenAge > 3.5 * 3600) {
+        // Refresh if token is older than 23 hours (JWT expires in 24 hours)
+        if ($tokenAge > 23 * 3600) {
             // For now, just logout and require re-authentication
             // In a real implementation, you might want to implement token refresh
             $this->logout();

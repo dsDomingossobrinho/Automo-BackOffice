@@ -46,13 +46,19 @@ abstract class Controller
             }
         }
         
-        // For protected routes, check authentication
+        // For protected routes, check authentication and refresh token if needed
         $isAuthenticated = $this->auth->isAuthenticated();
-        
+
+        if ($isAuthenticated) {
+            // Try to refresh token if needed
+            $tokenValid = $this->auth->refreshTokenIfNeeded();
+            $isAuthenticated = $tokenValid;
+        }
+
         if (DEBUG_MODE) {
             error_log("CONTROLLER: checkAuth for $currentUri - authenticated: " . ($isAuthenticated ? 'YES' : 'NO'));
         }
-        
+
         if (!$isAuthenticated) {
             // For AJAX requests, return JSON error instead of redirect
             if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
