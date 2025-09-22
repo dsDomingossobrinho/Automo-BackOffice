@@ -398,7 +398,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<link rel="stylesheet" href="/css/global-design-system.css">
+<link rel="stylesheet" href="<?= asset('css/global-design-system.css') ?>">
 
 <style>
 /* Dashboard specific overrides */

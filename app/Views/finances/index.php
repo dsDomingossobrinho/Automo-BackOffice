@@ -450,7 +450,7 @@ document.addEventListener('keydown', function(event) {
 });
 </script>
 
-<link rel="stylesheet" href="/css/global-design-system.css">
+<link rel="stylesheet" href="<?= asset('css/global-design-system.css') ?>">
 
 <style>
 /* Finances specific overrides */

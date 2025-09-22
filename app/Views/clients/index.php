@@ -4264,7 +4264,7 @@ function resetForm(formId) {
 
 // Função para alternar campos opcionais - compatível com admin
 function toggleOptionalFields() {
-    const optionalFields = document.getElementById('optionalClientFields');
+    const optionalFields = document.getElementById('optionalFieldsEdit');
     const toggleIcon = document.getElementById('optionalClientToggleIcon');
     const toggleBtn = document.querySelector('.optional-toggle');
 
