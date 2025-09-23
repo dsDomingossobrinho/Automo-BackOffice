@@ -1275,6 +1275,134 @@
     opacity: 1 !important;
 }
 
+/* ================================
+   CSS DO MODAL DE VISUALIZAÇÃO
+   ================================ */
+
+/* Grid moderno de informações */
+.modern-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.info-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.info-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.info-card.activity-card {
+    grid-column: 1 / -1;
+}
+
+.info-card-header {
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.info-card-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.info-card-icon.personal {
+    background: linear-gradient(135deg, #3b82f6, #1e40af);
+}
+
+.info-card-icon.account {
+    background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.info-card-icon.activity {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.info-card-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+}
+
+.info-card-content {
+    padding: 1rem;
+}
+
+.info-row {
+    margin-bottom: 0.75rem;
+}
+
+.info-row:last-child {
+    margin-bottom: 0;
+}
+
+.info-item-modern {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+
+.info-icon {
+    width: 20px;
+    height: 20px;
+    color: #6b7280;
+    font-size: 0.875rem;
+    margin-top: 0.125rem;
+    flex-shrink: 0;
+}
+
+.info-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.info-label-modern {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    margin-bottom: 0.25rem;
+}
+
+.info-value-modern {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: #1f2937;
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+/* Responsividade para o grid */
+@media (max-width: 768px) {
+    .modern-info-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}
+
 @keyframes slideInScale {
     from {
         opacity: 0;
