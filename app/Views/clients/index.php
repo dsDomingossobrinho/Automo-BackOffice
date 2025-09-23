@@ -4243,6 +4243,9 @@ function populateViewCard(client) {
     try {
         const user = client.data || client;
 
+        // Debug: Log dos dados recebidos
+        console.log('Dados do cliente recebidos:', user);
+
         // Header principal com avatar e informações
         const imageElement = document.getElementById('viewClientImage');
         const initialsElement = document.getElementById('viewClientInitials');
@@ -4302,14 +4305,25 @@ function populateViewCard(client) {
         if (emailElement) emailElement.textContent = user.email || 'Não informado';
         if (contactElement) contactElement.textContent = user.contacto || user.phone || 'Não informado';
 
+        // Card Informações Empresariais
+        const organizationTypeElement = document.getElementById('viewOrganizationType');
+        const countryElement = document.getElementById('viewCountry');
+        const provinceElement = document.getElementById('viewProvince');
+
+        if (organizationTypeElement) organizationTypeElement.textContent = user.organizationTypeName || user.organization_type_name || 'Não informado';
+        if (countryElement) countryElement.textContent = user.countryName || user.country_name || user.country || 'Não informado';
+        if (provinceElement) provinceElement.textContent = user.provinceName || user.province_name || user.province || 'Não informado';
+
         // Card Informações da Conta
         const clientIdElement = document.getElementById('viewClientId');
         const usernameElement = document.getElementById('viewUsername');
         const accountTypeElement = document.getElementById('viewAccountTypeDetail');
+        const stateDetailElement = document.getElementById('viewStateDetail');
 
         if (clientIdElement) clientIdElement.textContent = user.id || '-';
         if (usernameElement) usernameElement.textContent = user.username || user.email || '-';
-        if (accountTypeElement) accountTypeElement.textContent = user.accountTypeName || 'Cliente';
+        if (accountTypeElement) accountTypeElement.textContent = user.accountTypeName || user.account_type_name || 'Cliente';
+        if (stateDetailElement) stateDetailElement.textContent = user.stateName || user.state_name || user.state || 'Ativo';
 
         // Card Atividade e Histórico
         const createdAtElement = document.getElementById('viewCreatedAt');
