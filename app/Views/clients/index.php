@@ -4264,18 +4264,35 @@ function resetForm(formId) {
 
 // Função para alternar campos opcionais - compatível com admin
 function toggleOptionalFields() {
-    const optionalFields = document.getElementById('optionalFieldsEdit');
+    const optionalFields = document.getElementById('optionalClientFields');
     const toggleIcon = document.getElementById('optionalClientToggleIcon');
     const toggleBtn = document.querySelector('.optional-toggle');
 
-    if (optionalFields.style.display === 'none' || !optionalFields.style.display) {
+    if (optionalFields && (optionalFields.style.display === 'none' || !optionalFields.style.display)) {
         optionalFields.style.display = 'block';
-        toggleIcon.style.transform = 'rotate(90deg)';
-        toggleBtn.classList.add('expanded');
-    } else {
+        if (toggleIcon) toggleIcon.style.transform = 'rotate(90deg)';
+        if (toggleBtn) toggleBtn.classList.add('expanded');
+    } else if (optionalFields) {
         optionalFields.style.display = 'none';
-        toggleIcon.style.transform = 'rotate(0deg)';
-        toggleBtn.classList.remove('expanded');
+        if (toggleIcon) toggleIcon.style.transform = 'rotate(0deg)';
+        if (toggleBtn) toggleBtn.classList.remove('expanded');
+    }
+}
+
+// Função para alternar campos opcionais na edição
+function toggleOptionalFieldsEdit() {
+    const optionalFields = document.getElementById('optionalFieldsEdit');
+    const toggleIcon = document.getElementById('optionalToggleIconEdit');
+    const toggleBtn = document.querySelector('#editClientCard .optional-toggle');
+
+    if (optionalFields && (optionalFields.style.display === 'none' || !optionalFields.style.display)) {
+        optionalFields.style.display = 'block';
+        if (toggleIcon) toggleIcon.style.transform = 'rotate(90deg)';
+        if (toggleBtn) toggleBtn.classList.add('expanded');
+    } else if (optionalFields) {
+        optionalFields.style.display = 'none';
+        if (toggleIcon) toggleIcon.style.transform = 'rotate(0deg)';
+        if (toggleBtn) toggleBtn.classList.remove('expanded');
     }
 }
 
@@ -4289,6 +4306,11 @@ function switchUploadMethod(method) {
     const fileMethod = document.getElementById('fileClientMethod');
     const urlBtn = document.querySelector('[data-method="url"]');
     const fileBtn = document.querySelector('[data-method="file"]');
+
+    // Verificar se os elementos existem antes de manipular
+    if (!urlMethod || !fileMethod || !urlBtn || !fileBtn) {
+        return;
+    }
 
     // Reset active states
     urlBtn.classList.remove('active');
@@ -4305,14 +4327,14 @@ function switchUploadMethod(method) {
         // Clear file input when switching to URL
         const fileInput = document.getElementById('clientImageFile');
         if (fileInput) fileInput.value = '';
-        hideFilePreviewClient();
+        if (typeof hideFilePreviewClient === 'function') hideFilePreviewClient();
     } else {
         fileMethod.style.display = 'block';
         fileBtn.classList.add('active');
         // Clear URL input when switching to file
         const urlInput = document.getElementById('clientImageUrl');
         if (urlInput) urlInput.value = '';
-        hideGlobalPreviewClient();
+        if (typeof hideGlobalPreviewClient === 'function') hideGlobalPreviewClient();
     }
 }
 
@@ -4966,7 +4988,7 @@ function getApiEndpoint(endpoint) {
 
 async function fetchData(apiEndpoint, searchTerm, resultsContainer, input, targetField, size = 30) {
     try {
-        showLoading(resultsContainer);
+        showSearchLoading(resultsContainer);
 
         const params = new URLSearchParams({
             search: searchTerm,
@@ -5071,7 +5093,7 @@ function selectItem(resultItem, input, targetField, resultsContainer) {
     hideResults(resultsContainer);
 }
 
-function showLoading(resultsContainer) {
+function showSearchLoading(resultsContainer) {
     resultsContainer.innerHTML = '<div class="search-loading"><i class="fas fa-spinner fa-spin"></i> Carregando...</div>';
     showResults(resultsContainer);
 }

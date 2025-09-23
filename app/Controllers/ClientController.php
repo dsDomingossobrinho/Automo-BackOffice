@@ -55,7 +55,10 @@ class ClientController extends Controller
             
             // Get available states for filter
             $states = $this->getAvailableStates();
-            
+
+            // Get account types for create form
+            $accountTypes = $this->getAccountTypes();
+
             // Get statistics
             $statistics = $this->getClientStatistics();
 
@@ -73,6 +76,7 @@ class ClientController extends Controller
             $this->view('clients/index', [
                 'clients' => $clients,
                 'states' => $states,
+                'account_types' => $accountTypes,
                 'statistics' => $statistics,
                 'pagination' => $pagination,
                 'current_page' => $page,
@@ -84,9 +88,15 @@ class ClientController extends Controller
             ]);
         } catch (\Exception $e) {
             $this->setFlash('errors', ['Erro ao carregar clientes: ' . $e->getMessage()]);
+
+            // Get fallback data for forms
+            $states = $this->getAvailableStates();
+            $accountTypes = $this->getAccountTypes();
+
             $this->view('clients/index', [
                 'clients' => [],
-                'states' => [],
+                'states' => $states,
+                'account_types' => $accountTypes,
                 'statistics' => [
                     'totalUsers' => 0,
                     'activeUsers' => 0,
@@ -247,15 +257,47 @@ class ClientController extends Controller
             }
             
             // Create client via API using /users endpoint
-            $response = $this->apiClient->authenticatedRequest('POST', '/users', [
+            // Preparar payload apenas com campos não vazios
+            $payload = [
                 'name' => $data['name'],
-                'email' => $data['email'] ?? null,
-                'contact' => $data['contact'],
-                'img' => $data['img'] ?? null,
-                'password' => $data['password'] ?? null,
                 'accountTypeId' => (int)$data['account_type_id'],
                 'stateId' => (int)($data['state_id'] ?? 1)
-            ]);
+            ];
+
+            // Adicionar campos opcionais apenas se não estiverem vazios
+            if (!empty($data['email'])) {
+                $payload['email'] = $data['email'];
+            }
+
+            if (!empty($data['contact'])) {
+                $payload['contacto'] = $data['contact'];
+            }
+
+            if (!empty($data['img'])) {
+                $payload['img'] = $data['img'];
+            }
+
+            if (!empty($data['password'])) {
+                $payload['password'] = $data['password'];
+            }
+
+            // Campos geográficos - Organization Type é obrigatório
+            if (!empty($data['organization_type_id']) && (int)$data['organization_type_id'] > 0) {
+                $payload['organizationTypeId'] = (int)$data['organization_type_id'];
+            } else {
+                // Organization Type é obrigatório, usar Individual como default
+                $payload['organizationTypeId'] = 1;
+            }
+
+            if (!empty($data['country_id']) && (int)$data['country_id'] > 0) {
+                $payload['countryId'] = (int)$data['country_id'];
+            }
+
+            if (!empty($data['province_id']) && (int)$data['province_id'] > 0) {
+                $payload['provinceId'] = (int)$data['province_id'];
+            }
+
+            $response = $this->apiClient->authenticatedRequest('POST', '/users', $payload);
             
             clearInput();
             $this->setFlash('success', 'Cliente criado com sucesso!');
@@ -353,18 +395,44 @@ class ClientController extends Controller
             }
             
             // Update client via API using /users endpoint
+            // Preparar payload apenas com campos não vazios
             $updateData = [
                 'name' => $data['name'],
-                'email' => $data['email'] ?? null,
-                'contact' => $data['contact'],
-                'img' => $data['img'] ?? null,
                 'accountTypeId' => (int)$data['account_type_id'],
                 'stateId' => (int)$data['state_id']
             ];
 
-            // Adicionar password apenas se foi fornecida
+            // Adicionar campos opcionais apenas se não estiverem vazios
+            if (!empty($data['email'])) {
+                $updateData['email'] = $data['email'];
+            }
+
+            if (!empty($data['contact'])) {
+                $updateData['contacto'] = $data['contact'];
+            }
+
+            if (!empty($data['img'])) {
+                $updateData['img'] = $data['img'];
+            }
+
             if (!empty($data['password'])) {
                 $updateData['password'] = $data['password'];
+            }
+
+            // Campos geográficos - Organization Type é obrigatório
+            if (!empty($data['organization_type_id']) && (int)$data['organization_type_id'] > 0) {
+                $updateData['organizationTypeId'] = (int)$data['organization_type_id'];
+            } else {
+                // Organization Type é obrigatório, manter valor existente ou usar Individual
+                $updateData['organizationTypeId'] = 1;
+            }
+
+            if (!empty($data['country_id']) && (int)$data['country_id'] > 0) {
+                $updateData['countryId'] = (int)$data['country_id'];
+            }
+
+            if (!empty($data['province_id']) && (int)$data['province_id'] > 0) {
+                $updateData['provinceId'] = (int)$data['province_id'];
             }
 
             $response = $this->apiClient->authenticatedRequest('PUT', "/users/{$id}", $updateData);
@@ -410,9 +478,7 @@ class ClientController extends Controller
             $errors[] = 'Nome deve ter pelo menos 2 caracteres';
         }
         
-        if (empty($data['contact'])) {
-            $errors[] = 'Contacto é obrigatório';
-        }
+        // Contact is optional - no validation needed
         
         if (!empty($data['email']) && !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
             $errors[] = 'Email inválido';
@@ -431,11 +497,19 @@ class ClientController extends Controller
     private function getAvailableStates()
     {
         try {
+            $response = $this->apiClient->authenticatedRequest('GET', '/states');
+
+            if ($response['success'] ?? false) {
+                return $response['data'] ?? [];
+            }
+
             return $this->apiClient->authenticatedRequest('GET', '/states') ?? [];
         } catch (\Exception $e) {
             return [
-                ['id' => 1, 'name' => 'ACTIVE'],
-                ['id' => 2, 'name' => 'INACTIVE']
+                ['id' => 1, 'state' => 'ACTIVE', 'description' => 'Active'],
+                ['id' => 2, 'state' => 'INACTIVE', 'description' => 'Inactive'],
+                ['id' => 3, 'state' => 'PENDING', 'description' => 'Pending'],
+                ['id' => 4, 'state' => 'ELIMINATED', 'description' => 'Eliminated']
             ];
         }
     }
@@ -446,11 +520,17 @@ class ClientController extends Controller
     private function getAccountTypes()
     {
         try {
+            $response = $this->apiClient->authenticatedRequest('GET', '/account-types');
+
+            if ($response['success'] ?? false) {
+                return $response['data'] ?? [];
+            }
+
             return $this->apiClient->authenticatedRequest('GET', '/account-types') ?? [];
         } catch (\Exception $e) {
             return [
-                ['id' => 1, 'name' => 'INDIVIDUAL'],
-                ['id' => 2, 'name' => 'CORPORATE']
+                ['id' => 1, 'type' => 'INDIVIDUAL', 'description' => 'Back Office Individual'],
+                ['id' => 2, 'type' => 'CORPORATE', 'description' => 'Corporate Account']
             ];
         }
     }
