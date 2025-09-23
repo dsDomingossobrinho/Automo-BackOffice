@@ -266,4 +266,28 @@ class DataController extends Controller
             exit;
         }
     }
+
+    /**
+     * Search organization types - alias for organizationTypes() method
+     */
+    public function searchOrganizationTypes()
+    {
+        return $this->organizationTypes();
+    }
+
+    /**
+     * Search countries - alias for countries() method
+     */
+    public function searchCountries()
+    {
+        return $this->countries();
+    }
+
+    /**
+     * Search provinces - alias for provinces() method
+     */
+    public function searchProvinces()
+    {
+        return $this->provinces();
+    }
 }

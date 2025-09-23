@@ -4391,11 +4391,6 @@ async function populateEditModal(userData) {
             console.warn('Campo state_id não encontrado ou stateId não disponível');
         }
 
-        // 5. Inicializar os SearchableSelect components para o modal de edição
-        console.log('Inicializando SearchableSelect components...');
-        initializeEditSearchableSelects();
-        console.log('SearchableSelect components inicializados');
-
         // 6. Adicionar event listener do formulário se ainda não existir
         const editForm = document.getElementById('editClientForm');
         if (editForm && !editForm.hasAttribute('data-listener-added')) {
@@ -4409,6 +4404,13 @@ async function populateEditModal(userData) {
             });
             editForm.setAttribute('data-listener-added', 'true');
         }
+
+        // 7. IMPORTANTE: Inicializar SearchableSelect components DEPOIS de preencher todos os dados
+        console.log('Inicializando SearchableSelect components...');
+        setTimeout(() => {
+            initializeEditSearchableSelects();
+            console.log('SearchableSelect components inicializados');
+        }, 100); // Pequeno delay para garantir que o DOM esteja atualizado
 
     } catch (error) {
         console.error('Erro ao popular modal de edição:', error);
@@ -4484,12 +4486,19 @@ async function fetchProvinceName(id) {
 function initializeEditSearchableSelects() {
     console.log('initializeEditSearchableSelects iniciado');
 
+    try {
+
     // Organizações
     console.log('Procurando editOrganizationTypeContainer...');
     const editOrgContainer = document.getElementById('editOrganizationTypeContainer');
     if (editOrgContainer) {
         console.log('Inicializando SearchableSelect para organização');
-        new SearchableSelect(editOrgContainer);
+        // Limpar instância anterior se existir
+        if (editOrgContainer._searchableSelectInstance) {
+            console.log('Removendo instância anterior de organização');
+            editOrgContainer._searchableSelectInstance.destroy?.();
+        }
+        editOrgContainer._searchableSelectInstance = new SearchableSelect(editOrgContainer);
         console.log('SearchableSelect organização inicializado');
     } else {
         console.warn('editOrganizationTypeContainer não encontrado');
@@ -4500,7 +4509,12 @@ function initializeEditSearchableSelects() {
     const editCountryContainer = document.getElementById('editCountryContainer');
     if (editCountryContainer) {
         console.log('Inicializando SearchableSelect para país');
-        new SearchableSelect(editCountryContainer);
+        // Limpar instância anterior se existir
+        if (editCountryContainer._searchableSelectInstance) {
+            console.log('Removendo instância anterior de país');
+            editCountryContainer._searchableSelectInstance.destroy?.();
+        }
+        editCountryContainer._searchableSelectInstance = new SearchableSelect(editCountryContainer);
         console.log('SearchableSelect país inicializado');
     } else {
         console.warn('editCountryContainer não encontrado');
@@ -4511,13 +4525,21 @@ function initializeEditSearchableSelects() {
     const editProvinceContainer = document.getElementById('editProvinceContainer');
     if (editProvinceContainer) {
         console.log('Inicializando SearchableSelect para província');
-        new SearchableSelect(editProvinceContainer);
+        // Limpar instância anterior se existir
+        if (editProvinceContainer._searchableSelectInstance) {
+            console.log('Removendo instância anterior de província');
+            editProvinceContainer._searchableSelectInstance.destroy?.();
+        }
+        editProvinceContainer._searchableSelectInstance = new SearchableSelect(editProvinceContainer);
         console.log('SearchableSelect província inicializado');
     } else {
         console.warn('editProvinceContainer não encontrado');
     }
 
-    console.log('initializeEditSearchableSelects concluído');
+        console.log('initializeEditSearchableSelects concluído com sucesso');
+    } catch (error) {
+        console.error('Erro ao inicializar SearchableSelect components:', error);
+    }
 }
 
 async function updateClient() {

@@ -101,6 +101,11 @@ $router->get('/api/data/organization-types', 'Api\\DataController@organizationTy
 $router->get('/api/data/countries', 'Api\\DataController@countries');
 $router->get('/api/data/provinces', 'Api\\DataController@provinces');
 
+// API routes for searchable select search functionality
+$router->get('/api/organization-types/search', 'Api\\DataController@searchOrganizationTypes');
+$router->get('/api/countries/search', 'Api\\DataController@searchCountries');
+$router->get('/api/provinces/search', 'Api\\DataController@searchProvinces');
+
 // API routes for users (clients) - TEMPORÁRIO: usar método show existente
 $router->get('/clients/{id}/api', 'ClientController@apiShowUser');
 $router->put('/clients/{id}/api', 'ClientController@apiUpdateUser');
