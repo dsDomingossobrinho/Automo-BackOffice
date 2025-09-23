@@ -3330,12 +3330,11 @@ input:checked + .toggle-slider:before {
         </div>
 
         <div class="card-body">
-            <form id="editClientForm" class="admin-form">
+            <form id="editClientForm" class="admin-form" action="javascript:void(0);">
                 <?= csrfField() ?>
-                <?= methodField('PUT') ?>
                 <input type="hidden" name="client_id" id="editClientId">
 
-                <!-- Layout compacto otimizado para edição -->
+                <!-- Layout compacto otimizado -->
                 <div class="compact-form-layout">
                     <!-- Linha 1: Informações principais em grid -->
                     <div class="form-row-grid">
@@ -3411,28 +3410,157 @@ input:checked + .toggle-slider:before {
                         </div>
                     </div>
 
-                    <!-- Linha 3: Configurações Opcionais (colapsível) -->
+                    <!-- Linha 3: Campos Hybrid Searchable Selects -->
+                    <div class="form-row-grid">
+                        <!-- Tipo de Organização - Hybrid Searchable Select -->
+                        <div class="form-group compact">
+                            <label class="form-label compact">
+                                <i class="fas fa-building"></i>Tipo de Organização *
+                            </label>
+                            <div class="searchable-select-container" id="editOrganizationTypeContainer">
+                                <input type="text" class="searchable-select-input"
+                                       placeholder="Digite para pesquisar..."
+                                       data-endpoint="organization-types"
+                                       autocomplete="off">
+                                <input type="hidden" name="organization_type_id" id="editOrganizationTypeId" required>
+                                <div class="searchable-select-arrow">
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                                <div class="searchable-select-dropdown">
+                                    <div class="dropdown-content">
+                                        <!-- Options will be populated dynamically -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- País - Hybrid Searchable Select -->
+                        <div class="form-group compact">
+                            <label class="form-label compact">
+                                <i class="fas fa-globe"></i>País
+                            </label>
+                            <div class="searchable-select-container" id="editCountryContainer">
+                                <input type="text" class="searchable-select-input"
+                                       placeholder="Digite para pesquisar..."
+                                       data-endpoint="countries"
+                                       autocomplete="off">
+                                <input type="hidden" name="country_id" id="editCountryId">
+                                <div class="searchable-select-arrow">
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                                <div class="searchable-select-dropdown">
+                                    <div class="dropdown-content">
+                                        <!-- Options will be populated dynamically -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Província - Hybrid Searchable Select -->
+                        <div class="form-group compact">
+                            <label class="form-label compact">
+                                <i class="fas fa-map-marker-alt"></i>Província
+                            </label>
+                            <div class="searchable-select-container" id="editProvinceContainer">
+                                <input type="text" class="searchable-select-input"
+                                       placeholder="Digite para pesquisar..."
+                                       data-endpoint="provinces"
+                                       autocomplete="off">
+                                <input type="hidden" name="province_id" id="editProvinceId">
+                                <div class="searchable-select-arrow">
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                                <div class="searchable-select-dropdown">
+                                    <div class="dropdown-content">
+                                        <!-- Options will be populated dynamically -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Linha 4: Imagem opcional (colapsível) -->
                     <div class="form-row-optional">
                         <div class="optional-section">
                             <button type="button" class="optional-toggle" onclick="toggleOptionalFieldsEdit()">
                                 <i class="fas fa-chevron-right" id="optionalToggleIconEdit"></i>
-                                <span>Configurações de Imagem e Senha</span>
+                                <span>Configurações de Imagem</span>
                             </button>
                             <div class="optional-content" id="optionalFieldsEdit" style="display: none;">
-                                <div class="form-row-grid">
-                                    <div class="form-group compact">
-                                        <label class="form-label compact">
-                                            <i class="fas fa-image"></i>URL da Imagem
-                                        </label>
-                                        <input type="url" name="img" id="editImageUrl" class="form-input compact"
-                                               placeholder="https://exemplo.com/imagem.jpg">
+                                <div class="image-upload-section">
+                                    <div class="upload-options-header">
+                                        <h4 class="upload-title">
+                                            <i class="fas fa-image"></i>Imagem do Perfil (Opcional)
+                                        </h4>
+                                        <div class="upload-method-buttons">
+                                            <button type="button" class="upload-method-btn active" data-method="url" onclick="switchEditUploadMethod('url')">
+                                                <i class="fas fa-link"></i>URL
+                                            </button>
+                                            <button type="button" class="upload-method-btn" data-method="file" onclick="switchEditUploadMethod('file')">
+                                                <i class="fas fa-upload"></i>Upload
+                                            </button>
+                                        </div>
                                     </div>
-                                    <div class="form-group compact">
-                                        <label class="form-label compact">
-                                            <i class="fas fa-key"></i>Nova Senha (opcional)
-                                        </label>
-                                        <input type="password" name="password" class="form-input compact"
-                                               placeholder="Deixe vazio para manter atual">
+
+                                    <!-- Método URL -->
+                                    <div class="upload-method-content" id="editUrlMethod">
+                                        <div class="form-group compact">
+                                            <label class="form-label compact">
+                                                <i class="fas fa-link"></i>URL da Imagem
+                                            </label>
+                                            <div class="url-input-group">
+                                                <input type="url" name="img" id="editImageUrl" class="form-input compact url-input"
+                                                       placeholder="https://exemplo.com/imagem.jpg"
+                                                       onchange="previewEditImageFromUrl(this.value)">
+                                                <button type="button" class="btn-preview" onclick="previewEditImageFromUrl(document.getElementById('editImageUrl').value)">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Método Upload -->
+                                    <div class="upload-method-content" id="editFileMethod" style="display: none;">
+                                        <div class="form-group compact">
+                                            <label class="form-label compact">
+                                                <i class="fas fa-upload"></i>Selecionar Arquivo
+                                            </label>
+                                            <div class="file-upload-wrapper">
+                                                <input type="file" name="client_image_file" id="editImageFile"
+                                                       class="file-input" accept="image/*" onchange="handleEditFileUpload(this)">
+                                                <div class="file-upload-display">
+                                                    <div class="file-upload-placeholder">
+                                                        <i class="fas fa-cloud-upload-alt"></i>
+                                                        <span>Clique para selecionar uma imagem</span>
+                                                        <small>JPG, PNG, GIF até 5MB</small>
+                                                    </div>
+                                                    <div class="file-upload-preview" style="display: none;">
+                                                        <img id="editPreviewImage" src="" alt="Preview">
+                                                        <div class="file-info">
+                                                            <span class="file-name" id="editFileName"></span>
+                                                            <button type="button" class="remove-file-btn" onclick="removeEditFileUpload()">
+                                                                <i class="fas fa-times"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Preview Section -->
+                                    <div class="image-preview-section" id="editImagePreviewSection" style="display: none;">
+                                        <div class="preview-header">
+                                            <h5><i class="fas fa-eye"></i>Preview da Imagem</h5>
+                                            <button type="button" class="btn-clear-preview" onclick="clearEditImagePreview()">
+                                                <i class="fas fa-times"></i>Limpar
+                                            </button>
+                                        </div>
+                                        <div class="preview-content">
+                                            <div class="preview-status" id="editImageStatus">
+                                                ⏳ Carregando imagem...
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -3601,6 +3729,21 @@ document.addEventListener('DOMContentLoaded', function() {
             showAlert('Erro de conexão: ' + error.message, 'danger');
         }
     });
+
+    // Submissão do formulário de edição
+    const editForm = document.getElementById('editClientForm');
+    if (editForm) {
+        console.log('Edit form found, adding event listener');
+        editForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            console.log('Edit form submitted - JavaScript intercepted!');
+
+            // Chamar a função updateClient
+            await updateClient();
+        });
+    } else {
+        console.error('editClientForm not found');
+    }
 });
 
 // Searchable Select Implementation
@@ -3890,14 +4033,8 @@ function openViewCard(id) {
     }
 }
 
-function openEditCard(id) {
-    const client = clientsData.find(c => c.id == id);
-    if (client) {
-        currentClientId = id;
-        populateEditCard(client);
-        showModal('editClientCard');
-    }
-}
+// Esta função foi atualizada mais abaixo para usar API
+// function openEditCard(id) - vide função async mais abaixo
 
 function openDeleteCard(id) {
     const client = clientsData.find(c => c.id == id);
@@ -4032,7 +4169,7 @@ function openViewCard(id) {
             </div>
         `;
 
-        showCard('viewClientCard');
+        showModal('viewClientCard');
     }
 }
 
@@ -4044,68 +4181,445 @@ function editFromView() {
 }
 
 // 3. EDITAR CLIENTE
-function openEditCard(id) {
-    const client = clientsData.find(c => c.id == id);
-    if (client) {
-        currentClientId = id;
+async function openEditCard(id) {
+    console.log('openEditCard called with ID:', id);
 
-        // Preencher ID do cliente
-        document.getElementById('editClientId').value = client.id;
+    if (!id) {
+        console.error('ID não fornecido para openEditCard');
+        return;
+    }
 
-        // Usar a nova função para carregar dados
-        loadEditClientData(client);
+    currentClientId = id;
 
-        showCard('editClientCard');
+    try {
+        console.log('Abrindo modal de edição...');
+        // Mostrar o modal primeiro com loading
+        showModal('editClientCard');
+
+        console.log('Fazendo requisição para carregar dados do usuário...');
+        // Buscar dados do usuário via API
+        const response = await fetch(`/clients/${id}`, {
+            method: 'GET',
+            credentials: 'include', // Incluir cookies de sessão
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+
+        console.log('Resposta da API recebida:', response.status, response.statusText);
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Erro na resposta da API:', errorText);
+            throw new Error(`Erro ${response.status}: ${response.statusText} - ${errorText}`);
+        }
+
+        const userData = await response.json();
+        console.log('Dados do usuário carregados:', userData);
+
+        // Popular o modal com os dados do usuário
+        console.log('Populando modal com dados...');
+        await populateEditModal(userData);
+        console.log('Modal populado com sucesso');
+
+    } catch (error) {
+        console.error('Erro ao carregar dados do usuário:', error);
+        alert('Erro ao carregar dados do usuário. Tente novamente.');
+        closeCard();
     }
 }
 
-async function updateClient() {
-    if (!currentClientId) return;
+// Função para popular o modal de edição com dados do usuário
+async function populateEditModal(userData) {
+    console.log('populateEditModal iniciado com dados:', userData);
 
     try {
+        // Extrair os dados do usuário da resposta da API
+        const user = userData.data || userData;
+        console.log('Dados do usuário extraídos:', user);
+
+        // 1. Preencher campos básicos do formulário
+        console.log('Procurando formulário editClientForm...');
         const form = document.getElementById('editClientForm');
-        const formData = new FormData(form);
+        if (!form) {
+            console.error('Formulário editClientForm não encontrado');
+            return;
+        }
+        console.log('Formulário encontrado:', form);
 
-        const clientData = {
-            name: formData.get('name'),
-            email: formData.get('email') || null,
-            contact: formData.get('contact'),
-            img: formData.get('img') || null,
-            accountTypeId: parseInt(formData.get('accountTypeId')),
-            status: formData.get('status') ? 'active' : 'inactive',
-            notes: formData.get('notes') || null
-        };
-
-        // Adicionar password apenas se foi fornecida
-        const password = formData.get('password');
-        if (password && password.trim()) {
-            clientData.password = password;
+        // Campo hidden com ID do usuário
+        console.log('Preenchendo ID do usuário...');
+        const userIdField = document.getElementById('editClientId');
+        if (userIdField) {
+            userIdField.value = user.id;
+            console.log('ID preenchido:', user.id);
+        } else {
+            console.warn('Campo editClientId não encontrado');
         }
 
-        // TODO: Implementar chamada real à API
-        const response = await fetch(`<?= url('/clients') ?>/${currentClientId}`, {
-            method: 'PUT',
+        // Campos de texto básicos
+        console.log('Preenchendo campos básicos...');
+        const nameField = form.querySelector('[name="name"]');
+        if (nameField) {
+            nameField.value = user.name || '';
+            console.log('Nome preenchido:', user.name);
+        }
+
+        const emailField = form.querySelector('[name="email"]');
+        if (emailField) {
+            emailField.value = user.email || '';
+            console.log('Email preenchido:', user.email);
+        }
+
+        const contactField = form.querySelector('[name="contact"]');
+        if (contactField) {
+            // Tentar diferentes nomes de campo de contato
+            const contact = user.contacto || user.contact || user.phone || '';
+            contactField.value = contact;
+            console.log('Contato preenchido:', contact);
+            if (!contact) {
+                console.warn('Nenhum campo de contato encontrado na API. Campos disponíveis:', Object.keys(user));
+            }
+        }
+
+        // 2. Preencher Hybrid Searchable Selects
+        console.log('Preenchendo campos de seleção...');
+
+        // Tipo de Organização
+        if (user.organizationTypeId) {
+            console.log('Preenchendo tipo de organização:', user.organizationTypeId);
+            const orgTypeInput = document.querySelector('#editOrganizationTypeContainer .searchable-select-input');
+            const orgTypeHidden = document.getElementById('editOrganizationTypeId');
+
+            if (orgTypeInput && orgTypeHidden) {
+                // Usar o nome que já vem da API se disponível
+                if (user.organizationTypeName) {
+                    orgTypeInput.value = user.organizationTypeName;
+                    orgTypeHidden.value = user.organizationTypeId;
+                    console.log('Tipo de organização preenchido:', user.organizationTypeName);
+                } else {
+                    // Buscar o nome do tipo de organização se não vier na resposta
+                    const orgTypeName = await fetchOrganizationTypeName(user.organizationTypeId);
+                    if (orgTypeName) {
+                        orgTypeInput.value = orgTypeName;
+                        orgTypeHidden.value = user.organizationTypeId;
+                        console.log('Tipo de organização buscado e preenchido:', orgTypeName);
+                    }
+                }
+            }
+        }
+
+        // País
+        if (user.countryId) {
+            console.log('Preenchendo país:', user.countryId);
+            const countryInput = document.querySelector('#editCountryContainer .searchable-select-input');
+            const countryHidden = document.getElementById('editCountryId');
+
+            if (countryInput && countryHidden) {
+                // Usar o nome que já vem da API se disponível
+                if (user.countryName) {
+                    countryInput.value = user.countryName;
+                    countryHidden.value = user.countryId;
+                    console.log('País preenchido:', user.countryName);
+                } else {
+                    // Buscar o nome do país se não vier na resposta
+                    const countryName = await fetchCountryName(user.countryId);
+                    if (countryName) {
+                        countryInput.value = countryName;
+                        countryHidden.value = user.countryId;
+                        console.log('País buscado e preenchido:', countryName);
+                    }
+                }
+            }
+        }
+
+        // Província
+        if (user.provinceId) {
+            console.log('Preenchendo província:', user.provinceId);
+            const provinceInput = document.querySelector('#editProvinceContainer .searchable-select-input');
+            const provinceHidden = document.getElementById('editProvinceId');
+
+            if (provinceInput && provinceHidden) {
+                // Usar o nome que já vem da API se disponível
+                if (user.provinceName) {
+                    provinceInput.value = user.provinceName;
+                    provinceHidden.value = user.provinceId;
+                    console.log('Província preenchida:', user.provinceName);
+                } else {
+                    // Buscar o nome da província se não vier na resposta
+                    const provinceName = await fetchProvinceName(user.provinceId);
+                    if (provinceName) {
+                        provinceInput.value = provinceName;
+                        provinceHidden.value = user.provinceId;
+                        console.log('Província buscada e preenchida:', provinceName);
+                    }
+                }
+            }
+        }
+
+        // 3. Preencher campos de upload de imagem se existir
+        if (user.img) {
+            console.log('Preenchendo imagem:', user.img);
+            const imageUrlField = document.getElementById('editImageUrl');
+            if (imageUrlField) {
+                imageUrlField.value = user.img;
+                // Mostrar preview da imagem
+                previewEditImageFromUrl(user.img);
+            }
+        }
+
+        // 4. Preencher campos de select tradicionais (Tipo de conta e Estado)
+        console.log('Preenchendo selects tradicionais...');
+
+        // Tipo de conta - usar o campo authId ou account_type_id
+        const accountTypeSelect = form.querySelector('[name="account_type_id"]');
+        if (accountTypeSelect) {
+            // A API não retorna account_type_id diretamente, mas todos os clientes são USER (ID 2)
+            accountTypeSelect.value = 2; // USER account type
+            console.log('Tipo de conta preenchido: USER (2)');
+        } else {
+            console.warn('Campo account_type_id não encontrado');
+        }
+
+        // Estado
+        const stateSelect = form.querySelector('[name="state_id"]');
+        if (stateSelect && user.stateId) {
+            stateSelect.value = user.stateId;
+            console.log('Estado preenchido:', user.stateId, '-', user.stateName);
+        } else {
+            console.warn('Campo state_id não encontrado ou stateId não disponível');
+        }
+
+        // 5. Inicializar os SearchableSelect components para o modal de edição
+        console.log('Inicializando SearchableSelect components...');
+        initializeEditSearchableSelects();
+        console.log('SearchableSelect components inicializados');
+
+        // 6. Adicionar event listener do formulário se ainda não existir
+        const editForm = document.getElementById('editClientForm');
+        if (editForm && !editForm.hasAttribute('data-listener-added')) {
+            console.log('Adding submit event listener to edit form');
+            editForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                console.log('Edit form submitted - JavaScript intercepted!');
+
+                // Chamar a função updateClient
+                await updateClient();
+            });
+            editForm.setAttribute('data-listener-added', 'true');
+        }
+
+    } catch (error) {
+        console.error('Erro ao popular modal de edição:', error);
+        alert('Erro ao carregar alguns dados. Verifique os campos.');
+    }
+}
+
+// Funções auxiliares para buscar nomes por ID
+async function fetchOrganizationTypeName(id) {
+    try {
+        const response = await fetch(`/api/data/organization-types?search=&page=0&size=100`, {
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
-            },
-            body: JSON.stringify(clientData)
+                'X-Requested-With': 'XMLHttpRequest'
+            }
         });
 
         if (response.ok) {
+            const data = await response.json();
+            const orgType = data.content?.find(item => item.id == id);
+            return orgType ? (orgType.type || orgType.description) : null;
+        }
+    } catch (error) {
+        console.error('Erro ao buscar tipo de organização:', error);
+    }
+    return null;
+}
+
+async function fetchCountryName(id) {
+    try {
+        const response = await fetch(`/api/data/countries?search=&page=0&size=100`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            const country = data.content?.find(item => item.id == id);
+            return country ? `${country.country} (${country.indicative || 'N/A'})` : null;
+        }
+    } catch (error) {
+        console.error('Erro ao buscar país:', error);
+    }
+    return null;
+}
+
+async function fetchProvinceName(id) {
+    try {
+        const response = await fetch(`/api/data/provinces?search=&page=0&size=100`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            const province = data.content?.find(item => item.id == id);
+            return province ? (province.provinceName || province.name) : null;
+        }
+    } catch (error) {
+        console.error('Erro ao buscar província:', error);
+    }
+    return null;
+}
+
+// Função para inicializar os SearchableSelect components do modal de edição
+function initializeEditSearchableSelects() {
+    console.log('initializeEditSearchableSelects iniciado');
+
+    // Organizações
+    console.log('Procurando editOrganizationTypeContainer...');
+    const editOrgContainer = document.getElementById('editOrganizationTypeContainer');
+    if (editOrgContainer) {
+        console.log('Inicializando SearchableSelect para organização');
+        new SearchableSelect(editOrgContainer);
+        console.log('SearchableSelect organização inicializado');
+    } else {
+        console.warn('editOrganizationTypeContainer não encontrado');
+    }
+
+    // Países
+    console.log('Procurando editCountryContainer...');
+    const editCountryContainer = document.getElementById('editCountryContainer');
+    if (editCountryContainer) {
+        console.log('Inicializando SearchableSelect para país');
+        new SearchableSelect(editCountryContainer);
+        console.log('SearchableSelect país inicializado');
+    } else {
+        console.warn('editCountryContainer não encontrado');
+    }
+
+    // Províncias
+    console.log('Procurando editProvinceContainer...');
+    const editProvinceContainer = document.getElementById('editProvinceContainer');
+    if (editProvinceContainer) {
+        console.log('Inicializando SearchableSelect para província');
+        new SearchableSelect(editProvinceContainer);
+        console.log('SearchableSelect província inicializado');
+    } else {
+        console.warn('editProvinceContainer não encontrado');
+    }
+
+    console.log('initializeEditSearchableSelects concluído');
+}
+
+async function updateClient() {
+    console.log('updateClient called with currentClientId:', currentClientId);
+
+    if (!currentClientId) {
+        console.error('No currentClientId set');
+        return;
+    }
+
+    try {
+        console.log('Getting form data...');
+        const form = document.getElementById('editClientForm');
+        const formData = new FormData(form);
+
+        // Log form data for debugging
+        console.log('Form data entries:');
+        for (let [key, value] of formData.entries()) {
+            console.log(`  ${key}: ${value}`);
+        }
+
+        // Construir payload usando os nomes de campo que o PHP espera para validação
+        const payload = {
+            name: formData.get('name'),
+            account_type_id: formData.get('account_type_id') || '1',
+            state_id: formData.get('state_id') || '1'
+        };
+
+        console.log('Base payload:', payload);
+
+        // Adicionar campos opcionais apenas se não estiverem vazios
+        const contact = formData.get('contact');
+        if (contact && contact.trim()) {
+            payload.contact = contact;
+        }
+
+        const email = formData.get('email');
+        if (email && email.trim()) {
+            payload.email = email;
+        }
+
+        const img = formData.get('img');
+        if (img && img.trim()) {
+            payload.img = img;
+        }
+
+        const organizationTypeId = formData.get('organization_type_id');
+        if (organizationTypeId) {
+            payload.organization_type_id = organizationTypeId;
+        }
+
+        const countryId = formData.get('country_id');
+        if (countryId) {
+            payload.country_id = countryId;
+        }
+
+        const provinceId = formData.get('province_id');
+        if (provinceId) {
+            payload.province_id = provinceId;
+        }
+
+        // Usar endpoint PUT /clients/{id} conforme documentação
+        const url = `/clients/${currentClientId}`;
+        console.log('Making PUT request to:', url);
+        console.log('currentClientId:', currentClientId);
+        console.log('Final payload:', JSON.stringify(payload, null, 2));
+
+        const response = await fetch(url, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify(payload)
+        });
+
+        console.log('Response status:', response.status, response.statusText);
+
+        if (response.ok) {
             const result = await response.json();
-            showNotification('Cliente atualizado com sucesso!', 'success');
+            console.log('Update successful:', result);
+            alert('Cliente atualizado com sucesso!');
             closeCard();
-            // Recarregar página ou atualizar dados
+            // Recarregar página para mostrar dados atualizados
             window.location.reload();
         } else {
-            const error = await response.json();
-            showNotification(error.message || 'Erro ao atualizar cliente', 'error');
+            const errorText = await response.text();
+            console.error('Update failed:', response.status, errorText);
+
+            let errorMessage = 'Erro ao atualizar cliente';
+            try {
+                const error = JSON.parse(errorText);
+                errorMessage = error.message || errorMessage;
+            } catch (e) {
+                // Not JSON, use default message
+            }
+
+            alert(errorMessage);
         }
     } catch (error) {
         console.error('Erro ao atualizar cliente:', error);
-        showNotification('Erro ao atualizar cliente', 'error');
+        alert('Erro ao atualizar cliente. Tente novamente.');
     }
 }
 
@@ -4123,7 +4637,7 @@ function openDeleteCard(id) {
         const initials = client.name ? client.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : 'CL';
         document.getElementById('deleteClientInitials').textContent = initials;
 
-        showCard('deleteClientCard');
+        showModal('deleteClientCard');
     }
 }
 
@@ -4468,6 +4982,173 @@ function removeFileUpload() {
 // Mostrar erro de imagem
 function showImageErrorClient(message) {
     showAlert(message, 'danger');
+}
+
+// ===========================================
+// EDIT MODAL - UPLOAD FUNCTIONS
+// ===========================================
+
+// Alternar entre métodos de upload no modal de edição
+function switchEditUploadMethod(method) {
+    const urlMethod = document.getElementById('editUrlMethod');
+    const fileMethod = document.getElementById('editFileMethod');
+    const urlBtn = document.querySelector('#editClientCard [data-method="url"]');
+    const fileBtn = document.querySelector('#editClientCard [data-method="file"]');
+
+    // Verificar se os elementos existem antes de manipular
+    if (!urlMethod || !fileMethod || !urlBtn || !fileBtn) {
+        return;
+    }
+
+    // Reset active states
+    urlBtn.classList.remove('active');
+    fileBtn.classList.remove('active');
+
+    // Hide both methods
+    urlMethod.style.display = 'none';
+    fileMethod.style.display = 'none';
+
+    // Show selected method
+    if (method === 'url') {
+        urlMethod.style.display = 'block';
+        urlBtn.classList.add('active');
+        // Clear file input when switching to URL
+        const fileInput = document.getElementById('editImageFile');
+        if (fileInput) fileInput.value = '';
+        hideEditFilePreview();
+    } else {
+        fileMethod.style.display = 'block';
+        fileBtn.classList.add('active');
+        // Clear URL input when switching to file
+        const urlInput = document.getElementById('editImageUrl');
+        if (urlInput) urlInput.value = '';
+        hideEditGlobalPreview();
+    }
+}
+
+// Preview de imagem via URL - Edit Modal
+function previewEditImageFromUrl(url) {
+    if (!url || url.trim() === '') {
+        hideEditGlobalPreview();
+        return;
+    }
+
+    const previewSection = document.getElementById('editImagePreviewSection');
+    const statusText = document.getElementById('editImageStatus');
+
+    if (!previewSection || !statusText) return;
+
+    statusText.textContent = '⏳ Carregando imagem...';
+    statusText.style.color = '#f59e0b';
+    previewSection.style.display = 'block';
+
+    // Carregar imagem
+    const img = new Image();
+    img.onload = function() {
+        showEditGlobalPreview(this.src, 'url');
+    };
+    img.onerror = function() {
+        statusText.textContent = '❌ Erro ao carregar imagem';
+        statusText.style.color = '#ef4444';
+    };
+    img.src = url;
+}
+
+// Handle file upload - Edit Modal
+function handleEditFileUpload(input) {
+    const file = input.files[0];
+    if (!file) {
+        hideEditFilePreview();
+        hideEditGlobalPreview();
+        return;
+    }
+
+    // Validar tipo de arquivo
+    const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (!validTypes.includes(file.type)) {
+        showImageErrorClient('Por favor, selecione apenas arquivos de imagem (JPG, PNG, GIF, WebP).');
+        input.value = '';
+        return;
+    }
+
+    // Validar tamanho (5MB)
+    const maxSize = 5 * 1024 * 1024;
+    if (file.size > maxSize) {
+        showImageErrorClient('Arquivo muito grande. Tamanho máximo permitido é 5MB.');
+        input.value = '';
+        return;
+    }
+
+    // Mostrar preview
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        showEditFilePreview(e.target.result, file.name);
+        showEditGlobalPreview(e.target.result, 'upload');
+    };
+    reader.readAsDataURL(file);
+}
+
+// Mostrar preview do arquivo - Edit Modal
+function showEditFilePreview(src, filename) {
+    const placeholder = document.querySelector('#editClientCard .file-upload-placeholder');
+    const preview = document.querySelector('#editClientCard .file-upload-preview');
+    const previewImage = document.getElementById('editPreviewImage');
+    const fileName = document.getElementById('editFileName');
+
+    if (placeholder) placeholder.style.display = 'none';
+    if (preview) preview.style.display = 'block';
+    if (previewImage) previewImage.src = src;
+    if (fileName) fileName.textContent = filename;
+}
+
+// Esconder preview do arquivo - Edit Modal
+function hideEditFilePreview() {
+    const placeholder = document.querySelector('#editClientCard .file-upload-placeholder');
+    const preview = document.querySelector('#editClientCard .file-upload-preview');
+
+    if (placeholder) placeholder.style.display = 'flex';
+    if (preview) preview.style.display = 'none';
+}
+
+// Mostrar preview global - Edit Modal
+function showEditGlobalPreview(src, type) {
+    const previewSection = document.getElementById('editImagePreviewSection');
+    const statusText = document.getElementById('editImageStatus');
+
+    if (!previewSection || !statusText) return;
+
+    statusText.textContent = type === 'upload' ? '✅ Arquivo carregado' : '✅ Imagem URL carregada';
+    statusText.style.color = '#10b981';
+    previewSection.style.display = 'block';
+}
+
+// Esconder preview global - Edit Modal
+function hideEditGlobalPreview() {
+    const previewSection = document.getElementById('editImagePreviewSection');
+    if (previewSection) {
+        previewSection.style.display = 'none';
+    }
+}
+
+// Limpar preview de imagem - Edit Modal
+function clearEditImagePreview() {
+    hideEditGlobalPreview();
+    hideEditFilePreview();
+
+    // Limpar inputs
+    const urlInput = document.getElementById('editImageUrl');
+    const fileInput = document.getElementById('editImageFile');
+
+    if (urlInput) urlInput.value = '';
+    if (fileInput) fileInput.value = '';
+}
+
+// Remover upload de arquivo - Edit Modal
+function removeEditFileUpload() {
+    const fileInput = document.getElementById('editImageFile');
+    if (fileInput) fileInput.value = '';
+    hideEditFilePreview();
+    hideEditGlobalPreview();
 }
 
 // Validação de senha para clientes

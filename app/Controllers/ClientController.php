@@ -316,18 +316,47 @@ class ClientController extends Controller
     {
         try {
             $client = $this->apiClient->authenticatedRequest('GET', "/users/{$id}");
-            
+
             if (!$client) {
+                // Se é uma requisição AJAX, retornar JSON
+                if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+                    strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+                    header('Content-Type: application/json');
+                    http_response_code(404);
+                    echo json_encode(['error' => 'Cliente não encontrado']);
+                    exit;
+                }
+
                 $this->setFlash('errors', ['Cliente não encontrado']);
                 $this->redirect('/clients');
             }
-            
+
+            // Se é uma requisição AJAX, retornar JSON
+            if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+                strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+                header('Content-Type: application/json');
+                echo json_encode($client);
+                exit;
+            }
+
             $this->view('clients/show', [
                 'client' => $client,
                 'has_permission_edit' => $this->auth->hasPermission('edit_clients'),
                 'has_permission_delete' => $this->auth->hasPermission('delete_all')
             ]);
         } catch (\Exception $e) {
+            // Se é uma requisição AJAX, retornar JSON
+            if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+                strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+                header('Content-Type: application/json');
+                http_response_code(500);
+                echo json_encode([
+                    'error' => 'Erro ao carregar cliente',
+                    'message' => $e->getMessage()
+                ]);
+                exit;
+            }
+
             $this->setFlash('errors', ['Erro ao carregar cliente: ' . $e->getMessage()]);
             $this->redirect('/clients');
         }
@@ -372,23 +401,41 @@ class ClientController extends Controller
      */
     public function update($id)
     {
+        $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+                  strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+
         if (!$this->auth->hasPermission('edit_clients')) {
+            if ($isAjax) {
+                $this->json(['success' => false, 'message' => 'Sem permissão para editar clientes'], 403);
+            }
             $this->setFlash('errors', ['Sem permissão para editar clientes']);
             $this->redirect('/clients');
         }
-        
+
         try {
             $data = $this->getRequestData();
-            
-            // Validate CSRF token
-            if (!$this->validateCsrfToken($data['_token'] ?? '')) {
+
+            // For AJAX requests, get JSON data
+            if ($isAjax) {
+                $input = file_get_contents('php://input');
+                $jsonData = json_decode($input, true);
+                if ($jsonData) {
+                    $data = $jsonData;
+                }
+            }
+
+            // Validate CSRF token (skip for AJAX as it doesn't use forms)
+            if (!$isAjax && !$this->validateCsrfToken($data['_token'] ?? '')) {
                 $this->setFlash('errors', ['Token de segurança inválido']);
                 $this->redirect("/clients/{$id}/edit");
             }
-            
+
             // Validate input data
             $errors = $this->validateClientData($data, $id);
             if (!empty($errors)) {
+                if ($isAjax) {
+                    $this->json(['success' => false, 'message' => 'Dados inválidos', 'errors' => $errors], 400);
+                }
                 $this->setFlash('errors', $errors);
                 flashInput();
                 $this->redirect("/clients/{$id}/edit");
@@ -436,11 +483,18 @@ class ClientController extends Controller
             }
 
             $response = $this->apiClient->authenticatedRequest('PUT', "/users/{$id}", $updateData);
-            
+
+            if ($isAjax) {
+                $this->json(['success' => true, 'message' => 'Cliente actualizado com sucesso!', 'data' => $response]);
+            }
+
             clearInput();
             $this->setFlash('success', 'Cliente actualizado com sucesso!');
             $this->redirect('/clients');
         } catch (\Exception $e) {
+            if ($isAjax) {
+                $this->json(['success' => false, 'message' => 'Erro ao actualizar cliente: ' . $e->getMessage()], 500);
+            }
             $this->setFlash('errors', ['Erro ao actualizar cliente: ' . $e->getMessage()]);
             $this->redirect("/clients/{$id}/edit");
         }
@@ -567,6 +621,212 @@ class ClientController extends Controller
                 'inactiveUsers' => 0,
                 'eliminatedUsers' => 0
             ];
+        }
+    }
+
+    /**
+     * API endpoint para buscar um usuário específico
+     */
+    public function apiShow($id)
+    {
+        header('Content-Type: application/json');
+
+        // Debug temporário
+        error_log("=== ClientController::apiShow CALLED with ID: {$id} ===");
+
+        try {
+            error_log("Making API request to /users/{$id}");
+            $userData = $this->apiClient->authenticatedRequest('GET', "/users/{$id}");
+            error_log("API response: " . json_encode($userData));
+
+            if (!$userData) {
+                error_log("No user data returned from API");
+                http_response_code(404);
+                echo json_encode(['error' => 'Usuário não encontrado']);
+                exit;
+            }
+
+            echo json_encode($userData);
+            exit;
+
+        } catch (\Exception $e) {
+            error_log("Exception in apiShow: " . $e->getMessage());
+            http_response_code(500);
+            echo json_encode([
+                'error' => 'Erro ao buscar usuário',
+                'message' => $e->getMessage()
+            ]);
+            exit;
+        }
+    }
+
+    /**
+     * API endpoint para atualizar um usuário específico
+     */
+    public function apiUpdate($id)
+    {
+        header('Content-Type: application/json');
+
+        try {
+            $data = $this->getRequestData();
+
+            // Construir payload baseado na documentação
+            $payload = [
+                'name' => $data['name'],
+                'accountTypeId' => (int)($data['accountTypeId'] ?? 1),
+                'stateId' => (int)($data['stateId'] ?? 1)
+            ];
+
+            // Adicionar campos opcionais apenas se não estiverem vazios
+            if (!empty($data['contacto'])) {
+                $payload['contacto'] = $data['contacto'];
+            }
+
+            if (!empty($data['email'])) {
+                $payload['email'] = $data['email'];
+            }
+
+            if (!empty($data['img'])) {
+                $payload['img'] = $data['img'];
+            }
+
+            if (!empty($data['organizationTypeId'])) {
+                $payload['organizationTypeId'] = (int)$data['organizationTypeId'];
+            }
+
+            if (!empty($data['countryId'])) {
+                $payload['countryId'] = (int)$data['countryId'];
+            }
+
+            if (!empty($data['provinceId'])) {
+                $payload['provinceId'] = (int)$data['provinceId'];
+            }
+
+            $response = $this->apiClient->authenticatedRequest('PUT', "/users/{$id}", $payload);
+
+            if ($response) {
+                echo json_encode($response);
+            } else {
+                http_response_code(500);
+                echo json_encode(['error' => 'Erro ao atualizar usuário']);
+            }
+            exit;
+
+        } catch (\Exception $e) {
+            http_response_code(500);
+            echo json_encode([
+                'error' => 'Erro ao atualizar usuário',
+                'message' => $e->getMessage()
+            ]);
+            exit;
+        }
+    }
+
+    /**
+     * Test route para debug
+     */
+    public function testRoute()
+    {
+        header('Content-Type: application/json');
+        echo json_encode(['message' => 'Route is working', 'timestamp' => date('Y-m-d H:i:s')]);
+        exit;
+    }
+
+    /**
+     * API endpoint para buscar um usuário específico (método alternativo)
+     */
+    public function apiShowUser($id)
+    {
+        header('Content-Type: application/json');
+
+        // Debug temporário
+        error_log("=== ClientController::apiShowUser CALLED with ID: {$id} ===");
+
+        try {
+            error_log("Making API request to /users/{$id}");
+            $userData = $this->apiClient->authenticatedRequest('GET', "/users/{$id}");
+            error_log("API response: " . json_encode($userData));
+
+            if (!$userData) {
+                error_log("No user data returned from API");
+                http_response_code(404);
+                echo json_encode(['error' => 'Usuário não encontrado']);
+                exit;
+            }
+
+            echo json_encode($userData);
+            exit;
+
+        } catch (\Exception $e) {
+            error_log("Exception in apiShowUser: " . $e->getMessage());
+            http_response_code(500);
+            echo json_encode([
+                'error' => 'Erro ao buscar usuário',
+                'message' => $e->getMessage()
+            ]);
+            exit;
+        }
+    }
+
+    /**
+     * API endpoint para atualizar um usuário específico (método alternativo)
+     */
+    public function apiUpdateUser($id)
+    {
+        header('Content-Type: application/json');
+
+        try {
+            $data = $this->getRequestData();
+
+            // Construir payload baseado na documentação
+            $payload = [
+                'name' => $data['name'],
+                'accountTypeId' => (int)($data['accountTypeId'] ?? 1),
+                'stateId' => (int)($data['stateId'] ?? 1)
+            ];
+
+            // Adicionar campos opcionais apenas se não estiverem vazios
+            if (!empty($data['contacto'])) {
+                $payload['contacto'] = $data['contacto'];
+            }
+
+            if (!empty($data['email'])) {
+                $payload['email'] = $data['email'];
+            }
+
+            if (!empty($data['img'])) {
+                $payload['img'] = $data['img'];
+            }
+
+            if (!empty($data['organizationTypeId'])) {
+                $payload['organizationTypeId'] = (int)$data['organizationTypeId'];
+            }
+
+            if (!empty($data['countryId'])) {
+                $payload['countryId'] = (int)$data['countryId'];
+            }
+
+            if (!empty($data['provinceId'])) {
+                $payload['provinceId'] = (int)$data['provinceId'];
+            }
+
+            $response = $this->apiClient->authenticatedRequest('PUT', "/users/{$id}", $payload);
+
+            if ($response) {
+                echo json_encode($response);
+            } else {
+                http_response_code(500);
+                echo json_encode(['error' => 'Erro ao atualizar usuário']);
+            }
+            exit;
+
+        } catch (\Exception $e) {
+            http_response_code(500);
+            echo json_encode([
+                'error' => 'Erro ao atualizar usuário',
+                'message' => $e->getMessage()
+            ]);
+            exit;
         }
     }
 }
