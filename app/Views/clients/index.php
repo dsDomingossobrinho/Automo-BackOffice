@@ -3986,11 +3986,8 @@ function openCreateModal() {
 }
 
 function showModal(modalId) {
-    console.log('showModal called with ID:', modalId);
-
     // Hide all modals first
     const allModals = document.querySelectorAll('.admin-card');
-    console.log('Found', allModals.length, 'admin-card elements');
     allModals.forEach(modal => {
         modal.classList.remove('active');
     });
@@ -3999,19 +3996,12 @@ function showModal(modalId) {
     const overlay = document.getElementById('cardOverlay');
     if (overlay) {
         overlay.classList.add('active');
-        console.log('Overlay activated');
-    } else {
-        console.error('Overlay not found');
     }
 
     // Show target modal
     const targetModal = document.getElementById(modalId);
     if (targetModal) {
         targetModal.classList.add('active');
-        console.log('Modal activated, classes:', targetModal.className);
-        console.log('Modal style display:', window.getComputedStyle(targetModal).display);
-    } else {
-        console.error('Target modal not found:', modalId);
     }
 }
 
@@ -4036,9 +4026,7 @@ async function openViewCard(id) {
     currentClientId = id;
 
     try {
-        console.log('Opening view modal for client:', id);
         showModal('viewClientCard');
-        console.log('Modal should be visible now');
 
         const response = await fetch(`/clients/${id}`, {
             method: 'GET',
@@ -4073,28 +4061,18 @@ function openDeleteCard(id) {
     }
 }
 
-// Populate modal functions
 function populateViewCard(client) {
     try {
-        // Extrair dados do usuário
         const user = client.data || client;
 
-        // Debug: verificar se o modal está visível
-        const modal = document.getElementById('viewClientCard');
-        if (!modal) {
-            console.error('Modal viewClientCard não encontrado');
-            return;
-        }
-
         // Header principal com avatar e informações
-        const avatarElement = document.getElementById('viewClientAvatar');
         const imageElement = document.getElementById('viewClientImage');
         const initialsElement = document.getElementById('viewClientInitials');
 
         // Configurar avatar
         if (imageElement && initialsElement) {
-            if (user.img) {
-                imageElement.src = user.img;
+            if (user.image_url || user.img) {
+                imageElement.src = user.image_url || user.img;
                 imageElement.style.display = 'block';
                 initialsElement.style.display = 'none';
             } else {
@@ -4107,18 +4085,8 @@ function populateViewCard(client) {
         // Nome e email no header
         const nameElement = document.getElementById('viewClientName');
         const emailHeaderElement = document.getElementById('viewClientEmailHeader');
-
-        if (nameElement) {
-            nameElement.textContent = user.name || 'Nome não informado';
-        } else {
-            console.warn('Elemento viewClientName não encontrado');
-        }
-
-        if (emailHeaderElement) {
-            emailHeaderElement.textContent = user.email || 'Email não informado';
-        } else {
-            console.warn('Elemento viewClientEmailHeader não encontrado');
-        }
+        if (nameElement) nameElement.textContent = user.name || 'Nome não informado';
+        if (emailHeaderElement) emailHeaderElement.textContent = user.email || 'Email não informado';
 
         // Status badge no header
         const isActive = (user.stateName || user.state) === 'ACTIVE' || user.is_active === true || user.is_active === 1;
@@ -4147,41 +4115,32 @@ function populateViewCard(client) {
             `;
         }
 
-        // Informações pessoais nos cards
+        // Card Informações Pessoais
         const fullNameElement = document.getElementById('viewFullName');
         const emailElement = document.getElementById('viewEmail');
         const contactElement = document.getElementById('viewContact');
 
         if (fullNameElement) fullNameElement.textContent = user.name || 'Não informado';
         if (emailElement) emailElement.textContent = user.email || 'Não informado';
-        if (contactElement) contactElement.textContent = user.contacto || 'Não informado';
+        if (contactElement) contactElement.textContent = user.contacto || user.phone || 'Não informado';
 
-        // Informações empresariais
-        const organizationTypeElement = document.getElementById('viewOrganizationType');
-        const countryElement = document.getElementById('viewCountry');
-        const provinceElement = document.getElementById('viewProvince');
-
-        if (organizationTypeElement) organizationTypeElement.textContent = user.organizationTypeName || 'Não informado';
-        if (countryElement) countryElement.textContent = user.countryName || 'Não informado';
-        if (provinceElement) provinceElement.textContent = user.provinceName || 'Não informado';
-
-        // Informações da conta
+        // Card Informações da Conta
         const clientIdElement = document.getElementById('viewClientId');
-        const accountTypeDetailElement = document.getElementById('viewAccountTypeDetail');
-        const stateDetailElement = document.getElementById('viewStateDetail');
+        const usernameElement = document.getElementById('viewUsername');
+        const accountTypeElement = document.getElementById('viewAccountTypeDetail');
 
-        if (clientIdElement) clientIdElement.textContent = user.id || 'N/A';
-        if (accountTypeDetailElement) accountTypeDetailElement.textContent = user.accountTypeName || 'Cliente';
-        if (stateDetailElement) stateDetailElement.textContent = user.stateName || 'Não informado';
+        if (clientIdElement) clientIdElement.textContent = user.id || '-';
+        if (usernameElement) usernameElement.textContent = user.username || user.email || '-';
+        if (accountTypeElement) accountTypeElement.textContent = user.accountTypeName || 'Cliente';
 
-        // Atividade e histórico
+        // Card Atividade e Histórico
         const createdAtElement = document.getElementById('viewCreatedAt');
         const updatedAtElement = document.getElementById('viewUpdatedAt');
         const lastLoginElement = document.getElementById('viewLastLogin');
 
-        if (createdAtElement) createdAtElement.textContent = formatDate(user.createdAt) || 'Não disponível';
-        if (updatedAtElement) updatedAtElement.textContent = formatDate(user.updatedAt) || 'Não disponível';
-        if (lastLoginElement) lastLoginElement.textContent = user.last_login ? formatDate(user.last_login) : 'Nunca acessou';
+        if (createdAtElement) createdAtElement.textContent = formatDate(user.createdAt || user.created_at) || '-';
+        if (updatedAtElement) updatedAtElement.textContent = formatDate(user.updatedAt || user.updated_at) || '-';
+        if (lastLoginElement) lastLoginElement.textContent = user.lastLogin || user.last_login ? formatDate(user.lastLogin || user.last_login) : 'Nunca acessou';
 
     } catch (error) {
         showAlert('Erro ao popular dados de visualização', 'danger');
