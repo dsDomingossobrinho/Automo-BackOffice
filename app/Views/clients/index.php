@@ -5132,8 +5132,8 @@ async function confirmDelete() {
         deleteBtn.disabled = true;
         deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Eliminando...';
 
-        // Chamar endpoint DELETE /users/{id} via proxy do backend PHP
-        const response = await fetch(`/users/${currentClientId}`, {
+        // Chamar endpoint DELETE via proxy do backend PHP (que fará a chamada para DELETE /users/{id})
+        const response = await fetch(`/clients/${currentClientId}`, {
             method: 'DELETE',
             credentials: 'include',
             headers: {
@@ -5157,16 +5157,33 @@ async function confirmDelete() {
                 window.location.reload();
             }, 1500);
         } else {
-            const error = await response.json();
-            showNotification(error.message || 'Erro ao eliminar cliente', 'error');
+            let errorMessage = 'Erro ao eliminar cliente';
+            try {
+                const error = await response.json();
+                errorMessage = error.message || errorMessage;
+            } catch (e) {
+                // Resposta não é JSON, usar mensagem padrão
+                console.warn('Resposta não é JSON válido');
+            }
+
+            showAlert(errorMessage, 'danger');
 
             // Restaurar botão
-            deleteBtn.disabled = false;
-            deleteBtn.innerHTML = originalText;
+            if (deleteBtn) {
+                deleteBtn.disabled = false;
+                deleteBtn.innerHTML = originalText;
+            }
         }
     } catch (error) {
         console.error('Erro ao eliminar cliente:', error);
-        showNotification('Erro ao eliminar cliente', 'error');
+        showAlert('Erro ao eliminar cliente. Tente novamente.', 'danger');
+
+        // Garantir que o botão seja restaurado mesmo em caso de erro
+        const deleteBtn = document.querySelector('.btn-modern-delete');
+        if (deleteBtn) {
+            deleteBtn.disabled = false;
+            deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i> Sim, Eliminar';
+        }
 
         // Restaurar botão
         const deleteBtn = document.querySelector('.btn-danger');
