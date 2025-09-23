@@ -1422,6 +1422,248 @@
     word-break: break-word;
 }
 
+/* ================================
+   MODAL DE ELIMINAÇÃO MODERNO
+   ================================ */
+
+.modern-delete {
+    max-width: 520px;
+}
+
+.modern-danger-header {
+    background: linear-gradient(135deg, #fee2e2, #fecaca);
+    border-bottom: 1px solid #fca5a5;
+}
+
+.modern-delete-icon {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    animation: dangerPulse 2s ease-in-out infinite;
+}
+
+@keyframes dangerPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.modern-delete-body {
+    padding: 2rem;
+    text-align: center;
+}
+
+.delete-warning-modern {
+    margin-bottom: 2rem;
+}
+
+.warning-icon-large {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.warning-pulse {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #fed7d7, #feb2b2);
+    border: 4px solid #ef4444;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: #dc2626;
+    animation: warningPulse 2s ease-in-out infinite;
+    position: relative;
+}
+
+@keyframes warningPulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 20px 10px rgba(239, 68, 68, 0.2);
+    }
+}
+
+.delete-question {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 2rem 0;
+    line-height: 1.4;
+}
+
+.client-preview-card {
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    border: 2px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-align: left;
+}
+
+.client-avatar-wrapper {
+    flex-shrink: 0;
+}
+
+.client-avatar-modern {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #3b82f6, #1e40af);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: white;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.client-avatar-modern img {
+    width: 100%;
+    height: 100%;
+    border-radius: 16px;
+    object-fit: cover;
+}
+
+.client-details-modern h5 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 0.25rem 0;
+}
+
+.client-details-modern p {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0 0 0.75rem 0;
+}
+
+.client-meta {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.meta-item {
+    background: rgba(59, 130, 246, 0.1);
+    color: #1e40af;
+    padding: 0.25rem 0.5rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.consequences-warning {
+    background: linear-gradient(135deg, #fffbeb, #fef3c7);
+    border: 1px solid #fbbf24;
+    border-radius: 12px;
+    padding: 1rem;
+    text-align: left;
+}
+
+.consequences-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: #92400e;
+    margin-bottom: 0.75rem;
+    font-size: 0.9375rem;
+}
+
+.consequences-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.consequences-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0;
+    font-size: 0.875rem;
+    color: #78350f;
+}
+
+.consequences-list li i {
+    color: #dc2626;
+    font-size: 0.75rem;
+    width: 16px;
+}
+
+.modern-delete-footer {
+    background: #f9fafb;
+    border-top: 1px solid #e5e7eb;
+}
+
+.modern-danger-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.btn-modern-cancel {
+    background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+    color: #374151;
+    border: 1px solid #d1d5db;
+    border-radius: 12px;
+    padding: 0.875rem 1.5rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+    justify-content: center;
+}
+
+.btn-modern-cancel:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    background: linear-gradient(135deg, #e5e7eb, #d1d5db);
+}
+
+.btn-modern-delete {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 0.875rem 1.5rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.btn-modern-delete:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+}
+
+.btn-modern-delete:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
 /* Responsividade para o grid */
 @media (max-width: 768px) {
     .modern-info-grid {
@@ -1435,6 +1677,19 @@
 
     .info-card-header {
         padding: 0.5rem 0.625rem;
+    }
+
+    .modern-delete-body {
+        padding: 1.5rem;
+    }
+
+    .client-preview-card {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .modern-danger-actions {
+        flex-direction: column;
     }
 }
 
@@ -3806,15 +4061,15 @@ input:checked + .toggle-slider:before {
     </div>
 
     <!-- 4. CARD ELIMINAR CLIENTE -->
-    <div id="deleteClientCard" class="admin-card delete-card">
-        <div class="card-header danger-header">
+    <div id="deleteClientCard" class="admin-card delete-card modern-delete">
+        <div class="card-header modern-danger-header">
             <div class="card-header-content">
-                <div class="card-icon delete-icon">
+                <div class="card-icon modern-delete-icon">
                     <i class="fas fa-exclamation-triangle"></i>
                 </div>
                 <div class="card-title-group">
-                    <h3 class="card-title">Confirmar Eliminação</h3>
-                    <p class="card-subtitle">Esta ação é irreversível</p>
+                    <h3 class="card-title">Eliminar Cliente</h3>
+                    <p class="card-subtitle">Confirme esta ação permanente</p>
                 </div>
             </div>
             <button class="card-close-btn" onclick="closeCard()">
@@ -3822,41 +4077,60 @@ input:checked + .toggle-slider:before {
             </button>
         </div>
 
-        <div class="card-body delete-body-compact">
-            <!-- Warning Icon -->
-            <div class="delete-warning-compact">
-                <div class="warning-icon-compact">
-                    <i class="fas fa-exclamation-triangle"></i>
+        <div class="card-body modern-delete-body">
+            <!-- Central Warning Design -->
+            <div class="delete-warning-modern">
+                <div class="warning-icon-large">
+                    <div class="warning-pulse">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
                 </div>
-                <h4 class="delete-title">Eliminar Cliente?</h4>
+                <h4 class="delete-question">Tem certeza que deseja eliminar este cliente?</h4>
             </div>
 
-            <!-- Client Info Compact -->
-            <div class="admin-info-compact">
-                <div class="admin-avatar-compact">
-                    <span id="deleteClientInitials">CL</span>
+            <!-- Client Profile Card -->
+            <div class="client-preview-card">
+                <div class="client-avatar-wrapper">
+                    <div class="client-avatar-modern" id="deleteClientAvatarModern">
+                        <img id="deleteClientImage" src="" alt="Avatar" style="display: none;">
+                        <span id="deleteClientInitials">CL</span>
+                    </div>
                 </div>
-                <div class="admin-text-compact">
+                <div class="client-details-modern">
                     <h5 id="deleteClientName">Nome do Cliente</h5>
-                    <span id="deleteClientEmail">email@exemplo.com</span>
+                    <p id="deleteClientEmail">email@exemplo.com</p>
+                    <div class="client-meta">
+                        <span class="meta-item">
+                            <i class="fas fa-user"></i>
+                            Cliente
+                        </span>
+                    </div>
                 </div>
             </div>
 
-            <!-- Warning Message -->
-            <div class="warning-message-compact">
-                <p><strong>Atenção:</strong> Esta ação é permanente e não pode ser desfeita.</p>
+            <!-- Consequences Warning -->
+            <div class="consequences-warning">
+                <div class="consequences-header">
+                    <i class="fas fa-info-circle"></i>
+                    <span>O que acontecerá:</span>
+                </div>
+                <ul class="consequences-list">
+                    <li><i class="fas fa-times-circle"></i>Todos os dados do cliente serão removidos</li>
+                    <li><i class="fas fa-history"></i>O histórico não poderá ser recuperado</li>
+                    <li><i class="fas fa-exclamation-triangle"></i>Esta ação é irreversível</li>
+                </ul>
             </div>
         </div>
 
-        <div class="card-footer delete-footer">
-            <div class="footer-actions danger-actions">
-                <button type="button" class="btn-safe-cancel" onclick="closeCard()">
-                    <i class="fas fa-arrow-left"></i>
-                    Cancelar
+        <div class="card-footer modern-delete-footer">
+            <div class="footer-actions modern-danger-actions">
+                <button type="button" class="btn-modern-cancel" onclick="closeCard()">
+                    <i class="fas fa-shield-alt"></i>
+                    Manter Cliente
                 </button>
-                <button type="button" class="btn-danger-confirm" onclick="confirmDelete()">
+                <button type="button" class="btn-modern-delete" onclick="confirmDelete()" id="deleteConfirmBtn">
                     <i class="fas fa-trash-alt"></i>
-                    Eliminar
+                    Sim, Eliminar
                 </button>
             </div>
         </div>
@@ -4243,9 +4517,6 @@ function populateViewCard(client) {
     try {
         const user = client.data || client;
 
-        // Debug: Log dos dados recebidos
-        console.log('Dados do cliente recebidos:', user);
-
         // Header principal com avatar e informações
         const imageElement = document.getElementById('viewClientImage');
         const initialsElement = document.getElementById('viewClientInitials');
@@ -4391,11 +4662,29 @@ function populateEditCard(client) {
 }
 
 function populateDeleteCard(client) {
+    // Preencher dados do cliente no modal moderno
     const nameEl = document.getElementById('deleteClientName');
     const emailEl = document.getElementById('deleteClientEmail');
+    const initialsEl = document.getElementById('deleteClientInitials');
+    const imageEl = document.getElementById('deleteClientImage');
 
     if (nameEl) nameEl.textContent = client.name || 'Cliente';
     if (emailEl) emailEl.textContent = client.email || 'Email não informado';
+
+    // Configurar avatar
+    if (initialsEl) {
+        if (client.image_url || client.img) {
+            if (imageEl) {
+                imageEl.src = client.image_url || client.img;
+                imageEl.style.display = 'block';
+            }
+            initialsEl.style.display = 'none';
+        } else {
+            initialsEl.style.display = 'flex';
+            initialsEl.textContent = getInitials(client.name || client.email);
+            if (imageEl) imageEl.style.display = 'none';
+        }
+    }
 }
 
 
@@ -4837,15 +5126,16 @@ async function confirmDelete() {
     }
 
     try {
-        // Desabilitar botão para evitar cliques múltiplos
-        const deleteBtn = document.querySelector('.btn-danger');
+        // Referência ao novo botão moderno
+        const deleteBtn = document.querySelector('.btn-modern-delete');
         const originalText = deleteBtn.innerHTML;
         deleteBtn.disabled = true;
         deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Eliminando...';
 
-        // TODO: Implementar chamada real à API
-        const response = await fetch(`<?= url('/clients') ?>/${currentClientId}`, {
+        // Chamar endpoint DELETE /users/{id} via proxy do backend PHP
+        const response = await fetch(`/users/${currentClientId}`, {
             method: 'DELETE',
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
                 'X-Requested-With': 'XMLHttpRequest',
@@ -4854,13 +5144,16 @@ async function confirmDelete() {
         });
 
         if (response.ok) {
+            // Animação de sucesso
             deleteBtn.innerHTML = '<i class="fas fa-check"></i> Eliminado!';
             deleteBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+            deleteBtn.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.3)';
 
+            // Feedback visual na UI
             setTimeout(() => {
-                showNotification('Cliente eliminado com sucesso!', 'success');
                 closeCard();
-                // Recarregar página ou atualizar dados
+                showAlert('Cliente eliminado com sucesso!', 'success');
+                // Recarregar página para atualizar lista
                 window.location.reload();
             }, 1500);
         } else {
