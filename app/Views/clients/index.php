@@ -4063,6 +4063,13 @@ function populateViewCard(client) {
         // Extrair dados do usuário
         const user = client.data || client;
 
+        // Debug: verificar se o modal está visível
+        const modal = document.getElementById('viewClientCard');
+        if (!modal) {
+            console.error('Modal viewClientCard não encontrado');
+            return;
+        }
+
         // Header principal com avatar e informações
         const avatarElement = document.getElementById('viewClientAvatar');
         const imageElement = document.getElementById('viewClientImage');
@@ -4085,8 +4092,17 @@ function populateViewCard(client) {
         const nameElement = document.getElementById('viewClientName');
         const emailHeaderElement = document.getElementById('viewClientEmailHeader');
 
-        if (nameElement) nameElement.textContent = user.name || 'Nome não informado';
-        if (emailHeaderElement) emailHeaderElement.textContent = user.email || 'Email não informado';
+        if (nameElement) {
+            nameElement.textContent = user.name || 'Nome não informado';
+        } else {
+            console.warn('Elemento viewClientName não encontrado');
+        }
+
+        if (emailHeaderElement) {
+            emailHeaderElement.textContent = user.email || 'Email não informado';
+        } else {
+            console.warn('Elemento viewClientEmailHeader não encontrado');
+        }
 
         // Status badge no header
         const isActive = (user.stateName || user.state) === 'ACTIVE' || user.is_active === true || user.is_active === 1;
@@ -5322,90 +5338,10 @@ function openEditCardFromView() {
 }
 
 // Função duplicada removida - usando implementação atualizada acima
-function populateViewCard(client) {
-    try {
-        // Header principal com avatar e informações
-        const avatarElement = document.getElementById('viewClientAvatar');
-        const imageElement = document.getElementById('viewClientImage');
-        const initialsElement = document.getElementById('viewClientInitials');
 
-        // Configurar avatar
-        if (imageElement && initialsElement) {
-            if (client.img) {
-                imageElement.src = client.img;
-                imageElement.style.display = 'block';
-                initialsElement.style.display = 'none';
-            } else {
-                imageElement.style.display = 'none';
-                initialsElement.style.display = 'flex';
-                initialsElement.textContent = getInitials(client.name || client.email);
-            }
-        }
+// Função getInitials duplicada removida - usando implementação acima
 
-        // Informações do header
-        document.getElementById('viewClientName').textContent = client.name || 'Nome não informado';
-        document.getElementById('viewClientEmailHeader').textContent = client.email || 'Email não informado';
-
-        // Status badge
-        const statusBadge = document.getElementById('viewStatusBadge');
-        const statusText = document.getElementById('viewStatusText');
-        if (statusBadge && statusText) {
-            statusText.textContent = client.state?.name || 'Desconhecido';
-            statusBadge.className = `status-badge ${getStatusClass(client.state?.name)}`;
-        }
-
-        // Account type badge
-        const accountTypeBadge = document.getElementById('viewAccountTypeBadge');
-        const accountTypeText = document.getElementById('viewAccountTypeText');
-        if (accountTypeBadge && accountTypeText) {
-            accountTypeText.textContent = client.accountType?.name || 'Desconhecido';
-        }
-
-        // Informações detalhadas
-        document.getElementById('viewFullName').textContent = client.name || '-';
-        document.getElementById('viewEmail').textContent = client.email || '-';
-        document.getElementById('viewContact').textContent = client.contact || '-';
-        document.getElementById('viewAccountType').textContent = client.accountType?.name || '-';
-        document.getElementById('viewState').textContent = client.state?.name || '-';
-        document.getElementById('viewCreatedAt').textContent = client.createdAt ?
-            new Date(client.createdAt).toLocaleDateString('pt-PT') : '-';
-
-    } catch (error) {
-        console.error('Erro ao popular card de visualização:', error);
-    }
-}
-
-// Função para obter iniciais do nome
-function getInitials(name) {
-    if (!name) return 'CL';
-    return name.split(' ')
-        .map(n => n[0])
-        .join('')
-        .substring(0, 2)
-        .toUpperCase();
-}
-
-// Função para obter classe CSS do status
-function getStatusClass(status) {
-    if (!status) return 'status-unknown';
-
-    switch (status.toLowerCase()) {
-        case 'active':
-        case 'ativo':
-            return 'status-active';
-        case 'inactive':
-        case 'inativo':
-            return 'status-inactive';
-        case 'pending':
-        case 'pendente':
-            return 'status-pending';
-        case 'eliminated':
-        case 'eliminado':
-            return 'status-eliminated';
-        default:
-            return 'status-unknown';
-    }
-}
+// Função removida - não é mais usada na implementação atual
 
 // Função para carregar dados no card de edição
 async function editClient() {
