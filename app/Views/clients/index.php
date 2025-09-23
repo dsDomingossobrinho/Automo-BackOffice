@@ -1279,51 +1279,76 @@
    CSS DO MODAL DE VISUALIZAÇÃO
    ================================ */
 
-/* Grid moderno de informações */
+/* Header compacto */
+.modern-profile-header {
+    margin-bottom: 1rem;
+}
+
+.profile-banner {
+    padding: 1rem 0 0.5rem 0;
+}
+
+.profile-main-info {
+    margin-left: 1rem;
+}
+
+.profile-name {
+    margin-bottom: 0.25rem;
+    font-size: 1.125rem;
+    line-height: 1.3;
+}
+
+.profile-email {
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.profile-badges {
+    gap: 0.5rem;
+}
+
+/* Grid moderno de informações - COMPACTO */
 .modern-info-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-    margin-bottom: 0.5rem;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 0;
 }
 
 .info-card {
     background: white;
     border: 1px solid #e2e8f0;
-    border-radius: 16px;
+    border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    transition: all 0.2s ease;
 }
 
 .info-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-}
-
-.info-card.activity-card {
-    grid-column: 1 / -1;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
 
 .info-card-header {
     background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-    padding: 0.75rem 1rem;
+    padding: 0.5rem 0.75rem;
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.5rem;
     border-bottom: 1px solid #e2e8f0;
 }
 
 .info-card-icon {
-    width: 32px;
-    height: 32px;
-    border-radius: 10px;
+    width: 24px;
+    height: 24px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     color: white;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
 }
 
 .info-card-icon.personal {
@@ -1339,18 +1364,19 @@
 }
 
 .info-card-title {
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     font-weight: 600;
     color: #1f2937;
     margin: 0;
+    line-height: 1.2;
 }
 
 .info-card-content {
-    padding: 1rem;
+    padding: 0.75rem;
 }
 
 .info-row {
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.5rem;
 }
 
 .info-row:last-child {
@@ -1360,14 +1386,14 @@
 .info-item-modern {
     display: flex;
     align-items: flex-start;
-    gap: 0.75rem;
+    gap: 0.5rem;
 }
 
 .info-icon {
-    width: 20px;
-    height: 20px;
+    width: 16px;
+    height: 16px;
     color: #6b7280;
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     margin-top: 0.125rem;
     flex-shrink: 0;
 }
@@ -1379,19 +1405,20 @@
 
 .info-label-modern {
     display: block;
-    font-size: 0.75rem;
+    font-size: 0.6875rem;
     font-weight: 500;
     color: #6b7280;
     text-transform: uppercase;
     letter-spacing: 0.025em;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.125rem;
+    line-height: 1.2;
 }
 
 .info-value-modern {
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
     font-weight: 500;
     color: #1f2937;
-    line-height: 1.4;
+    line-height: 1.3;
     word-break: break-word;
 }
 
@@ -1399,7 +1426,30 @@
 @media (max-width: 768px) {
     .modern-info-grid {
         grid-template-columns: 1fr;
-        gap: 1rem;
+        gap: 0.75rem;
+    }
+
+    .info-card-content {
+        padding: 0.625rem;
+    }
+
+    .info-card-header {
+        padding: 0.5rem 0.625rem;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .modern-info-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 0.5rem;
+    }
+
+    .info-card-title {
+        font-size: 0.75rem;
+    }
+
+    .info-value-modern {
+        font-size: 0.8125rem;
     }
 }
 
