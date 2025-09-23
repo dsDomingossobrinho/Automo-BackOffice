@@ -4434,12 +4434,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Main modal functions
 function openCreateModal() {
+    console.log('openCreateModal called');
     showModal('createClientCard');
 }
 
 function showModal(modalId) {
+    console.log('showModal called with ID:', modalId);
+
     // Hide all modals first
     const allModals = document.querySelectorAll('.admin-card');
+    console.log('Found', allModals.length, 'admin-card elements');
     allModals.forEach(modal => {
         modal.classList.remove('active');
     });
@@ -4448,12 +4452,18 @@ function showModal(modalId) {
     const overlay = document.getElementById('cardOverlay');
     if (overlay) {
         overlay.classList.add('active');
+        console.log('Overlay activated');
+    } else {
+        console.error('Overlay not found');
     }
 
     // Show target modal
     const targetModal = document.getElementById(modalId);
     if (targetModal) {
         targetModal.classList.add('active');
+        console.log('Modal activated:', modalId);
+    } else {
+        console.error('Modal not found:', modalId);
     }
 }
 
@@ -4474,6 +4484,7 @@ function closeCard() {
 
 // Client CRUD operations
 async function openViewCard(id) {
+    console.log('openViewCard called with ID:', id);
     if (!id) return;
     currentClientId = id;
 
@@ -5184,11 +5195,6 @@ async function confirmDelete() {
             deleteBtn.disabled = false;
             deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i> Sim, Eliminar';
         }
-
-        // Restaurar botão
-        const deleteBtn = document.querySelector('.btn-danger');
-        deleteBtn.disabled = false;
-        deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i> Confirmar Eliminação';
     }
 }
 
