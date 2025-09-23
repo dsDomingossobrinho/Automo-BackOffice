@@ -92,11 +92,18 @@ $router->post('/api/auth/login', 'Api\\AuthController@login');
 $router->post('/api/auth/verify-otp', 'Api\\AuthController@verifyOtp');
 $router->get('/api/auth/resend-otp', 'Api\\AuthController@resendOtp');
 // Removed: $router->post('/api/auth/forgot-password', 'Api\\AuthController@forgotPassword'); - Now handled by /forgot-password
-$router->get('/api/clients/search', 'Api\\ClientController@search');
+// $router->get('/api/clients/search', 'Api\\ClientController@search'); // Temporariamente desabilitado
 $router->get('/api/messages/stats', 'Api\\MessageController@stats');
 $router->get('/api/finances/chart', 'Api\\FinanceController@chartData');
 
 // API routes for searchable selects
-$router->get('/api/organization-types/search', 'Api\\DataController@organizationTypes');
-$router->get('/api/countries/search', 'Api\\DataController@countries');
-$router->get('/api/provinces/search', 'Api\\DataController@provinces');
+$router->get('/api/data/organization-types', 'Api\\DataController@organizationTypes');
+$router->get('/api/data/countries', 'Api\\DataController@countries');
+$router->get('/api/data/provinces', 'Api\\DataController@provinces');
+
+// API routes for users (clients) - TEMPORÁRIO: usar método show existente
+$router->get('/clients/{id}/api', 'ClientController@apiShowUser');
+$router->put('/clients/{id}/api', 'ClientController@apiUpdateUser');
+
+// Test route
+$router->get('/test-route', 'ClientController@testRoute');

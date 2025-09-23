@@ -27,15 +27,12 @@ class AutomoApp {
                 mainContent.classList.toggle('expanded');
                 
                 // Store sidebar state
-                localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+                this.storeSidebarState(sidebar);
             });
         }
 
         // Restore sidebar state
-        if (localStorage.getItem('sidebarCollapsed') === 'true') {
-            sidebar?.classList.add('collapsed');
-            mainContent?.classList.add('expanded');
-        }
+        this.restoreSidebarState(sidebar, mainContent);
 
         // Mobile sidebar toggle
         const mobileSidebarToggle = document.querySelector('.mobile-sidebar-toggle');
@@ -453,6 +450,41 @@ class AutomoApp {
             clearTimeout(timeout);
             timeout = setTimeout(later, wait);
         };
+    }
+
+    // Storage utilities with error handling
+    storageAvailable() {
+        try {
+            const test = '__storage_test__';
+            localStorage.setItem(test, test);
+            localStorage.removeItem(test);
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    storeSidebarState(sidebar) {
+        if (!this.storageAvailable()) return;
+
+        try {
+            localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+        } catch (e) {
+            console.warn('Failed to store sidebar state:', e.message);
+        }
+    }
+
+    restoreSidebarState(sidebar, mainContent) {
+        if (!this.storageAvailable()) return;
+
+        try {
+            if (localStorage.getItem('sidebarCollapsed') === 'true') {
+                sidebar?.classList.add('collapsed');
+                mainContent?.classList.add('expanded');
+            }
+        } catch (e) {
+            console.warn('Failed to restore sidebar state:', e.message);
+        }
     }
 
     initTooltips() {

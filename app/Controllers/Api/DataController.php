@@ -141,4 +141,129 @@ class DataController extends Controller
             exit;
         }
     }
+
+    public function getUser()
+    {
+        header('Content-Type: application/json');
+
+        // Obter ID da URL
+        $uri = $_SERVER['REQUEST_URI'];
+        preg_match('/\/api\/data\/users\/(\d+)/', $uri, $matches);
+        $id = $matches[1] ?? null;
+
+        if (!$id) {
+            http_response_code(400);
+            echo json_encode(['error' => 'ID do usuário é obrigatório']);
+            exit;
+        }
+
+        error_log("=== DataController::getUser CALLED with ID: {$id} ===");
+
+        try {
+            error_log("Making API request to /users/{$id}");
+            $userData = $this->apiClient->authenticatedRequest('GET', "/users/{$id}");
+            error_log("API response: " . json_encode($userData));
+
+            if (!$userData) {
+                error_log("No user data returned from API");
+                http_response_code(404);
+                echo json_encode(['error' => 'Usuário não encontrado']);
+                exit;
+            }
+
+            echo json_encode($userData);
+            exit;
+
+        } catch (\Exception $e) {
+            error_log("Exception in getUser: " . $e->getMessage());
+            http_response_code(500);
+            echo json_encode([
+                'error' => 'Erro ao buscar usuário',
+                'message' => $e->getMessage()
+            ]);
+            exit;
+        }
+    }
+
+    public function updateUser()
+    {
+        header('Content-Type: application/json');
+
+        // Obter ID da URL
+        $uri = $_SERVER['REQUEST_URI'];
+        preg_match('/\/api\/data\/users\/(\d+)/', $uri, $matches);
+        $id = $matches[1] ?? null;
+
+        if (!$id) {
+            http_response_code(400);
+            echo json_encode(['error' => 'ID do usuário é obrigatório']);
+            exit;
+        }
+
+        error_log("=== DataController::updateUser CALLED with ID: {$id} ===");
+
+        try {
+            $input = file_get_contents('php://input');
+            $data = json_decode($input, true);
+
+            if (!$data) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Dados inválidos']);
+                exit;
+            }
+
+            // Construir payload baseado na documentação
+            $payload = [
+                'name' => $data['name'],
+                'accountTypeId' => (int)($data['accountTypeId'] ?? 1),
+                'stateId' => (int)($data['stateId'] ?? 1)
+            ];
+
+            // Adicionar campos opcionais apenas se não estiverem vazios
+            if (!empty($data['contacto'])) {
+                $payload['contacto'] = $data['contacto'];
+            }
+
+            if (!empty($data['email'])) {
+                $payload['email'] = $data['email'];
+            }
+
+            if (!empty($data['img'])) {
+                $payload['img'] = $data['img'];
+            }
+
+            if (!empty($data['organizationTypeId'])) {
+                $payload['organizationTypeId'] = (int)$data['organizationTypeId'];
+            }
+
+            if (!empty($data['countryId'])) {
+                $payload['countryId'] = (int)$data['countryId'];
+            }
+
+            if (!empty($data['provinceId'])) {
+                $payload['provinceId'] = (int)$data['provinceId'];
+            }
+
+            error_log("Payload: " . json_encode($payload));
+
+            $response = $this->apiClient->authenticatedRequest('PUT', "/users/{$id}", $payload);
+
+            if ($response) {
+                echo json_encode($response);
+            } else {
+                http_response_code(500);
+                echo json_encode(['error' => 'Erro ao atualizar usuário']);
+            }
+            exit;
+
+        } catch (\Exception $e) {
+            error_log("Exception in updateUser: " . $e->getMessage());
+            http_response_code(500);
+            echo json_encode([
+                'error' => 'Erro ao atualizar usuário',
+                'message' => $e->getMessage()
+            ]);
+            exit;
+        }
+    }
 }

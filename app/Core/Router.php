@@ -62,7 +62,7 @@ class Router
         }
         
         $uri = $this->getCurrentUri();
-        
+
         // Debug logging (reduced verbosity)
         if (defined('DEBUG_MODE') && DEBUG_MODE && !$this->findRoute($method, $uri)) {
             error_log("Router Debug - 404 for: $method $uri");
