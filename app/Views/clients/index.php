@@ -1270,7 +1270,9 @@
 }
 
 .admin-card.active {
-    display: block;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 
 @keyframes slideInScale {
@@ -1304,7 +1306,9 @@
 }
 
 .admin-card.active {
-    display: block;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 
 @keyframes slideInScale {
@@ -3982,8 +3986,11 @@ function openCreateModal() {
 }
 
 function showModal(modalId) {
+    console.log('showModal called with ID:', modalId);
+
     // Hide all modals first
     const allModals = document.querySelectorAll('.admin-card');
+    console.log('Found', allModals.length, 'admin-card elements');
     allModals.forEach(modal => {
         modal.classList.remove('active');
     });
@@ -3992,12 +3999,19 @@ function showModal(modalId) {
     const overlay = document.getElementById('cardOverlay');
     if (overlay) {
         overlay.classList.add('active');
+        console.log('Overlay activated');
+    } else {
+        console.error('Overlay not found');
     }
 
     // Show target modal
     const targetModal = document.getElementById(modalId);
     if (targetModal) {
         targetModal.classList.add('active');
+        console.log('Modal activated, classes:', targetModal.className);
+        console.log('Modal style display:', window.getComputedStyle(targetModal).display);
+    } else {
+        console.error('Target modal not found:', modalId);
     }
 }
 
@@ -4022,7 +4036,9 @@ async function openViewCard(id) {
     currentClientId = id;
 
     try {
+        console.log('Opening view modal for client:', id);
         showModal('viewClientCard');
+        console.log('Modal should be visible now');
 
         const response = await fetch(`/clients/${id}`, {
             method: 'GET',
