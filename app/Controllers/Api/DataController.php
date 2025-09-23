@@ -9,14 +9,12 @@ class DataController extends Controller
     public function organizationTypes()
     {
         header('Content-Type: application/json');
-        error_log("=== DataController::organizationTypes CALLED ===");
 
         try {
             $search = $_GET['search'] ?? '';
             $page = (int)($_GET['page'] ?? 0);
             $size = (int)($_GET['size'] ?? 50);
 
-            error_log("Params: search='$search', page=$page, size=$size");
 
             $endpoint = "/organization-types/paginated";
             $params = [
@@ -26,18 +24,13 @@ class DataController extends Controller
             ];
 
             $queryString = http_build_query($params);
-            error_log("API endpoint: $endpoint ? $queryString");
 
             $response = $this->apiClient->authenticatedRequest('GET', $endpoint . '?' . $queryString);
-            error_log("API response: " . json_encode($response));
 
             if ($response && isset($response['data']['content'])) {
-                error_log("SUCCESS: Returning " . count($response['data']['content']) . " items");
                 echo json_encode($response['data']);
                 exit;
             } else {
-                error_log("ERROR: No response or no content field");
-                error_log("Response structure: " . var_export($response, true));
                 echo json_encode([
                     'content' => [],
                     'totalElements' => 0
@@ -46,8 +39,6 @@ class DataController extends Controller
             }
 
         } catch (\Exception $e) {
-            error_log("EXCEPTION in organizationTypes: " . $e->getMessage());
-            error_log("Exception trace: " . $e->getTraceAsString());
             http_response_code(500);
             echo json_encode([
                 'error' => true,
@@ -157,15 +148,11 @@ class DataController extends Controller
             exit;
         }
 
-        error_log("=== DataController::getUser CALLED with ID: {$id} ===");
 
         try {
-            error_log("Making API request to /users/{$id}");
             $userData = $this->apiClient->authenticatedRequest('GET', "/users/{$id}");
-            error_log("API response: " . json_encode($userData));
 
             if (!$userData) {
-                error_log("No user data returned from API");
                 http_response_code(404);
                 echo json_encode(['error' => 'Usuário não encontrado']);
                 exit;
@@ -175,7 +162,6 @@ class DataController extends Controller
             exit;
 
         } catch (\Exception $e) {
-            error_log("Exception in getUser: " . $e->getMessage());
             http_response_code(500);
             echo json_encode([
                 'error' => 'Erro ao buscar usuário',
@@ -200,7 +186,6 @@ class DataController extends Controller
             exit;
         }
 
-        error_log("=== DataController::updateUser CALLED with ID: {$id} ===");
 
         try {
             $input = file_get_contents('php://input');
@@ -244,7 +229,6 @@ class DataController extends Controller
                 $payload['provinceId'] = (int)$data['provinceId'];
             }
 
-            error_log("Payload: " . json_encode($payload));
 
             $response = $this->apiClient->authenticatedRequest('PUT', "/users/{$id}", $payload);
 
@@ -257,7 +241,6 @@ class DataController extends Controller
             exit;
 
         } catch (\Exception $e) {
-            error_log("Exception in updateUser: " . $e->getMessage());
             http_response_code(500);
             echo json_encode([
                 'error' => 'Erro ao atualizar usuário',

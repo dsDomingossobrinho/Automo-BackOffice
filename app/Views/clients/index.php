@@ -3649,7 +3649,6 @@ let clientsData = <?= json_encode($clients ?? []) ?>;
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Client page initialized');
 
     // Submissão do formulário de criação
     document.getElementById('createClientForm').addEventListener('submit', async function(e) {
@@ -3733,10 +3732,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Submissão do formulário de edição
     const editForm = document.getElementById('editClientForm');
     if (editForm) {
-        console.log('Edit form found, adding event listener');
         editForm.addEventListener('submit', async function(e) {
             e.preventDefault();
-            console.log('Edit form submitted - JavaScript intercepted!');
 
             // Chamar a função updateClient
             await updateClient();
@@ -3799,31 +3796,15 @@ class SearchableSelect {
     }
 
     async openDropdown() {
-        console.log('=== OPENING DROPDOWN ===');
-        console.log('1. Opening dropdown for endpoint:', this.endpoint);
-        console.log('2. Dropdown element:', this.dropdown);
-        console.log('3. Container element:', this.container);
 
         this.isOpen = true;
         this.input.readOnly = false;
         this.arrow.classList.add('open');
         this.dropdown.classList.add('open');
 
-        console.log('4. Dropdown classes after adding open:', this.dropdown.className);
-        console.log('5. Dropdown computed styles after open:', {
-            display: window.getComputedStyle(this.dropdown).display,
-            visibility: window.getComputedStyle(this.dropdown).visibility,
-            opacity: window.getComputedStyle(this.dropdown).opacity,
-            zIndex: window.getComputedStyle(this.dropdown).zIndex,
-            position: window.getComputedStyle(this.dropdown).position,
-            height: window.getComputedStyle(this.dropdown).height,
-            width: window.getComputedStyle(this.dropdown).width
-        });
 
         // Sempre carregar dados ao abrir, sem search (traz todos os dados)
-        console.log('6. Loading data...');
         await this.loadData('');
-        console.log('7. Data loaded, calling renderDropdown...');
         this.renderDropdown();
     }
 
@@ -3836,7 +3817,6 @@ class SearchableSelect {
 
     async loadData(search = '') {
         try {
-            console.log(`Loading data for ${this.endpoint} with search: "${search}"`);
 
             const response = await fetch(`/api/${this.endpoint}/search?search=${encodeURIComponent(search)}&page=0&size=30`, {
                 method: 'GET',
@@ -3848,13 +3828,10 @@ class SearchableSelect {
                 credentials: 'same-origin'
             });
 
-            console.log('Response status:', response.status);
 
             if (response.ok) {
                 const data = await response.json();
-                console.log('Received data:', data);
                 this.currentData = data.content || [];
-                console.log('Set currentData to:', this.currentData);
             } else {
                 console.error('Error loading data:', response.status);
                 this.currentData = [];
@@ -3876,39 +3853,22 @@ class SearchableSelect {
 
     renderDropdown() {
         try {
-            console.log('=== RENDERING DROPDOWN ===');
-            console.log('8. Rendering dropdown with data:', this.currentData);
-            console.log('9. Data length:', this.currentData.length);
 
             if (this.currentData.length === 0) {
-                console.log('10. No data, setting no results message');
                 this.dropdown.innerHTML = '<div class="dropdown-option no-results">Nenhum resultado encontrado</div>';
-                console.log('11. Dropdown innerHTML after no results:', this.dropdown.innerHTML);
-                console.log('12. Dropdown children count after no results:', this.dropdown.children.length);
                 return;
             }
 
-            console.log('13. Creating options HTML...');
             const options = this.currentData.map((item, index) => {
                 const displayValue = this.getDisplayValue(item);
-                console.log(`14.${index}. Creating option: id=${item.id}, displayValue="${displayValue}"`);
                 return `<div class="dropdown-option" data-id="${item.id}" data-value="${displayValue}">${displayValue}</div>`;
             }).join('');
 
-            console.log('15. Generated options HTML:', options);
-            console.log('16. Setting dropdown innerHTML...');
             this.dropdown.innerHTML = options;
 
-            console.log('17. Dropdown innerHTML AFTER setting:', this.dropdown.innerHTML);
-            console.log('18. Dropdown children count AFTER setting:', this.dropdown.children.length);
-            console.log('19. First child element:', this.dropdown.children[0]);
 
             // Verificar se dropdown está visível
             const rect = this.dropdown.getBoundingClientRect();
-            console.log('20. Dropdown getBoundingClientRect():', rect);
-            console.log('21. Dropdown offsetWidth:', this.dropdown.offsetWidth);
-            console.log('22. Dropdown offsetHeight:', this.dropdown.offsetHeight);
-            console.log('23. Dropdown scrollHeight:', this.dropdown.scrollHeight);
 
             // Verificar estilos finais
             const finalStyles = window.getComputedStyle(this.dropdown);
@@ -3927,9 +3887,7 @@ class SearchableSelect {
             });
 
             // Add click handlers to options
-            console.log('25. Adding click handlers...');
             this.dropdown.querySelectorAll('.dropdown-option').forEach((option, index) => {
-                console.log(`26.${index}. Adding click handler to option:`, option);
                 if (!option.classList.contains('no-results')) {
                     option.addEventListener('click', (e) => {
                         e.stopPropagation();
@@ -3937,12 +3895,8 @@ class SearchableSelect {
                     });
                 }
             });
-            console.log('27. Render dropdown completed successfully');
 
         } catch (error) {
-            console.error('=== ERROR IN RENDER DROPDOWN ===');
-            console.error('Error details:', error);
-            console.error('Error stack:', error.stack);
         }
     }
 
@@ -4182,7 +4136,6 @@ function editFromView() {
 
 // 3. EDITAR CLIENTE
 async function openEditCard(id) {
-    console.log('openEditCard called with ID:', id);
 
     if (!id) {
         console.error('ID não fornecido para openEditCard');
@@ -4192,11 +4145,9 @@ async function openEditCard(id) {
     currentClientId = id;
 
     try {
-        console.log('Abrindo modal de edição...');
         // Mostrar o modal primeiro com loading
         showModal('editClientCard');
 
-        console.log('Fazendo requisição para carregar dados do usuário...');
         // Buscar dados do usuário via API
         const response = await fetch(`/clients/${id}`, {
             method: 'GET',
@@ -4207,7 +4158,6 @@ async function openEditCard(id) {
             }
         });
 
-        console.log('Resposta da API recebida:', response.status, response.statusText);
 
         if (!response.ok) {
             const errorText = await response.text();
@@ -4216,60 +4166,47 @@ async function openEditCard(id) {
         }
 
         const userData = await response.json();
-        console.log('Dados do usuário carregados:', userData);
 
         // Popular o modal com os dados do usuário
-        console.log('Populando modal com dados...');
         await populateEditModal(userData);
-        console.log('Modal populado com sucesso');
 
     } catch (error) {
         console.error('Erro ao carregar dados do usuário:', error);
-        alert('Erro ao carregar dados do usuário. Tente novamente.');
         closeCard();
     }
 }
 
 // Função para popular o modal de edição com dados do usuário
 async function populateEditModal(userData) {
-    console.log('populateEditModal iniciado com dados:', userData);
 
     try {
         // Extrair os dados do usuário da resposta da API
         const user = userData.data || userData;
-        console.log('Dados do usuário extraídos:', user);
 
         // 1. Preencher campos básicos do formulário
-        console.log('Procurando formulário editClientForm...');
         const form = document.getElementById('editClientForm');
         if (!form) {
             console.error('Formulário editClientForm não encontrado');
             return;
         }
-        console.log('Formulário encontrado:', form);
 
         // Campo hidden com ID do usuário
-        console.log('Preenchendo ID do usuário...');
         const userIdField = document.getElementById('editClientId');
         if (userIdField) {
             userIdField.value = user.id;
-            console.log('ID preenchido:', user.id);
         } else {
             console.warn('Campo editClientId não encontrado');
         }
 
         // Campos de texto básicos
-        console.log('Preenchendo campos básicos...');
         const nameField = form.querySelector('[name="name"]');
         if (nameField) {
             nameField.value = user.name || '';
-            console.log('Nome preenchido:', user.name);
         }
 
         const emailField = form.querySelector('[name="email"]');
         if (emailField) {
             emailField.value = user.email || '';
-            console.log('Email preenchido:', user.email);
         }
 
         const contactField = form.querySelector('[name="contact"]');
@@ -4277,18 +4214,15 @@ async function populateEditModal(userData) {
             // Tentar diferentes nomes de campo de contato
             const contact = user.contacto || user.contact || user.phone || '';
             contactField.value = contact;
-            console.log('Contato preenchido:', contact);
             if (!contact) {
                 console.warn('Nenhum campo de contato encontrado na API. Campos disponíveis:', Object.keys(user));
             }
         }
 
         // 2. Preencher Hybrid Searchable Selects
-        console.log('Preenchendo campos de seleção...');
 
         // Tipo de Organização
         if (user.organizationTypeId) {
-            console.log('Preenchendo tipo de organização:', user.organizationTypeId);
             const orgTypeInput = document.querySelector('#editOrganizationTypeContainer .searchable-select-input');
             const orgTypeHidden = document.getElementById('editOrganizationTypeId');
 
@@ -4297,14 +4231,12 @@ async function populateEditModal(userData) {
                 if (user.organizationTypeName) {
                     orgTypeInput.value = user.organizationTypeName;
                     orgTypeHidden.value = user.organizationTypeId;
-                    console.log('Tipo de organização preenchido:', user.organizationTypeName);
                 } else {
                     // Buscar o nome do tipo de organização se não vier na resposta
                     const orgTypeName = await fetchOrganizationTypeName(user.organizationTypeId);
                     if (orgTypeName) {
                         orgTypeInput.value = orgTypeName;
                         orgTypeHidden.value = user.organizationTypeId;
-                        console.log('Tipo de organização buscado e preenchido:', orgTypeName);
                     }
                 }
             }
@@ -4312,7 +4244,6 @@ async function populateEditModal(userData) {
 
         // País
         if (user.countryId) {
-            console.log('Preenchendo país:', user.countryId);
             const countryInput = document.querySelector('#editCountryContainer .searchable-select-input');
             const countryHidden = document.getElementById('editCountryId');
 
@@ -4321,14 +4252,12 @@ async function populateEditModal(userData) {
                 if (user.countryName) {
                     countryInput.value = user.countryName;
                     countryHidden.value = user.countryId;
-                    console.log('País preenchido:', user.countryName);
                 } else {
                     // Buscar o nome do país se não vier na resposta
                     const countryName = await fetchCountryName(user.countryId);
                     if (countryName) {
                         countryInput.value = countryName;
                         countryHidden.value = user.countryId;
-                        console.log('País buscado e preenchido:', countryName);
                     }
                 }
             }
@@ -4336,7 +4265,6 @@ async function populateEditModal(userData) {
 
         // Província
         if (user.provinceId) {
-            console.log('Preenchendo província:', user.provinceId);
             const provinceInput = document.querySelector('#editProvinceContainer .searchable-select-input');
             const provinceHidden = document.getElementById('editProvinceId');
 
@@ -4345,14 +4273,12 @@ async function populateEditModal(userData) {
                 if (user.provinceName) {
                     provinceInput.value = user.provinceName;
                     provinceHidden.value = user.provinceId;
-                    console.log('Província preenchida:', user.provinceName);
                 } else {
                     // Buscar o nome da província se não vier na resposta
                     const provinceName = await fetchProvinceName(user.provinceId);
                     if (provinceName) {
                         provinceInput.value = provinceName;
                         provinceHidden.value = user.provinceId;
-                        console.log('Província buscada e preenchida:', provinceName);
                     }
                 }
             }
@@ -4360,7 +4286,6 @@ async function populateEditModal(userData) {
 
         // 3. Preencher campos de upload de imagem se existir
         if (user.img) {
-            console.log('Preenchendo imagem:', user.img);
             const imageUrlField = document.getElementById('editImageUrl');
             if (imageUrlField) {
                 imageUrlField.value = user.img;
@@ -4370,14 +4295,12 @@ async function populateEditModal(userData) {
         }
 
         // 4. Preencher campos de select tradicionais (Tipo de conta e Estado)
-        console.log('Preenchendo selects tradicionais...');
 
         // Tipo de conta - usar o campo authId ou account_type_id
         const accountTypeSelect = form.querySelector('[name="account_type_id"]');
         if (accountTypeSelect) {
             // A API não retorna account_type_id diretamente, mas todos os clientes são USER (ID 2)
             accountTypeSelect.value = 2; // USER account type
-            console.log('Tipo de conta preenchido: USER (2)');
         } else {
             console.warn('Campo account_type_id não encontrado');
         }
@@ -4386,7 +4309,6 @@ async function populateEditModal(userData) {
         const stateSelect = form.querySelector('[name="state_id"]');
         if (stateSelect && user.stateId) {
             stateSelect.value = user.stateId;
-            console.log('Estado preenchido:', user.stateId, '-', user.stateName);
         } else {
             console.warn('Campo state_id não encontrado ou stateId não disponível');
         }
@@ -4394,10 +4316,8 @@ async function populateEditModal(userData) {
         // 6. Adicionar event listener do formulário se ainda não existir
         const editForm = document.getElementById('editClientForm');
         if (editForm && !editForm.hasAttribute('data-listener-added')) {
-            console.log('Adding submit event listener to edit form');
             editForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
-                console.log('Edit form submitted - JavaScript intercepted!');
 
                 // Chamar a função updateClient
                 await updateClient();
@@ -4406,15 +4326,12 @@ async function populateEditModal(userData) {
         }
 
         // 7. IMPORTANTE: Inicializar SearchableSelect components DEPOIS de preencher todos os dados
-        console.log('Inicializando SearchableSelect components...');
         setTimeout(() => {
             initializeEditSearchableSelects();
-            console.log('SearchableSelect components inicializados');
         }, 100); // Pequeno delay para garantir que o DOM esteja atualizado
 
     } catch (error) {
         console.error('Erro ao popular modal de edição:', error);
-        alert('Erro ao carregar alguns dados. Verifique os campos.');
     }
 }
 
@@ -4484,66 +4401,51 @@ async function fetchProvinceName(id) {
 
 // Função para inicializar os SearchableSelect components do modal de edição
 function initializeEditSearchableSelects() {
-    console.log('initializeEditSearchableSelects iniciado');
 
     try {
 
     // Organizações
-    console.log('Procurando editOrganizationTypeContainer...');
     const editOrgContainer = document.getElementById('editOrganizationTypeContainer');
     if (editOrgContainer) {
-        console.log('Inicializando SearchableSelect para organização');
         // Limpar instância anterior se existir
         if (editOrgContainer._searchableSelectInstance) {
-            console.log('Removendo instância anterior de organização');
             editOrgContainer._searchableSelectInstance.destroy?.();
         }
         editOrgContainer._searchableSelectInstance = new SearchableSelect(editOrgContainer);
-        console.log('SearchableSelect organização inicializado');
     } else {
         console.warn('editOrganizationTypeContainer não encontrado');
     }
 
     // Países
-    console.log('Procurando editCountryContainer...');
     const editCountryContainer = document.getElementById('editCountryContainer');
     if (editCountryContainer) {
-        console.log('Inicializando SearchableSelect para país');
         // Limpar instância anterior se existir
         if (editCountryContainer._searchableSelectInstance) {
-            console.log('Removendo instância anterior de país');
             editCountryContainer._searchableSelectInstance.destroy?.();
         }
         editCountryContainer._searchableSelectInstance = new SearchableSelect(editCountryContainer);
-        console.log('SearchableSelect país inicializado');
     } else {
         console.warn('editCountryContainer não encontrado');
     }
 
     // Províncias
-    console.log('Procurando editProvinceContainer...');
     const editProvinceContainer = document.getElementById('editProvinceContainer');
     if (editProvinceContainer) {
-        console.log('Inicializando SearchableSelect para província');
         // Limpar instância anterior se existir
         if (editProvinceContainer._searchableSelectInstance) {
-            console.log('Removendo instância anterior de província');
             editProvinceContainer._searchableSelectInstance.destroy?.();
         }
         editProvinceContainer._searchableSelectInstance = new SearchableSelect(editProvinceContainer);
-        console.log('SearchableSelect província inicializado');
     } else {
         console.warn('editProvinceContainer não encontrado');
     }
 
-        console.log('initializeEditSearchableSelects concluído com sucesso');
     } catch (error) {
         console.error('Erro ao inicializar SearchableSelect components:', error);
     }
 }
 
 async function updateClient() {
-    console.log('updateClient called with currentClientId:', currentClientId);
 
     if (!currentClientId) {
         console.error('No currentClientId set');
@@ -4551,14 +4453,11 @@ async function updateClient() {
     }
 
     try {
-        console.log('Getting form data...');
         const form = document.getElementById('editClientForm');
         const formData = new FormData(form);
 
         // Log form data for debugging
-        console.log('Form data entries:');
         for (let [key, value] of formData.entries()) {
-            console.log(`  ${key}: ${value}`);
         }
 
         // Construir payload usando os nomes de campo que o PHP espera para validação
@@ -4568,7 +4467,6 @@ async function updateClient() {
             state_id: formData.get('state_id') || '1'
         };
 
-        console.log('Base payload:', payload);
 
         // Adicionar campos opcionais apenas se não estiverem vazios
         const contact = formData.get('contact');
@@ -4603,9 +4501,6 @@ async function updateClient() {
 
         // Usar endpoint PUT /clients/{id} conforme documentação
         const url = `/clients/${currentClientId}`;
-        console.log('Making PUT request to:', url);
-        console.log('currentClientId:', currentClientId);
-        console.log('Final payload:', JSON.stringify(payload, null, 2));
 
         const response = await fetch(url, {
             method: 'PUT',
@@ -4616,12 +4511,10 @@ async function updateClient() {
             body: JSON.stringify(payload)
         });
 
-        console.log('Response status:', response.status, response.statusText);
 
         if (response.ok) {
             const result = await response.json();
-            console.log('Update successful:', result);
-            alert('Cliente atualizado com sucesso!');
+            showAlert('Cliente atualizado com sucesso!', 'success');
             closeCard();
             // Recarregar página para mostrar dados atualizados
             window.location.reload();
@@ -4637,11 +4530,11 @@ async function updateClient() {
                 // Not JSON, use default message
             }
 
-            alert(errorMessage);
+            showAlert(errorMessage, 'danger');
         }
     } catch (error) {
         console.error('Erro ao atualizar cliente:', error);
-        alert('Erro ao atualizar cliente. Tente novamente.');
+        showAlert('Erro ao atualizar cliente. Tente novamente.', 'danger');
     }
 }
 
@@ -4665,7 +4558,7 @@ function openDeleteCard(id) {
 
 async function confirmDelete() {
     if (!currentClientId) {
-        alert('ID do cliente não encontrado');
+        showAlert('ID do cliente não encontrado', 'danger');
         return;
     }
 
@@ -5442,15 +5335,15 @@ async function editClient() {
         });
 
         if (response.ok) {
-            alert('Cliente atualizado com sucesso!');
+            showAlert('Cliente atualizado com sucesso!', 'success');
             closeCard();
             window.location.reload();
         } else {
-            alert('Erro ao atualizar cliente');
+            showAlert('Erro ao atualizar cliente', 'danger');
         }
     } catch (error) {
         console.error('Erro:', error);
-        alert('Erro ao atualizar cliente');
+        showAlert('Erro ao atualizar cliente', 'danger');
     }
 }
 
@@ -5467,15 +5360,15 @@ async function deleteClient() {
         });
 
         if (response.ok) {
-            alert('Cliente eliminado com sucesso!');
+            showAlert('Cliente eliminado com sucesso!', 'success');
             closeCard();
             window.location.reload();
         } else {
-            alert('Erro ao eliminar cliente');
+            showAlert('Erro ao eliminar cliente', 'danger');
         }
     } catch (error) {
         console.error('Erro:', error);
-        alert('Erro ao eliminar cliente');
+        showAlert('Erro ao eliminar cliente', 'danger');
     }
 }
 
