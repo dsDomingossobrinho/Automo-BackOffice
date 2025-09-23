@@ -3218,6 +3218,45 @@ input:checked + .toggle-slider:before {
                     </div>
                 </div>
 
+                <!-- Card Informações Empresariais -->
+                <div class="info-card">
+                    <div class="info-card-header">
+                        <div class="info-card-icon business">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <h5 class="info-card-title">Informações Empresariais</h5>
+                    </div>
+                    <div class="info-card-content">
+                        <div class="info-row">
+                            <div class="info-item-modern">
+                                <i class="fas fa-industry info-icon"></i>
+                                <div class="info-content">
+                                    <label class="info-label-modern">Tipo de Organização</label>
+                                    <div class="info-value-modern" id="viewOrganizationType">Não informado</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-item-modern">
+                                <i class="fas fa-globe-africa info-icon"></i>
+                                <div class="info-content">
+                                    <label class="info-label-modern">País</label>
+                                    <div class="info-value-modern" id="viewCountry">Não informado</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-item-modern">
+                                <i class="fas fa-map-marker-alt info-icon"></i>
+                                <div class="info-content">
+                                    <label class="info-label-modern">Província</label>
+                                    <div class="info-value-modern" id="viewProvince">Não informado</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Card Informações da Conta -->
                 <div class="info-card">
                     <div class="info-card-header">
@@ -3978,12 +4017,31 @@ function closeCard() {
 
 
 // Client CRUD operations
-function openViewCard(id) {
-    const client = clientsData.find(c => c.id == id);
-    if (client) {
-        currentClientId = id;
-        populateViewCard(client);
+async function openViewCard(id) {
+    if (!id) return;
+    currentClientId = id;
+
+    try {
         showModal('viewClientCard');
+
+        const response = await fetch(`/clients/${id}`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const clientData = await response.json();
+        populateViewCard(clientData);
+    } catch (error) {
+        showAlert('Erro ao carregar dados do cliente. Tente novamente.', 'danger');
+        closeCard();
     }
 }
 
@@ -4001,29 +4059,126 @@ function openDeleteCard(id) {
 
 // Populate modal functions
 function populateViewCard(client) {
-    const elements = {
-        photo: document.getElementById('viewClientPhoto'),
-        name: document.getElementById('viewClientName'),
-        email: document.getElementById('viewClientEmail'),
-        status: document.getElementById('viewClientStatus'),
-        contact: document.getElementById('viewClientContact'),
-        accountType: document.getElementById('viewClientAccountType'),
-        createdAt: document.getElementById('viewClientCreatedAt'),
-        notes: document.getElementById('viewClientNotes')
-    };
+    try {
+        // Extrair dados do usuário
+        const user = client.data || client;
 
-    if (elements.photo) elements.photo.src = client.img || '/assets/images/default-avatar.png';
-    if (elements.name) elements.name.textContent = client.name || 'Nome não informado';
-    if (elements.email) elements.email.textContent = client.email || 'Email não informado';
-    if (elements.contact) elements.contact.textContent = client.contact || 'Não informado';
-    if (elements.accountType) elements.accountType.textContent = (client.account_type_id || 1) == 2 ? 'Corporativo' : 'Individual';
-    if (elements.createdAt) elements.createdAt.textContent = new Date().toLocaleDateString('pt-PT');
-    if (elements.notes) elements.notes.textContent = client.notes || 'Nenhuma observação registrada.';
+        // Header principal com avatar e informações
+        const avatarElement = document.getElementById('viewClientAvatar');
+        const imageElement = document.getElementById('viewClientImage');
+        const initialsElement = document.getElementById('viewClientInitials');
 
-    if (elements.status) {
-        const isActive = (client.state || 'active') === 'active';
-        elements.status.className = `modern-status-badge ${isActive ? 'active' : 'inactive'}`;
-        elements.status.innerHTML = `<div class="status-indicator"></div>${isActive ? 'Ativo' : 'Inativo'}`;
+        // Configurar avatar
+        if (imageElement && initialsElement) {
+            if (user.img) {
+                imageElement.src = user.img;
+                imageElement.style.display = 'block';
+                initialsElement.style.display = 'none';
+            } else {
+                imageElement.style.display = 'none';
+                initialsElement.style.display = 'flex';
+                initialsElement.textContent = getInitials(user.name || user.email);
+            }
+        }
+
+        // Nome e email no header
+        const nameElement = document.getElementById('viewClientName');
+        const emailHeaderElement = document.getElementById('viewClientEmailHeader');
+
+        if (nameElement) nameElement.textContent = user.name || 'Nome não informado';
+        if (emailHeaderElement) emailHeaderElement.textContent = user.email || 'Email não informado';
+
+        // Status badge no header
+        const isActive = (user.stateName || user.state) === 'ACTIVE' || user.is_active === true || user.is_active === 1;
+        const statusBadge = document.getElementById('viewStatusBadge');
+        const statusText = document.getElementById('viewStatusText');
+        const avatarStatus = document.getElementById('viewAvatarStatus');
+
+        if (statusBadge && statusText && avatarStatus) {
+            if (isActive) {
+                statusBadge.className = 'status-badge active';
+                statusText.textContent = 'Ativo';
+                avatarStatus.className = 'avatar-status-indicator active';
+            } else {
+                statusBadge.className = 'status-badge inactive';
+                statusText.textContent = 'Inativo';
+                avatarStatus.className = 'avatar-status-indicator inactive';
+            }
+        }
+
+        // Account type badge no header
+        const accountTypeBadge = document.getElementById('viewAccountTypeBadge');
+        if (accountTypeBadge) {
+            accountTypeBadge.innerHTML = `
+                <i class="fas fa-user"></i>
+                <span>Cliente</span>
+            `;
+        }
+
+        // Informações pessoais nos cards
+        const fullNameElement = document.getElementById('viewFullName');
+        const emailElement = document.getElementById('viewEmail');
+        const contactElement = document.getElementById('viewContact');
+
+        if (fullNameElement) fullNameElement.textContent = user.name || 'Não informado';
+        if (emailElement) emailElement.textContent = user.email || 'Não informado';
+        if (contactElement) contactElement.textContent = user.contacto || 'Não informado';
+
+        // Informações empresariais
+        const organizationTypeElement = document.getElementById('viewOrganizationType');
+        const countryElement = document.getElementById('viewCountry');
+        const provinceElement = document.getElementById('viewProvince');
+
+        if (organizationTypeElement) organizationTypeElement.textContent = user.organizationTypeName || 'Não informado';
+        if (countryElement) countryElement.textContent = user.countryName || 'Não informado';
+        if (provinceElement) provinceElement.textContent = user.provinceName || 'Não informado';
+
+        // Informações da conta
+        const clientIdElement = document.getElementById('viewClientId');
+        const accountTypeDetailElement = document.getElementById('viewAccountTypeDetail');
+        const stateDetailElement = document.getElementById('viewStateDetail');
+
+        if (clientIdElement) clientIdElement.textContent = user.id || 'N/A';
+        if (accountTypeDetailElement) accountTypeDetailElement.textContent = user.accountTypeName || 'Cliente';
+        if (stateDetailElement) stateDetailElement.textContent = user.stateName || 'Não informado';
+
+        // Atividade e histórico
+        const createdAtElement = document.getElementById('viewCreatedAt');
+        const updatedAtElement = document.getElementById('viewUpdatedAt');
+        const lastLoginElement = document.getElementById('viewLastLogin');
+
+        if (createdAtElement) createdAtElement.textContent = formatDate(user.createdAt) || 'Não disponível';
+        if (updatedAtElement) updatedAtElement.textContent = formatDate(user.updatedAt) || 'Não disponível';
+        if (lastLoginElement) lastLoginElement.textContent = user.last_login ? formatDate(user.last_login) : 'Nunca acessou';
+
+    } catch (error) {
+        showAlert('Erro ao popular dados de visualização', 'danger');
+    }
+}
+
+// Utility functions for view card
+function getInitials(name) {
+    if (!name) return 'CL';
+    const words = name.split(' ').filter(word => word.length > 0);
+    if (words.length === 1) {
+        return words[0].substring(0, 2).toUpperCase();
+    }
+    return (words[0][0] + words[words.length - 1][0]).toUpperCase();
+}
+
+function formatDate(dateString) {
+    if (!dateString) return null;
+    try {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('pt-PT', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    } catch (error) {
+        return 'Data inválida';
     }
 }
 
@@ -4061,71 +4216,7 @@ function populateDeleteCard(client) {
 }
 
 
-// 2. VER CLIENTE
-function openViewCard(id) {
-    const client = clientsData.find(c => c.id == id);
-    if (client) {
-        currentClientId = id;
-
-        // Usar a nova função para popular o card moderno
-        populateViewCard(client);
-
-        // Manter compatibilidade - content não é mais usado
-        const content = document.getElementById('viewClientContent');
-        if (content) content.innerHTML = `
-            <div class="info-section">
-                <h4><i class="fas fa-user"></i> Informações Pessoais</h4>
-                <div class="info-grid">
-                    <div class="info-item">
-                        <span class="info-label">Nome Completo</span>
-                        <span class="info-value">${client.name || 'Não informado'}</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Email</span>
-                        <span class="info-value">${client.email || 'Não informado'}</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Contacto</span>
-                        <span class="info-value">${client.contact || 'Não informado'}</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Tipo de Conta</span>
-                        <span class="info-value">${(client.account_type_id || 1) == 2 ? 'Corporativo' : 'Individual'}</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="info-section">
-                <h4><i class="fas fa-cog"></i> Status da Conta</h4>
-                <div class="info-grid">
-                    <div class="info-item">
-                        <span class="info-label">Status Atual</span>
-                        <span class="info-value">
-                            <span class="client-status-badge ${(client.state || 'active') === 'active' ? 'active' : 'inactive'}">
-                                <div class="status-indicator"></div>
-                                ${(client.state || 'active') === 'active' ? 'Ativo' : 'Inativo'}
-                            </span>
-                        </span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Data de Criação</span>
-                        <span class="info-value">${client.created_at ? new Date(client.created_at).toLocaleDateString('pt-PT') : 'Não informado'}</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Último Login</span>
-                        <span class="info-value">${client.last_login ? new Date(client.last_login).toLocaleDateString('pt-PT') : 'Nunca logou'}</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">ID do Cliente</span>
-                        <span class="info-value">#${client.id}</span>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        showModal('viewClientCard');
-    }
-}
+// 2. VER CLIENTE - Função removida, usando a nova async function acima
 
 function editFromView() {
     closeCard();
@@ -5230,7 +5321,7 @@ function openEditCardFromView() {
     }
 }
 
-// Função para popular o card de visualização
+// Função duplicada removida - usando implementação atualizada acima
 function populateViewCard(client) {
     try {
         // Header principal com avatar e informações
