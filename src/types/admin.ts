@@ -33,7 +33,7 @@ export interface AdminStatistics {
 }
 
 // Admin Filters for pagination
-export interface AdminFilters {
+export interface AdminFilters extends Record<string, string | number | undefined> {
   search?: string;
   page?: number;
   size?: number;

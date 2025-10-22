@@ -1,7 +1,7 @@
-import Modal from './Modal';
-import TransactionForm from '../forms/TransactionForm';
-import { useCreateTransaction } from '../../hooks/useFinances';
-import type { CreateTransactionData } from '../../types';
+import { ResponsiveDialog } from "@/components/common/responsive-dialog";
+import { useCreateTransaction } from "@/hooks/useFinances";
+import type { CreateTransactionData } from "@/types";
+import TransactionForm from "../forms/TransactionForm";
 
 interface CreateTransactionModalProps {
   isOpen: boolean;
@@ -12,28 +12,43 @@ interface CreateTransactionModalProps {
 
 /**
  * Create Transaction Modal
+ * Modal para criar nova transação usando ResponsiveDialog
  */
-export default function CreateTransactionModal({ isOpen, onClose, onSuccess, onError }: CreateTransactionModalProps) {
+export default function CreateTransactionModal({
+  isOpen,
+  onClose,
+  onSuccess,
+  onError,
+}: Readonly<CreateTransactionModalProps>) {
   const createMutation = useCreateTransaction();
 
   const handleSubmit = async (data: CreateTransactionData) => {
     try {
       await createMutation.mutateAsync(data);
-      onSuccess?.('Transação criada com sucesso!');
+      onSuccess?.("Transação criada com sucesso!");
       onClose();
-    } catch (error: any) {
-      onError?.(error.message || 'Erro ao criar transação');
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "Erro ao criar transação";
+      onError?.(message);
     }
   };
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={createMutation.isPending ? () => {} : onClose}
+    <ResponsiveDialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open && !createMutation.isPending) {
+          onClose();
+        }
+      }}
       title="Nova Transação"
-      size="large"
+      description="Preencha os dados para criar uma nova transação"
     >
-      <TransactionForm onSubmit={handleSubmit} isLoading={createMutation.isPending} />
-    </Modal>
+      <TransactionForm
+        onSubmit={handleSubmit}
+        isLoading={createMutation.isPending}
+      />
+    </ResponsiveDialog>
   );
 }

@@ -1,5 +1,9 @@
-import Modal from './Modal';
-import type { Invoice } from '../../types';
+import { Calendar, FileText, Info, User } from "lucide-react";
+import { ResponsiveDialog } from "@/components/common/responsive-dialog";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import type { Invoice } from "@/types";
 
 interface ViewInvoiceModalProps {
   isOpen: boolean;
@@ -9,170 +13,244 @@ interface ViewInvoiceModalProps {
 
 /**
  * View Invoice Modal
- * Read-only view of invoice details
+ * Modal de visualização de detalhes da fatura usando ResponsiveDialog
  */
-export default function ViewInvoiceModal({ isOpen, onClose, invoice }: ViewInvoiceModalProps) {
+export default function ViewInvoiceModal({
+  isOpen,
+  onClose,
+  invoice,
+}: Readonly<ViewInvoiceModalProps>) {
   if (!invoice) return null;
 
   // Format currency
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('pt-PT', {
-      style: 'currency',
-      currency: 'EUR',
+    return new Intl.NumberFormat("pt-PT", {
+      style: "currency",
+      currency: "EUR",
     }).format(amount);
   };
 
   // Format date
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('pt-PT', {
-      day: '2-digit',
-      month: 'long',
-      year: 'numeric',
+    return new Date(dateString).toLocaleDateString("pt-PT", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
     });
   };
 
-  // Get status badge
-  const getStatusBadge = (status: string) => {
-    const badges: Record<string, { class: string; label: string }> = {
-      draft: { class: 'badge-secondary', label: 'Rascunho' },
-      sent: { class: 'badge-info', label: 'Enviada' },
-      paid: { class: 'badge-success', label: 'Paga' },
-      overdue: { class: 'badge-danger', label: 'Atrasada' },
-      cancelled: { class: 'badge-error', label: 'Cancelada' },
+  // Get status badge variant
+  const getStatusVariant = (
+    status: string
+  ): "default" | "secondary" | "destructive" | "outline" => {
+    const variants: Record<string, "default" | "secondary" | "destructive"> = {
+      draft: "secondary",
+      sent: "default",
+      paid: "default",
+      overdue: "destructive",
+      cancelled: "destructive",
     };
-    const badge = badges[status] || { class: 'badge-secondary', label: status };
-    return <span className={`badge ${badge.class}`}>{badge.label}</span>;
+    return variants[status] || "outline";
+  };
+
+  // Get status label
+  const getStatusLabel = (status: string) => {
+    const labels: Record<string, string> = {
+      draft: "Rascunho",
+      sent: "Enviada",
+      paid: "Paga",
+      overdue: "Atrasada",
+      cancelled: "Cancelada",
+    };
+    return labels[status] || status;
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Detalhes da Fatura" size="large">
-      <div className="view-modal-content">
+    <ResponsiveDialog
+      open={isOpen}
+      onOpenChange={onClose}
+      title={`Fatura #${invoice.invoiceNumber}`}
+      description={invoice.clientName || invoice.clientId}
+    >
+      <div className="space-y-6">
         {/* Invoice Header */}
-        <div className="view-modal-header">
-          <div className="view-modal-avatar">
-            <i className="fas fa-file-invoice" style={{ color: '#3b82f6' }}></i>
-          </div>
-          <div className="view-modal-header-info">
-            <h2>Fatura #{invoice.invoiceNumber}</h2>
-            <p className="text-muted">{invoice.clientName || invoice.clientId}</p>
+        <div className="flex items-start gap-4">
+          <Avatar className="h-12 w-12 bg-blue-500/10">
+            <AvatarFallback className="bg-transparent">
+              <FileText className="h-6 w-6 text-blue-600" />
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex-1">
+            <Badge variant={getStatusVariant(invoice.status)}>
+              {getStatusLabel(invoice.status)}
+            </Badge>
           </div>
         </div>
 
+        <Separator />
+
         {/* Invoice Details */}
-        <div className="view-modal-section">
-          <h3>Informações Gerais</h3>
-          <div className="view-modal-grid">
-            <div className="view-modal-field">
-              <label>Estado</label>
-              <p>{getStatusBadge(invoice.status)}</p>
+        <div className="space-y-4">
+          <h4 className="flex items-center gap-2 text-sm font-semibold">
+            <Info className="h-4 w-4" /> Informações Gerais
+          </h4>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Calendar className="h-4 w-4" />
+                <span>Data de Emissão</span>
+              </div>
+              <p className="text-sm font-medium">
+                {formatDate(invoice.issueDate)}
+              </p>
             </div>
 
-            <div className="view-modal-field">
-              <label>Data de Emissão</label>
-              <p>{formatDate(invoice.issueDate)}</p>
-            </div>
-
-            <div className="view-modal-field">
-              <label>Data de Vencimento</label>
-              <p>{formatDate(invoice.dueDate)}</p>
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Calendar className="h-4 w-4" />
+                <span>Data de Vencimento</span>
+              </div>
+              <p className="text-sm font-medium">{formatDate(invoice.dueDate)}</p>
             </div>
 
             {invoice.paidDate && (
-              <div className="view-modal-field">
-                <label>Data de Pagamento</label>
-                <p>{formatDate(invoice.paidDate)}</p>
+              <div className="space-y-1">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Calendar className="h-4 w-4" />
+                  <span>Data de Pagamento</span>
+                </div>
+                <p className="text-sm font-medium">
+                  {formatDate(invoice.paidDate)}
+                </p>
               </div>
             )}
+
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <User className="h-4 w-4" />
+                <span>Cliente</span>
+              </div>
+              <p className="text-sm font-medium">
+                {invoice.clientName || invoice.clientId}
+              </p>
+            </div>
           </div>
         </div>
 
         {/* Invoice Items */}
-        <div className="view-modal-section">
-          <h3>Items</h3>
-          <table className="table">
-            <thead>
-              <tr>
-                <th>Descrição</th>
-                <th className="text-right">Quantidade</th>
-                <th className="text-right">Preço Unitário</th>
-                <th className="text-right">Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              {invoice.items.map((item, index) => (
-                <tr key={index}>
-                  <td>{item.description}</td>
-                  <td className="text-right">{item.quantity}</td>
-                  <td className="text-right">{formatCurrency(item.unitPrice)}</td>
-                  <td className="text-right">{formatCurrency(item.total)}</td>
+        <Separator />
+        <div className="space-y-4">
+          <h4 className="text-sm font-semibold">Items</h4>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="border-b">
+                <tr className="text-muted-foreground">
+                  <th className="pb-2 text-left font-medium">Descrição</th>
+                  <th className="pb-2 text-right font-medium">Qtd</th>
+                  <th className="pb-2 text-right font-medium">Preço Unit.</th>
+                  <th className="pb-2 text-right font-medium">Total</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y">
+                {invoice.items.map((item) => (
+                  <tr key={item.id || `${item.description}-${item.quantity}-${item.unitPrice}`}>
+                    <td className="py-2">{item.description}</td>
+                    <td className="py-2 text-right">{item.quantity}</td>
+                    <td className="py-2 text-right">
+                      {formatCurrency(item.unitPrice)}
+                    </td>
+                    <td className="py-2 text-right font-medium">
+                      {formatCurrency(item.total)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         {/* Invoice Totals */}
-        <div className="view-modal-section">
-          <h3>Totais</h3>
-          <div className="invoice-totals">
-            <div className="invoice-total-row">
-              <span>Subtotal:</span>
-              <strong>{formatCurrency(invoice.subtotal)}</strong>
+        <Separator />
+        <div className="space-y-3">
+          <h4 className="text-sm font-semibold">Totais</h4>
+          <div className="space-y-2">
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Subtotal:</span>
+              <span className="font-medium">
+                {formatCurrency(invoice.subtotal)}
+              </span>
             </div>
-            <div className="invoice-total-row">
-              <span>IVA ({invoice.taxRate}%):</span>
-              <strong>{formatCurrency(invoice.taxAmount)}</strong>
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">
+                IVA ({invoice.taxRate}%):
+              </span>
+              <span className="font-medium">
+                {formatCurrency(invoice.taxAmount)}
+              </span>
             </div>
             {invoice.discount && invoice.discount > 0 && (
-              <div className="invoice-total-row">
-                <span>Desconto:</span>
-                <strong className="text-danger">-{formatCurrency(invoice.discount)}</strong>
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Desconto:</span>
+                <span className="font-medium text-destructive">
+                  -{formatCurrency(invoice.discount)}
+                </span>
               </div>
             )}
-            <div className="invoice-total-row invoice-total-final">
-              <span>Total:</span>
-              <strong>{formatCurrency(invoice.total)}</strong>
+            <Separator />
+            <div className="flex justify-between text-base">
+              <span className="font-semibold">Total:</span>
+              <span className="font-bold">{formatCurrency(invoice.total)}</span>
             </div>
           </div>
         </div>
 
         {/* Notes and Terms */}
         {(invoice.notes || invoice.terms) && (
-          <div className="view-modal-section">
-            {invoice.notes && (
-              <>
-                <h3>Notas</h3>
-                <p>{invoice.notes}</p>
-              </>
-            )}
+          <>
+            <Separator />
+            <div className="space-y-4">
+              {invoice.notes && (
+                <div className="space-y-2">
+                  <h4 className="text-sm font-semibold">Notas</h4>
+                  <p className="text-sm text-muted-foreground">{invoice.notes}</p>
+                </div>
+              )}
 
-            {invoice.terms && (
-              <>
-                <h3>Termos e Condições</h3>
-                <p>{invoice.terms}</p>
-              </>
-            )}
-          </div>
+              {invoice.terms && (
+                <div className="space-y-2">
+                  <h4 className="text-sm font-semibold">Termos e Condições</h4>
+                  <p className="text-sm text-muted-foreground">{invoice.terms}</p>
+                </div>
+              )}
+            </div>
+          </>
         )}
 
         {/* Timestamps */}
-        <div className="view-modal-section">
-          <h3>Registo</h3>
-          <div className="view-modal-grid">
-            <div className="view-modal-field">
-              <label>Criada em</label>
-              <p>{formatDate(invoice.createdAt)}</p>
+        <Separator />
+        <div className="space-y-4">
+          <h4 className="text-sm font-semibold">Registo</h4>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-1">
+              <div className="text-sm text-muted-foreground">Criada em</div>
+              <p className="text-sm font-medium">
+                {formatDate(invoice.createdAt)}
+              </p>
             </div>
 
             {invoice.updatedAt && (
-              <div className="view-modal-field">
-                <label>Atualizada em</label>
-                <p>{formatDate(invoice.updatedAt)}</p>
+              <div className="space-y-1">
+                <div className="text-sm text-muted-foreground">
+                  Atualizada em
+                </div>
+                <p className="text-sm font-medium">
+                  {formatDate(invoice.updatedAt)}
+                </p>
               </div>
             )}
           </div>
         </div>
       </div>
-    </Modal>
+    </ResponsiveDialog>
   );
 }

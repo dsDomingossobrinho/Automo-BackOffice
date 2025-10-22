@@ -10,6 +10,7 @@ export interface Transaction {
   clientId?: string;
   clientName?: string;
   invoiceId?: string;
+  receiptUrl?: string;
   status: TransactionStatus;
   paymentMethod?: PaymentMethod;
   reference?: string;

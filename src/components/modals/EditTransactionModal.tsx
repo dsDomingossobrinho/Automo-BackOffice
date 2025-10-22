@@ -1,7 +1,7 @@
-import Modal from './Modal';
-import TransactionForm from '../forms/TransactionForm';
-import { useUpdateTransaction } from '../../hooks/useFinances';
-import type { Transaction, CreateTransactionData } from '../../types';
+import { ResponsiveDialog } from "@/components/common/responsive-dialog";
+import { useUpdateTransaction } from "@/hooks/useFinances";
+import type { CreateTransactionData, Transaction } from "@/types";
+import TransactionForm from "../forms/TransactionForm";
 
 interface EditTransactionModalProps {
   isOpen: boolean;
@@ -13,8 +13,15 @@ interface EditTransactionModalProps {
 
 /**
  * Edit Transaction Modal
+ * Modal para editar transação existente usando ResponsiveDialog
  */
-export default function EditTransactionModal({ isOpen, onClose, transaction, onSuccess, onError }: EditTransactionModalProps) {
+export default function EditTransactionModal({
+  isOpen,
+  onClose,
+  transaction,
+  onSuccess,
+  onError,
+}: Readonly<EditTransactionModalProps>) {
   const updateMutation = useUpdateTransaction();
 
   const handleSubmit = async (data: CreateTransactionData) => {
@@ -25,23 +32,33 @@ export default function EditTransactionModal({ isOpen, onClose, transaction, onS
         id: transaction.id,
         ...data,
       });
-      onSuccess?.('Transação atualizada com sucesso!');
+      onSuccess?.("Transação atualizada com sucesso!");
       onClose();
-    } catch (error: any) {
-      onError?.(error.message || 'Erro ao atualizar transação');
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "Erro ao atualizar transação";
+      onError?.(message);
     }
   };
 
   if (!transaction) return null;
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={updateMutation.isPending ? () => {} : onClose}
+    <ResponsiveDialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open && !updateMutation.isPending) {
+          onClose();
+        }
+      }}
       title="Editar Transação"
-      size="large"
+      description="Atualize as informações da transação"
     >
-      <TransactionForm transaction={transaction} onSubmit={handleSubmit} isLoading={updateMutation.isPending} />
-    </Modal>
+      <TransactionForm
+        transaction={transaction}
+        onSubmit={handleSubmit}
+        isLoading={updateMutation.isPending}
+      />
+    </ResponsiveDialog>
   );
 }

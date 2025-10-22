@@ -1,6 +1,8 @@
-import Modal from './Modal';
-import { useDeleteAccount } from '../../hooks/useAccounts';
-import type { Account } from '../../types';
+import { AlertTriangle } from "lucide-react";
+import { useDeleteAccount } from "../../hooks/useAccounts";
+import type { Account } from "../../types";
+import { ResponsiveDialog } from "../common/responsive-dialog";
+import { Button } from "../ui/button";
 
 interface DeleteAccountModalProps {
   isOpen: boolean;
@@ -10,7 +12,13 @@ interface DeleteAccountModalProps {
   onError?: (message: string) => void;
 }
 
-export default function DeleteAccountModal({ isOpen, onClose, account, onSuccess, onError }: DeleteAccountModalProps) {
+export default function DeleteAccountModal({
+  isOpen,
+  onClose,
+  account,
+  onSuccess,
+  onError,
+}: Readonly<DeleteAccountModalProps>) {
   const deleteMutation = useDeleteAccount();
 
   const handleDelete = async () => {
@@ -18,51 +26,72 @@ export default function DeleteAccountModal({ isOpen, onClose, account, onSuccess
 
     try {
       await deleteMutation.mutateAsync(account.id);
-      onSuccess?.('Conta eliminada com sucesso!');
+      onSuccess?.("Conta eliminada com sucesso!");
       onClose();
-    } catch (error: any) {
-      onError?.(error.message || 'Erro ao eliminar conta');
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "Erro ao eliminar conta";
+      onError?.(message);
     }
   };
 
   if (!account) return null;
 
   return (
-    <Modal isOpen={isOpen} onClose={deleteMutation.isPending ? () => {} : onClose} title="Eliminar Conta" size="small">
-      <div className="delete-modal-content">
-        <div className="delete-modal-icon">
-          <i className="fas fa-exclamation-triangle"></i>
-        </div>
-
-        <div className="delete-modal-message">
-          <p>
-            Tem a certeza de que deseja eliminar a conta de <strong>{account.name}</strong>?
-          </p>
-          <p className="text-muted">
-            Email: <strong>{account.email}</strong>
-            <br />
-            Username: <strong>@{account.username}</strong>
-          </p>
-          <p className="warning-text">Esta ação não pode ser revertida!</p>
-        </div>
-
-        <div className="delete-modal-actions">
-          <button type="button" className="btn btn-secondary" onClick={onClose} disabled={deleteMutation.isPending}>
+    <ResponsiveDialog
+      open={isOpen}
+      onOpenChange={deleteMutation.isPending ? () => { } : onClose}
+      title="Eliminar Conta"
+      description="Esta ação não pode ser revertida!"
+      footer={
+        <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 w-full">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onClose}
+            disabled={deleteMutation.isPending}
+          >
             Cancelar
-          </button>
-          <button type="button" className="btn btn-danger" onClick={handleDelete} disabled={deleteMutation.isPending}>
+          </Button>
+          <Button
+            type="button"
+            variant="destructive"
+            onClick={handleDelete}
+            disabled={deleteMutation.isPending}
+          >
             {deleteMutation.isPending ? (
               <>
-                <i className="fas fa-spinner fa-spin"></i> A eliminar...
+                <i className="fas fa-spinner fa-spin mr-2" /> A eliminar...
               </>
             ) : (
               <>
-                <i className="fas fa-trash"></i> Eliminar
+                <i className="fas fa-trash mr-2" /> Eliminar
               </>
             )}
-          </button>
+          </Button>
+        </div>
+      }
+    >
+      <div className="flex flex-col items-center gap-4 py-4">
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-destructive/10">
+          <AlertTriangle className="h-8 w-8 text-destructive" />
+        </div>
+
+        <div className="space-y-2 text-center">
+          <p className="text-base">
+            Tem a certeza de que deseja eliminar a conta de{" "}
+            <strong>{account.name}</strong>?
+          </p>
+          <div className="text-sm text-muted-foreground space-y-1">
+            <p>
+              Email: <strong>{account.email}</strong>
+            </p>
+            <p>
+              Username: <strong>@{account.username}</strong>
+            </p>
+          </div>
         </div>
       </div>
-    </Modal>
+    </ResponsiveDialog>
   );
 }

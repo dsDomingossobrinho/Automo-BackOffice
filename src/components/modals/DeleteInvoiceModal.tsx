@@ -1,6 +1,8 @@
-import Modal from './Modal';
-import { useDeleteInvoice } from '../../hooks/useInvoices';
-import type { Invoice } from '../../types';
+import { AlertTriangle, Trash2 } from "lucide-react";
+import { ResponsiveDialog } from "@/components/common/responsive-dialog";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { useDeleteInvoice } from "@/hooks/useInvoices";
+import type { Invoice } from "@/types";
 
 interface DeleteInvoiceModalProps {
   isOpen: boolean;
@@ -12,69 +14,96 @@ interface DeleteInvoiceModalProps {
 
 /**
  * Delete Invoice Modal
- * Confirmation dialog for deleting an invoice
+ * Modal de confirmação para eliminar fatura usando ResponsiveDialog
  */
-export default function DeleteInvoiceModal({ isOpen, onClose, invoice, onSuccess, onError }: DeleteInvoiceModalProps) {
+export default function DeleteInvoiceModal({
+  isOpen,
+  onClose,
+  invoice,
+  onSuccess,
+  onError,
+}: Readonly<DeleteInvoiceModalProps>) {
   const deleteMutation = useDeleteInvoice();
 
-  const handleDelete = async () => {
+  const handleDelete = () => {
     if (!invoice) return;
 
-    try {
-      await deleteMutation.mutateAsync(invoice.id);
-      onSuccess?.('Fatura eliminada com sucesso!');
-      onClose();
-    } catch (error: any) {
-      onError?.(error.message || 'Erro ao eliminar fatura');
-    }
+    deleteMutation.mutate(invoice.id, {
+      onSuccess: () => {
+        onSuccess?.("Fatura eliminada com sucesso!");
+        onClose();
+      },
+      onError: (error: unknown) => {
+        const message =
+          error instanceof Error ? error.message : "Erro ao eliminar fatura";
+        onError?.(message);
+      },
+    });
   };
 
   if (!invoice) return null;
 
   // Format currency
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('pt-PT', {
-      style: 'currency',
-      currency: 'EUR',
+    return new Intl.NumberFormat("pt-PT", {
+      style: "currency",
+      currency: "EUR",
     }).format(amount);
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={deleteMutation.isPending ? () => {} : onClose} title="Eliminar Fatura" size="small">
-      <div className="delete-modal-content">
-        <div className="delete-modal-icon">
-          <i className="fas fa-exclamation-triangle"></i>
-        </div>
+    <ResponsiveDialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open && !deleteMutation.isPending) {
+          onClose();
+        }
+      }}
+      title="Eliminar Fatura"
+      description="Esta ação não pode ser revertida!"
+      actions={[
+        {
+          label: "Cancelar",
+          variant: "outline",
+          onClick: onClose,
+          disabled: deleteMutation.isPending,
+        },
+        {
+          label: "Eliminar",
+          variant: "destructive",
+          onClick: handleDelete,
+          disabled: deleteMutation.isPending,
+          loading: deleteMutation.isPending,
+          icon: Trash2,
+        },
+      ]}
+    >
+      <div className="flex flex-col items-center gap-4 py-4">
+        <Avatar className="h-16 w-16 bg-destructive/10">
+          <AvatarFallback className="bg-transparent">
+            <AlertTriangle className="h-8 w-8 text-destructive" />
+          </AvatarFallback>
+        </Avatar>
 
-        <div className="delete-modal-message">
-          <p>
-            Tem a certeza de que deseja eliminar a fatura <strong>#{invoice.invoiceNumber}</strong>?
+        <div className="space-y-2 text-center">
+          <p className="text-sm text-muted-foreground">
+            Tem a certeza de que deseja eliminar a fatura
           </p>
-          <p className="text-muted">
-            Cliente: <strong>{invoice.clientName || invoice.clientId}</strong>
-            <br />
-            Total: <strong>{formatCurrency(invoice.total)}</strong>
-          </p>
-          <p className="warning-text">Esta ação não pode ser revertida!</p>
-        </div>
-
-        <div className="delete-modal-actions">
-          <button type="button" className="btn btn-secondary" onClick={onClose} disabled={deleteMutation.isPending}>
-            Cancelar
-          </button>
-          <button type="button" className="btn btn-danger" onClick={handleDelete} disabled={deleteMutation.isPending}>
-            {deleteMutation.isPending ? (
-              <>
-                <i className="fas fa-spinner fa-spin"></i> A eliminar...
-              </>
-            ) : (
-              <>
-                <i className="fas fa-trash"></i> Eliminar
-              </>
-            )}
-          </button>
+          <p className="font-semibold">#{invoice.invoiceNumber}</p>
+          <div className="text-sm text-muted-foreground">
+            <p>
+              Cliente:{" "}
+              <span className="font-medium">
+                {invoice.clientName || invoice.clientId}
+              </span>
+            </p>
+            <p>
+              Total:{" "}
+              <span className="font-medium">{formatCurrency(invoice.total)}</span>
+            </p>
+          </div>
         </div>
       </div>
-    </Modal>
+    </ResponsiveDialog>
   );
 }
