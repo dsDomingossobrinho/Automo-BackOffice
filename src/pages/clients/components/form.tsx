@@ -1,23 +1,23 @@
 import { Loader2 } from "lucide-react";
 import { type FormEvent, useEffect, useId, useMemo, useState } from "react";
-import { useAccountTypes } from "../../hooks/useAccountTypes";
-import { useCountries } from "../../hooks/useCountries";
-import { useOrganizationTypes } from "../../hooks/useOrganizationTypes";
-import { useProvinces } from "../../hooks/useProvinces";
-import { useStates } from "../../hooks/useStates";
-import type { Client, CreateClientData } from "../../types";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
+import { Button } from "../../../components/ui/button";
+import { Input } from "../../../components/ui/input";
+import { Label } from "../../../components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
+} from "../../../components/ui/select";
+import { useAccountTypes } from "../../../hooks/useAccountTypes";
+import { useCountries } from "../../../hooks/useCountries";
+import { useOrganizationTypes } from "../../../hooks/useOrganizationTypes";
+import { useProvinces } from "../../../hooks/useProvinces";
+import { useStates } from "../../../hooks/useStates";
+import type { Client, CreateClientData } from "../../../types";
 
-interface ClientFormProps {
+interface FormProps {
   mode: "create" | "edit";
   initialData?: Client;
   onSubmit: (data: CreateClientData) => Promise<void>;
@@ -35,7 +35,7 @@ export default function ClientForm({
   onSubmit,
   onCancel,
   isSubmitting = false,
-}: Readonly<ClientFormProps>) {
+}: Readonly<FormProps>) {
   // Fetch reference data
   const { data: countries } = useCountries();
   const { data: accountTypes } = useAccountTypes();
@@ -138,6 +138,20 @@ export default function ClientForm({
           : [],
     [states],
   );
+
+  // Debug: Log the data to understand the structure
+  useEffect(() => {
+    console.log("Select Data Debug:", {
+      countries,
+      countriesList,
+      states,
+      statesList,
+      provinces,
+      provincesList,
+      organizationTypes,
+      organizationTypesList,
+    });
+  }, [countries, countriesList, states, statesList, provinces, provincesList, organizationTypes, organizationTypesList]);
 
   // Update selected country when form data changes
   useEffect(() => {

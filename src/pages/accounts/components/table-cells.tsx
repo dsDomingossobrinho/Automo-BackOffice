@@ -28,9 +28,9 @@ interface StateBadgeCellProps {
 
 export function StateBadgeCell({ state }: StateBadgeCellProps) {
   const badges: Record<string, { class: string; label: string }> = {
-    Ativo: { class: "badge-success", label: "Ativo" },
-    Inativo: { class: "badge-secondary", label: "Inativo" },
-    Eliminado: { class: "badge-danger", label: "Eliminado" },
+    ACTIVE: { class: "badge-success", label: "Ativo" },
+    INACTIVE: { class: "badge-secondary", label: "Inativo" },
+    DELETED: { class: "badge-danger", label: "Eliminado" },
   };
   const badge = badges[state] || { class: "badge-secondary", label: state };
   return <span className={`badge ${badge.class}`}>{badge.label}</span>;

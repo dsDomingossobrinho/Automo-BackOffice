@@ -3,14 +3,22 @@ import { useCallback, useId, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 import { DataTable } from "@/components/common/data-table";
-import { ResponsiveDialog } from "@/components/common/responsive-dialog";
 import { createRoleColumns } from "@/components/common/role-columns";
-import RoleForm from "@/components/forms/RoleForm";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useCreateRole, useRoles } from "@/hooks/useRoles";
+import {
+  useCreateRole,
+  useDeleteRole,
+  useRoles,
+  useUpdateRole,
+} from "@/hooks/useRoles";
 import type { RoleInfo } from "@/types";
+import CreateRoleModal from "./components/create-modal";
+import DeleteRoleModal from "./components/delete-modal";
+import EditRoleModal from "./components/edit-modal";
+// RoleForm is used inside the modal components; imports moved to modal files
+import ViewRoleModal from "./components/view-modal";
 
 export default function RolesPage() {
   // Local UI state
@@ -20,11 +28,15 @@ export default function RolesPage() {
   const [selectedRole, setSelectedRole] = useState<RoleInfo | null>(null);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const searchId = useId();
 
   // React Query hooks
   const { data: roles = [], isLoading, isError } = useRoles();
   const createMutation = useCreateRole();
+  const updateMutation = useUpdateRole();
+  const deleteMutation = useDeleteRole();
 
   // Client-side filtering/pagination
   const filtered = useMemo(
@@ -48,6 +60,18 @@ export default function RolesPage() {
     setIsViewModalOpen(true);
   }, []);
 
+  // Handle edit role
+  const handleEdit = useCallback((role: RoleInfo) => {
+    setSelectedRole(role);
+    setIsEditModalOpen(true);
+  }, []);
+
+  // Handle delete role
+  const handleDelete = useCallback((role: RoleInfo) => {
+    setSelectedRole(role);
+    setIsDeleteModalOpen(true);
+  }, []);
+
   // Handle create role
   const handleCreate = async (data: { role: string; description?: string }) => {
     try {
@@ -60,6 +84,37 @@ export default function RolesPage() {
     }
   };
 
+  // Handle update role
+  const handleUpdate = async (data: { role: string; description?: string }) => {
+    if (!selectedRole) return;
+    try {
+      await updateMutation.mutateAsync({
+        id: selectedRole.id,
+        ...data,
+      });
+      toast.success("Cargo atualizado com sucesso!");
+      setIsEditModalOpen(false);
+      setSelectedRole(null);
+    } catch (err) {
+      toast.error("Erro ao atualizar cargo.");
+      throw err;
+    }
+  };
+
+  // Handle confirm delete role
+  const handleConfirmDelete = async () => {
+    if (!selectedRole) return;
+    try {
+      await deleteMutation.mutateAsync(selectedRole.id);
+      toast.success("Cargo eliminado com sucesso!");
+      setIsDeleteModalOpen(false);
+      setSelectedRole(null);
+    } catch (err) {
+      toast.error("Erro ao eliminar cargo.");
+      throw err;
+    }
+  };
+
   // Clear search
   const handleClearSearch = () => {
     setSearchTerm("");
@@ -68,8 +123,13 @@ export default function RolesPage() {
 
   // Create table columns
   const columns = useMemo(
-    () => createRoleColumns({ onView: handleView }),
-    [handleView],
+    () =>
+      createRoleColumns({
+        onView: handleView,
+        onEdit: handleEdit,
+        onDelete: handleDelete,
+      }),
+    [handleView, handleEdit, handleDelete],
   );
 
   return (
@@ -138,41 +198,40 @@ export default function RolesPage() {
         }}
       />
 
-      {/* View Role Modal */}
-      <ResponsiveDialog
+      <ViewRoleModal
         open={isViewModalOpen}
         onOpenChange={setIsViewModalOpen}
-        title="Detalhes do Cargo"
-      >
-        {selectedRole && (
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label className="text-muted-foreground">Nome:</Label>
-              <p className="font-medium">{selectedRole.name}</p>
-            </div>
-            <div className="space-y-2">
-              <Label className="text-muted-foreground">Descrição:</Label>
-              <p className="font-medium">{selectedRole.description || "-"}</p>
-            </div>
-          </div>
-        )}
-      </ResponsiveDialog>
+        role={selectedRole}
+      />
 
-      {/* Create Role Modal */}
-      <ResponsiveDialog
+      <CreateRoleModal
         open={isCreateModalOpen}
-        onOpenChange={(open) =>
+        onOpenChange={(open: boolean) =>
           !createMutation.isPending && setIsCreateModalOpen(open)
         }
-        title="Criar Cargo"
-      >
-        <RoleForm
-          mode="create"
-          onSubmit={handleCreate}
-          onCancel={() => setIsCreateModalOpen(false)}
-          isSubmitting={createMutation.isPending}
-        />
-      </ResponsiveDialog>
+        onSubmit={handleCreate}
+        isSubmitting={createMutation.isPending}
+      />
+
+      <EditRoleModal
+        open={isEditModalOpen}
+        onOpenChange={(open: boolean) =>
+          !updateMutation.isPending && setIsEditModalOpen(open)
+        }
+        role={selectedRole}
+        onSubmit={handleUpdate}
+        isSubmitting={updateMutation.isPending}
+      />
+
+      <DeleteRoleModal
+        open={isDeleteModalOpen}
+        onOpenChange={(open: boolean) =>
+          !deleteMutation.isPending && setIsDeleteModalOpen(open)
+        }
+        role={selectedRole}
+        onConfirm={handleConfirmDelete}
+        isDeleting={deleteMutation.isPending}
+      />
     </div>
   );
 }

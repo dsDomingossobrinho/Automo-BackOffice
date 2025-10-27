@@ -19,7 +19,13 @@ import ResetPasswordPage from "./pages/auth/reset-password";
 import ClientsPage from "./pages/clients";
 import DashboardPage from "./pages/dashboard";
 import FinancesPage from "./pages/finances";
+import AccountTypesPage from "./pages/parameters/account-types";
+import CountriesPage from "./pages/parameters/countries";
+import PlansPage from "./pages/parameters/plans";
+import PromotionsPage from "./pages/parameters/promotions";
+import ProvincesPage from "./pages/parameters/provinces";
 import RolesPage from "./pages/parameters/roles";
+import StatesPage from "./pages/parameters/states";
 import { useAuthStore } from "./stores/authStore";
 
 // Create TanStack Query client
@@ -71,6 +77,12 @@ function App() {
               <Route path="/accounts" element={<AccountsPage />} />
               <Route path="/parameters">
                 <Route path="roles" element={<RolesPage />} />
+                <Route path="accounts-type" element={<AccountTypesPage />} />
+                <Route path="countries" element={<CountriesPage />} />
+                <Route path="provinces" element={<ProvincesPage />} />
+                <Route path="states" element={<StatesPage />} />
+                <Route path="plans" element={<PlansPage />} />
+                <Route path="promotions" element={<PromotionsPage />} />
               </Route>
             </Route>
 
