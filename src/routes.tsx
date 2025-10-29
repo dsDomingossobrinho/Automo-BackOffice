@@ -26,6 +26,10 @@ import PromotionsPage from "./pages/parameters/promotions";
 import ProvincesPage from "./pages/parameters/provinces";
 import RolesPage from "./pages/parameters/roles";
 import StatesPage from "./pages/parameters/states";
+import { SettingsPage } from "./pages/settings";
+import { SettingsAppearancePage } from "./pages/settings/appearence";
+import { SettingsNotificationsPage } from "./pages/settings/notifications";
+import { SettingsProfilePage } from "./pages/settings/profile";
 import { useAuthStore } from "./stores/authStore";
 
 // Create TanStack Query client
@@ -75,6 +79,14 @@ function App() {
               <Route path="/agent" element={<AgentPage />} />
               <Route path="/finances" element={<FinancesPage />} />
               <Route path="/accounts" element={<AccountsPage />} />
+              <Route path="/settings" element={<SettingsPage />}>
+                <Route index element={<SettingsProfilePage />} />
+                <Route path="appearance" element={<SettingsAppearancePage />} />
+                <Route
+                  path="notifications"
+                  element={<SettingsNotificationsPage />}
+                />
+              </Route>
               <Route path="/parameters">
                 <Route path="roles" element={<RolesPage />} />
                 <Route path="accounts-type" element={<AccountTypesPage />} />

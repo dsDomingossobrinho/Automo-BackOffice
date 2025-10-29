@@ -1,7 +1,7 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import type { User, Permission, TempLogin } from '../types';
-import { UserRole } from '../types';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import type { Permission, TempLogin, User } from "../types";
+import { UserRole } from "../types";
 
 /**
  * Authentication Store - Zustand
@@ -62,7 +62,8 @@ export const useAuthStore = create<AuthStore>()(
       setError: (error) => set({ error }),
       clearError: () => set({ error: null }),
       setTempLogin: (tempLogin) => set({ tempLogin }),
-      setTempForgotPassword: (tempForgotPassword) => set({ tempForgotPassword }),
+      setTempForgotPassword: (tempForgotPassword) =>
+        set({ tempForgotPassword }),
 
       // Logout
       logout: () => {
@@ -74,6 +75,7 @@ export const useAuthStore = create<AuthStore>()(
           tempForgotPassword: null,
           error: null,
         });
+        localStorage.removeItem("auth-storage");
       },
 
       // Get User
@@ -131,37 +133,72 @@ export const useAuthStore = create<AuthStore>()(
           switch (roleId) {
             case UserRole.Admin:
               permissions.push(
-                'view_all', 'create_all', 'edit_all', 'delete_all',
-                'view_accounts', 'create_accounts', 'edit_accounts', 'delete_accounts',
-                'manage_users', 'manage_permissions',
-                'view_clients', 'create_clients', 'edit_clients', 'delete_clients',
-                'view_messages', 'create_messages', 'edit_messages', 'delete_messages', 'send_messages',
-                'view_finances', 'create_finances', 'edit_finances', 'delete_finances',
-                'view_invoices', 'create_invoices', 'edit_invoices', 'delete_invoices',
-                'view_reports', 'view_analytics', 'export_data'
+                "view_all",
+                "create_all",
+                "edit_all",
+                "delete_all",
+                "view_accounts",
+                "create_accounts",
+                "edit_accounts",
+                "delete_accounts",
+                "manage_users",
+                "manage_permissions",
+                "view_clients",
+                "create_clients",
+                "edit_clients",
+                "delete_clients",
+                "view_messages",
+                "create_messages",
+                "edit_messages",
+                "delete_messages",
+                "send_messages",
+                "view_finances",
+                "create_finances",
+                "edit_finances",
+                "delete_finances",
+                "view_invoices",
+                "create_invoices",
+                "edit_invoices",
+                "delete_invoices",
+                "view_reports",
+                "view_analytics",
+                "export_data",
               );
               break;
 
             case UserRole.User:
               permissions.push(
-                'view_own', 'create_basic', 'edit_own',
-                'view_clients', 'view_messages'
+                "view_own",
+                "create_basic",
+                "edit_own",
+                "view_clients",
+                "view_messages",
               );
               break;
 
             case UserRole.Agent:
               permissions.push(
-                'view_clients', 'create_clients', 'edit_clients',
-                'view_messages', 'create_messages', 'send_messages',
-                'view_own', 'edit_own'
+                "view_clients",
+                "create_clients",
+                "edit_clients",
+                "view_messages",
+                "create_messages",
+                "send_messages",
+                "view_own",
+                "edit_own",
               );
               break;
 
             case UserRole.Manager:
               permissions.push(
-                'view_team', 'manage_team', 'view_reports',
-                'view_clients', 'view_messages', 'view_finances',
-                'view_accounts', 'view_analytics'
+                "view_team",
+                "manage_team",
+                "view_reports",
+                "view_clients",
+                "view_messages",
+                "view_finances",
+                "view_accounts",
+                "view_analytics",
               );
               break;
           }
@@ -176,7 +213,7 @@ export const useAuthStore = create<AuthStore>()(
       },
     }),
     {
-      name: 'auth-storage',
+      name: "auth-storage",
       partialize: (state) => ({
         user: state.user,
         token: state.token,
@@ -184,6 +221,6 @@ export const useAuthStore = create<AuthStore>()(
         tempLogin: state.tempLogin,
         tempForgotPassword: state.tempForgotPassword,
       }),
-    }
-  )
+    },
+  ),
 );
