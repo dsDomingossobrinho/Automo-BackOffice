@@ -4,16 +4,11 @@ import type { Permission } from './user';
 export interface Account {
   id: string;
   email: string;
-  username: string;
+  username?: string;
   name: string;
   contact?: string;
-  identify_id?: string;
   img?: string;
-  roleId: number;
-  roleName?: string;
-  permissions: Permission[];
   accountTypeId?: number;
-  isBackOffice: boolean;
   status: AccountStatus;
   lastLogin?: string;
   createdAt: string;
@@ -51,11 +46,7 @@ export interface CreateAccountData {
   password: string;
   name: string;
   contact?: string;
-  identify_id?: string;
-  roleId: number;
-  permissions?: Permission[];
   accountTypeId?: number;
-  isBackOffice?: boolean;
 }
 
 export interface UpdateAccountData extends Partial<Omit<CreateAccountData, 'password'>> {

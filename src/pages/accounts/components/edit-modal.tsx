@@ -6,65 +6,60 @@ import type { Admin } from "@/types/admin";
 import AccountForm from "./form";
 
 interface EditModalProps {
-	open: boolean;
-	onOpenChange: (open: boolean) => void;
-	admin: Admin | null;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  admin: Admin | null;
 }
 
 export default function EditModal({
-	open,
-	onOpenChange,
-	admin,
+  open,
+  onOpenChange,
+  admin,
 }: EditModalProps) {
-	const updateMutation = useUpdateAdmin();
+  const updateMutation = useUpdateAdmin();
 
-	const handleSubmit = async (data: CreateAccountData) => {
-		if (!admin) return;
+  const handleSubmit = async (data: CreateAccountData) => {
+    if (!admin) return;
 
-		try {
-			await updateMutation.mutateAsync({
-				id: admin.id,
-				...data,
-			});
-			toast.success("Administrador atualizado com sucesso!");
-			onOpenChange(false);
-		} catch (error: unknown) {
-			const message =
-				error instanceof Error
-					? error.message
-					: "Erro ao atualizar administrador";
-			toast.error(message);
-		}
-	};
+    try {
+      await updateMutation.mutateAsync({
+        id: admin.id,
+        ...data,
+      });
+      toast.success("Administrador atualizado com sucesso!");
+      onOpenChange(false);
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Erro ao atualizar administrador";
+      toast.error(message);
+    }
+  };
 
-	if (!admin) return null;
+  if (!admin) return null;
 
-	// Convert Admin to Account format for the form
-	const accountData = {
-		id: admin.id,
-		email: admin.email,
-		username: admin.username || "",
-		name: admin.name,
-		contact: "",
-		identify_id: "",
-		roleId: 2,
-		permissions: [],
-		accountTypeId: admin.authId,
-		isBackOffice: true,
-	};
+  // Convert Admin to Account format for the form
+  const accountData = {
+    id: admin.id,
+    email: admin.email,
+    name: admin.name,
+    contact: "",
+    accountTypeId: admin.authId,
+  };
 
-	return (
-		<ResponsiveDialog
-			open={open}
-			onOpenChange={updateMutation.isPending ? () => {} : onOpenChange}
-			title="Editar Administrador"
-			description="Atualize as informações da conta."
-		>
-			<AccountForm
-				account={accountData}
-				onSubmit={handleSubmit}
-				isLoading={updateMutation.isPending}
-			/>
-		</ResponsiveDialog>
-	);
+  return (
+    <ResponsiveDialog
+      open={open}
+      onOpenChange={updateMutation.isPending ? () => { } : onOpenChange}
+      title="Editar Administrador"
+      description="Atualize as informações da conta."
+    >
+      <AccountForm
+        account={accountData}
+        onSubmit={handleSubmit}
+        isLoading={updateMutation.isPending}
+      />
+    </ResponsiveDialog>
+  );
 }
