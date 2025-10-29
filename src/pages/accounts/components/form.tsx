@@ -1,21 +1,12 @@
 import { Loader2, Save } from "lucide-react";
-import { useEffect, useId, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import type {
   Account,
   CreateAccountData,
 } from "@/types";
-import { RoleLabels } from "@/types";
 
 interface AccountFormProps {
   account?: Account;
@@ -32,7 +23,6 @@ export default function AccountForm({
   onSubmit,
   isLoading,
 }: Readonly<AccountFormProps>) {
-  const isBackOfficeId = useId();
   const [formData, setFormData] = useState({
     accountTypeId: account?.accountTypeId,
   });
@@ -62,14 +52,6 @@ export default function AccountForm({
     setFormData((prev) => ({ ...prev, [name]: finalValue }));
     if (errors[name as keyof CreateAccountData]) {
       setErrors((prev) => ({ ...prev, [name]: undefined }));
-    }
-  };
-
-  // Handle select changes
-  const handleSelectChange = (value: string) => {
-    setFormData((prev) => ({ ...prev, roleId: Number(value) }));
-    if (errors.roleId) {
-      setErrors((prev) => ({ ...prev, roleId: undefined }));
     }
   };
 
@@ -213,55 +195,6 @@ export default function AccountForm({
               placeholder="+244 900 000 000"
             />
           </div>
-        </div>
-      </div>
-
-      {/* Role & Settings Section */}
-      <div className="space-y-4">
-        <h3 className="text-sm font-semibold text-foreground border-b pb-2">
-          Role e Configurações
-        </h3>
-
-        <div className="space-y-2">
-          <Label htmlFor="roleId">
-            Role <span className="text-destructive">*</span>
-          </Label>
-          <Select
-            value={String(formData.roleId)}
-            onValueChange={handleSelectChange}
-            disabled={isLoading}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Selecione a role" />
-            </SelectTrigger>
-            <SelectContent>
-              {Object.entries(RoleLabels).map(([id, label]) => (
-                <SelectItem key={id} value={id}>
-                  {label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="flex items-center space-x-2">
-          <Checkbox
-            id={isBackOfficeId}
-            checked={formData.isBackOffice}
-            onCheckedChange={(checked) => {
-              setFormData((prev) => ({
-                ...prev,
-                isBackOffice: checked as boolean,
-              }));
-            }}
-            disabled={isLoading}
-          />
-          <Label
-            htmlFor={isBackOfficeId}
-            className="text-sm font-normal cursor-pointer"
-          >
-            Conta BackOffice
-          </Label>
         </div>
       </div>
 
